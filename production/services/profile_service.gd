@@ -167,5 +167,5 @@ func _next_profile_id() -> StringName:
 	return StringName("profile.local_%d" % index)
 
 func _clean_name(value: String) -> String:
-	var cleaned := value.strip_edges().substr(0, 32)
+	var cleaned := InputSanitizer.sanitize_display_name(value, 32)
 	return cleaned if not cleaned.is_empty() else "Pilot"

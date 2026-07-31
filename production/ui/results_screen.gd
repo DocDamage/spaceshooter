@@ -31,7 +31,9 @@ func configure_persisted(owner_profile: ProgressionProfile, completion: Dictiona
 
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	var panel := VBoxContainer.new(); panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER); add_child(panel)
+	theme = GalaxHeroTheme.create()
+	var frame := PanelContainer.new(); frame.set_anchors_preset(Control.PRESET_CENTER); frame.position = Vector2(-230, -230); frame.size = Vector2(460, 460); add_child(frame)
+	var panel := VBoxContainer.new(); panel.add_theme_constant_override("separation", 12); frame.add_child(panel)
 	title_label = Label.new(); title_label.text = "MISSION RESULTS"; panel.add_child(title_label)
 	reward_label = Label.new(); reward_label.text = "%d XP   %d CREDITS" % [rewards.get("xp", 0), rewards.get("currency", 0)]; panel.add_child(reward_label)
 	if not narrative_text.is_empty():

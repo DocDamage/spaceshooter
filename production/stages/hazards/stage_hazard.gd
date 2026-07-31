@@ -1,6 +1,13 @@
 class_name StageHazard
 extends BaseActor2D
 
+const ASTEROID_TEXTURE := preload("res://assets_runtime/hazards/hazard_asteroids_sheet.png")
+const DEBRIS_TEXTURE := preload("res://assets_runtime/hazards/hazard_debris_sheet.png")
+const MINE_TEXTURE := preload("res://assets_runtime/hazards/hazard_mine_explosive.png")
+const BASE_TEXTURE := preload("res://assets_runtime/hazards/hazard_pirate_base.png")
+const ION_TEXTURE := preload("res://assets_runtime/effects/effect_shield_final.png")
+const REACTOR_TEXTURE := preload("res://assets_runtime/projectiles/projectile_reactor_core.png")
+
 var hazard_id: StringName
 var hazard_index := 0
 var players: Array[Node2D] = []
@@ -107,11 +114,16 @@ func _fire(direction: Vector2, category: StringName, damage: float, speed: float
 func _draw() -> void:
 	match _kind():
 		&"ion_storm":
-			draw_circle(Vector2.ZERO, 150.0, Color(0.25, 0.65, 1.0, 0.08))
-			draw_arc(Vector2.ZERO, 105.0, 0.0, TAU, 32, Color(0.55, 0.85, 1.0, 0.4), 3.0)
+			draw_texture_rect(ION_TEXTURE, Rect2(-96, -96, 192, 192), false, Color(0.55, 0.85, 1.0, 0.42))
+			draw_arc(Vector2.ZERO, 105.0, 0.0, TAU, 32, Color(0.55, 0.85, 1.0, 0.55), 2.0)
 		&"asteroids":
-			draw_colored_polygon(PackedVector2Array([Vector2(-22,-15), Vector2(8,-25), Vector2(27,-4), Vector2(17,23), Vector2(-17,20), Vector2(-28,2)]), Color("8e8178"))
+			var frame := hazard_index % 12
+			draw_texture_rect_region(ASTEROID_TEXTURE, Rect2(-32, -32, 64, 64), Rect2(frame * 64, 0, 64, 64))
 		&"debris":
-			draw_rect(Rect2(-24,-10,48,20), Color("7889a5")); draw_line(Vector2(-18,-18), Vector2(20,18), Color("c6d6ec"), 4.0)
-		_:
-			draw_rect(Rect2(-24,-18,48,36), Color("9b355b")); draw_circle(Vector2.ZERO, 8.0, Color("ffda70"))
+			var frame := hazard_index % 7
+			draw_texture_rect_region(DEBRIS_TEXTURE, Rect2(-32, -32, 64, 64), Rect2(frame * 64, 0, 64, 64))
+		&"minefield": draw_texture_rect(MINE_TEXTURE, Rect2(-27, -24, 54, 48), false)
+		&"turret_wall", &"orbital_weapon": draw_texture_rect(BASE_TEXTURE, Rect2(-72, -20, 144, 40), false, Color("ffb1bd") if _kind() == &"orbital_weapon" else Color.WHITE)
+		&"crossfire", &"reactor_arc":
+			draw_circle(Vector2.ZERO, 31.0, Color("ff5d7b", 0.18))
+			draw_texture_rect(REACTOR_TEXTURE, Rect2(-24, -24, 48, 48), false, Color("ffb66e"))

@@ -1755,8 +1755,8 @@
       "asset_ids": [
         "asset.ship.1500_spaceships_asteroids_and_more_1500_spaceships_asteroids_and_more_450_spaceship_asteroids_and_more_space_321",
         "asset.ship.1500_spaceships_asteroids_and_more_update1_batch_061_converted",
-        "asset.ship.spaceshooter_enemies_fighter1",
-        "asset.ship.spaceshooter_enemies_fighter2"
+        "asset.ship.enemy_fighter_blue",
+        "asset.ship.enemy_fighter_red"
       ]
     },
     {
@@ -3036,26 +3036,26 @@
         "asset.ship.pixel_art_spaceships_full_spaceships_bloom_7",
         "asset.ship.pixel_art_spaceships_full_spaceships_bloom_8",
         "asset.ship.pixel_art_spaceships_full_spaceships_bloom_9",
-        "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_1",
+        "asset.ship.aegis_spear",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_10",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_11",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_12",
-        "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_13",
+        "asset.ship.arsenal_talon",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_14",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_15",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_16",
-        "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_17",
+        "asset.ship.convergence_star",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_18",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_19",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_2",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_20",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_3",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_4",
-        "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_5",
+        "asset.ship.veil_skimmer",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_6",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_7",
         "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_8",
-        "asset.ship.pixel_art_spaceships_full_spaceships_no_bloom_9",
+        "asset.ship.banner_warden",
         "asset.ship.png_animation_kamikaze_ship_exhaust_exhaust1",
         "asset.ship.png_animation_kamikaze_ship_exhaust_exhaust2",
         "asset.ship.png_animation_kamikaze_ship_exhaust_exhaust3",
@@ -3578,7 +3578,7 @@
         "asset.ship.space_shooter_pack_2d_pixel_art_ships_enemies_vfx_and_music_inimigos_png_inimigo_4_6",
         "asset.ship.space_shooter_pack_2d_pixel_art_ships_enemies_vfx_and_music_inimigos_png_inimigo_4_7",
         "asset.ship.space_shooter_pack_2d_pixel_art_ships_enemies_vfx_and_music_inimigos_png_inimigo_4_8",
-        "asset.ship.spaceshooter_enemies_gunship_caa61efd"
+        "asset.ship.enemy_gunship"
       ]
     },
     {

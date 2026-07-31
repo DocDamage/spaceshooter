@@ -1,6 +1,12 @@
 class_name ObjectiveActor
 extends BaseActor2D
 
+const RELAY_TEXTURE := preload("res://assets_runtime/objectives/objective_relay_station.png")
+const RESCUE_TEXTURE := preload("res://assets_runtime/players/ship_bastion_final.png")
+const HOSTILE_TEXTURE := preload("res://assets_runtime/hazards/hazard_pirate_base.png")
+const MARKED_TEXTURE := preload("res://assets_runtime/enemies/enemy_gunship.png")
+const SALVAGE_TEXTURE := preload("res://assets_runtime/pickups/pickup_energy_container.png")
+
 signal objective_actor_resolved(objective_id: StringName, succeeded: bool, actor_index: int)
 
 var objective_definition: ObjectiveDefinition
@@ -81,7 +87,15 @@ func _resolve(succeeded: bool) -> void:
 	set_physics_process(false)
 
 func _draw() -> void:
-	var hostile := objective_definition != null and objective_definition.objective_type in ["sabotage", "destroy_marked"]
-	draw_circle(Vector2.ZERO, 28.0, Color("a83b55") if hostile else Color("4dc9b0"))
-	draw_arc(Vector2.ZERO, 34.0, 0.0, TAU, 24, Color("ffda72") if hostile else Color("b5fff1"), 3.0)
-	draw_rect(Rect2(-12,-5,24,10), Color("ffe9a8") if hostile else Color("e6fffb"))
+	if objective_definition == null: return
+	var hostile := objective_definition.objective_type in ["sabotage", "destroy_marked"]
+	var texture: Texture2D = RELAY_TEXTURE
+	var target_size := Vector2(62, 62)
+	match objective_definition.objective_type:
+		"rescue", "escort": texture = RESCUE_TEXTURE; target_size = Vector2(52, 52)
+		"collect": texture = SALVAGE_TEXTURE; target_size = Vector2(34, 34)
+		"sabotage": texture = HOSTILE_TEXTURE; target_size = Vector2(92, 28)
+		"destroy_marked": texture = MARKED_TEXTURE; target_size = Vector2(62, 62)
+	draw_circle(Vector2.ZERO, maxf(target_size.x, target_size.y) * 0.56, Color("b43b5a", 0.22) if hostile else Color("4dc9b0", 0.18))
+	draw_texture_rect(texture, Rect2(-target_size * 0.5, target_size), false, Color("ff8a9e") if hostile else Color.WHITE)
+	draw_arc(Vector2.ZERO, maxf(target_size.x, target_size.y) * 0.62, 0.0, TAU, 32, Color("ffda72") if hostile else Color("b5fff1"), 2.0)

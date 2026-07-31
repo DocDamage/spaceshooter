@@ -35,6 +35,8 @@ var _finished_enemy_ids: Dictionary = {}
 var _retarget_elapsed := 0.0
 var _mode_lives_remaining := 0
 var _mode_continues_used := 0
+var _mission_background: Texture2D
+var _stage_music: AudioStream
 
 func configure(game_session: GameSession, content_database: ContentDatabase) -> void:
 	session = game_session
@@ -72,7 +74,15 @@ func _ready() -> void:
 		difficulty_definition.projectile_speed_multiplier *= float(session.config.mode_rules.projectile_speed_multiplier)
 	effects_pool = EffectsPoolManager.new(); effects_pool.name = "EffectsPoolManager"; add_child(effects_pool)
 	screen_effects = ScreenEffectsController.new(); screen_effects.name = "ScreenEffects"; screen_effects.configure(session.services.settings); add_child(screen_effects)
-	session.services.audio.play_music(STAGE_ONE_MUSIC, true)
+	var mission_definition := session.config.mission_definition
+	if not mission_definition.background_asset_path.is_empty() and ResourceLoader.exists(mission_definition.background_asset_path):
+		_mission_background = load(mission_definition.background_asset_path) as Texture2D
+	_stage_music = STAGE_ONE_MUSIC
+	if not mission_definition.music_asset_path.is_empty() and ResourceLoader.exists(mission_definition.music_asset_path):
+		_stage_music = load(mission_definition.music_asset_path) as AudioStream
+	var operation_index := clampi(int(ceil(float(mission_definition.stage_number) / 10.0)), 1, 6)
+	var music_state := mission_definition.music_state if not mission_definition.music_state.is_empty() else StringName("operation_%d_stage" % operation_index)
+	session.services.audio.transition_music(_stage_music, music_state, session.services.audio.music_crossfade_seconds, true)
 	_spawn_players()
 	_spawn_selected_wingman()
 	score_tracker = MissionScoreTracker.new(); score_tracker.name = "MissionScoreTracker"; add_child(score_tracker)
@@ -386,6 +396,7 @@ func _on_segment_changed(_node_id: StringName, _segment_id: StringName) -> void:
 func _spawn_boss(boss_id: StringName, category: StringName) -> void:
 	var definition := database.get_definition(boss_id, &"boss") as BossDefinition
 	if definition == null or stage_runtime.current_segment == null: return
+	session.services.audio.transition_music(_stage_music if _stage_music != null else STAGE_ONE_MUSIC, &"boss", session.services.audio.music_crossfade_seconds, true)
 	var gate_id := StringName("encounter.%s" % category)
 	if not stage_runtime.current_segment.acquire_external_gate(gate_id): return
 	var arena := BossArenaController.new(); arena.name = "BossArena"; arena.configure(definition.arena_profile, player_actors.size()); add_child(arena); active_boss_arena = arena
@@ -416,6 +427,7 @@ func _spawn_boss(boss_id: StringName, category: StringName) -> void:
 	if camera_rig != null: camera_rig.frame_boss(active_boss, player_actors)
 
 func _on_story_pause_requested(paused: bool) -> void:
+	session.services.audio.set_music_paused(paused)
 	if DisplayServer.get_name() != "headless": get_tree().paused = paused
 
 func _draw() -> void:
@@ -423,11 +435,13 @@ func _draw() -> void:
 	var palette := [Color("071328"), Color("071328"), Color("071d36"), Color("1b0d32"), Color("33170c"), Color("300914"), Color("29240a")]
 	var background: Color = palette[clampi(operation, 0, palette.size() - 1)]
 	draw_rect(Rect2(0, 0, 540, 960), background)
+	if _mission_background != null:
+		draw_texture_rect(_mission_background, Rect2(0, 0, 540, 960), false, Color(0.78, 0.84, 1.0, 0.72))
 	for index in 90:
 		var star := Vector2(float((index * 97) % 532 + 4), float((index * 173) % 940 + 10))
 		var star_color: Color = [Color("9dd8ff"), Color("9dd8ff"), Color("8edcff"), Color("d4a6ff"), Color("ffc18c"), Color("ff8fa3"), Color("fff38a")][clampi(operation, 0, 6)]
 		draw_circle(star, 1.0 + float(index % 3) * 0.45, Color(star_color, 0.6))
-	if operation == 1:
+	if operation == 1 and _mission_background == null:
 		draw_texture_rect_region(FRONTIER_BACKGROUND, Rect2(0, 0, 540, 960), Rect2(224, 32, 576, 1024), Color(0.8, 0.86, 1.0, 0.7))
 	if operation >= 3:
 		for index in range(operation - 2):

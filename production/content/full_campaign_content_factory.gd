@@ -1,6 +1,26 @@
 class_name FullCampaignContentFactory
 extends RefCounted
 
+const AUTHORED_CONTENT_PATH := "res://production/content/data/campaign/full_campaign_authored_content.json"
+const OPERATION_BACKGROUNDS := {
+	2: "res://assets_runtime/backgrounds/background_space_blue_01_sheet.png",
+	3: "res://assets_runtime/backgrounds/background_nebula_violet_sheet.png",
+	4: "res://assets_runtime/backgrounds/background_warfront_amber_sheet.png",
+	5: "res://assets_runtime/backgrounds/background_frontier_planets_final.png",
+	6: "res://assets_runtime/backgrounds/background_convergence_gold_sheet.png"
+}
+const CAMPAIGN_MUSIC := "res://assets_runtime/audio/music_stage1_frontier_theme.mp3"
+const SPECIALIST_SHIP_VISUALS := {
+	2: "res://assets_runtime/players/ship_aegis_spear.png",
+	3: "res://assets_runtime/players/ship_veil_skimmer.png",
+	4: "res://assets_runtime/players/ship_banner_warden.png",
+	5: "res://assets_runtime/players/ship_arsenal_talon.png",
+	6: "res://assets_runtime/players/ship_convergence_star.png"
+}
+
+static var _authored_content_loaded := false
+static var _authored_content: Dictionary = {}
+
 const OPERATION_NAMES := {
 	2: "Spearhead Doctrine", 3: "The Shattered Veil", 4: "War of Three Banners",
 	5: "The Last Arsenal", 6: "Convergence"
@@ -95,7 +115,7 @@ static func build() -> Array[ContentDefinition]:
 			var mission := MissionDefinition.new()
 			mission.stable_id = _mission_id(operation_index, local_stage)
 			mission.display_name = recipe.display_name
-			mission.content_version = "18.1"
+			mission.content_version = "21.0"
 			mission.player_ship_id = &"ship.vanguard"
 			mission.enemy_ids.assign(ENEMY_ROSTERS[operation_index])
 			mission.default_seed = 180000 + operation_index * 1000 + local_stage * 10 + 1
@@ -103,6 +123,9 @@ static func build() -> Array[ContentDefinition]:
 			mission.stage_number = global_stage
 			mission.environment_tags.assign(ENVIRONMENTS[operation_index])
 			mission.enemy_factions.assign(FACTIONS[operation_index])
+			mission.background_asset_path = OPERATION_BACKGROUNDS[operation_index]
+			mission.music_asset_path = CAMPAIGN_MUSIC
+			mission.music_state = StringName("operation_%d_stage" % operation_index)
 			mission.recipe = recipe
 			mission.miniboss_id = miniboss.stable_id
 			mission.boss_id = finale_boss.stable_id if finale_boss != null else &""
@@ -136,6 +159,8 @@ static func _progression_definitions() -> Array[ContentDefinition]:
 		ship.stable_id = _ship_id(operation_index)
 		ship.display_name = ["Aegis Spear", "Veil Skimmer", "Banner Warden", "Arsenal Talon", "Convergence Star"][operation_index - 2]
 		ship.content_version = "18.2"
+		ship.visual_asset_path = SPECIALIST_SHIP_VISUALS[operation_index]
+		ship.visual_scale = 0.72
 		ship.max_health = 90 + operation_index * 14
 		ship.move_speed = 350.0 - operation_index * 8.0
 		ship.armor = 3.0 + operation_index * 1.5
@@ -262,27 +287,52 @@ static func _operation(index: int) -> OperationDefinition:
 	operation.next_operation_node_id = _node_id(index + 1, 1) if index < 6 else &"campaign.postgame"
 	return operation
 
+static func authored_stage_content(operation: int, stage: int) -> Dictionary:
+	_load_authored_content()
+	return _authored_content.get("%d-%d" % [operation, stage], {}).duplicate(true)
+
+static func authored_stage_count() -> int:
+	_load_authored_content()
+	return _authored_content.size()
+
+static func _load_authored_content() -> void:
+	if _authored_content_loaded: return
+	_authored_content_loaded = true
+	var file := FileAccess.open(AUTHORED_CONTENT_PATH, FileAccess.READ)
+	if file == null:
+		push_error("Authored campaign content is missing: %s" % AUTHORED_CONTENT_PATH)
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	if parsed is Dictionary and parsed.get("stages") is Dictionary:
+		_authored_content = parsed.stages.duplicate(true)
+	else:
+		push_error("Authored campaign content is invalid: %s" % AUTHORED_CONTENT_PATH)
+
 static func _story_beat(operation: int, stage: int) -> String:
-	if stage == 1: return "%s begins as the squad enters a new theater." % OPERATION_NAMES[operation]
-	if stage == 10: return "The squad defeats the operation command and resolves %s." % THEMES[operation].to_lower()
-	return "Stage %d escalates %s and records the squad's campaign choice." % [stage, String(MECHANICS[operation][stage - 1]).replace("_", " ")]
+	var authored := authored_stage_content(operation, stage)
+	if not authored.is_empty(): return str(authored.get("setup", ""))
+	return "%s — %s" % [_stage_title(operation, stage), String(MECHANICS[operation][stage - 1]).replace("_", " ")]
 
 static func _dialogue_definition(operation: int, stage: int, kind: StringName) -> DialogueDefinition:
 	var dialogue := DialogueDefinition.new()
 	dialogue.stable_id = _dialogue_id(operation, stage, kind)
 	dialogue.display_name = "Operation %d Stage %d %s" % [operation, stage, String(kind).capitalize()]
-	dialogue.content_version = "18.2"
+	dialogue.content_version = "21.0"
 	dialogue.context = "stage_entry" if kind == &"briefing" else "results"
 	dialogue.priority = operation * 10 + stage
+	var authored := authored_stage_content(operation, stage)
 	if kind == &"briefing":
 		dialogue.lines = [
-			{"speaker": "Command", "text": _story_beat(operation, stage)},
-			{"speaker": "Wing", "text": "Mission focus: %s. Adapt the squad and protect the route." % String(MECHANICS[operation][stage - 1]).replace("_", " ")}
+			{"speaker": "Command", "text": str(authored.get("setup", _story_beat(operation, stage)))},
+			{"speaker": "Wing", "text": str(authored.get("wing", "Mission focus: %s." % String(MECHANICS[operation][stage - 1]).replace("_", " ")))}
 		]
+		var echo: Dictionary = authored.get("decision_echo", {})
+		if not echo.is_empty():
+			dialogue.lines.append({"speaker": "Wing", "text": "Prior decision acknowledged.", "decision_id": StringName(echo.get("decision_id", "")), "variants": echo.get("variants", {}).duplicate(true)})
 	else:
 		dialogue.lines = [
-			{"speaker": "Nova", "text": "%s is secure. The fleet records the result and prepares the next move." % _stage_title(operation, stage)},
-			{"speaker": "Command", "text": "Operation %d progress: %d of 10 stages resolved." % [operation, stage]}
+			{"speaker": "Nova", "text": str(authored.get("result", "%s is secure." % _stage_title(operation, stage)))},
+			{"speaker": "Command", "text": str(authored.get("consequence", "Operation %d progress: %d of 10 stages resolved." % [operation, stage]))}
 		]
 		var decision := _decision_for(operation, stage)
 		if not decision.is_empty(): dialogue.lines.append(decision)
@@ -297,6 +347,8 @@ static func _decision_for(operation: int, stage: int) -> Dictionary:
 	return {}
 
 static func _stage_title(operation: int, stage: int) -> String:
+	var authored := authored_stage_content(operation, stage)
+	if not authored.is_empty(): return str(authored.get("title", ""))
 	return String(MECHANICS[operation][stage - 1]).replace("_", " ").capitalize()
 
 static func _operation_color(operation: int) -> Color:

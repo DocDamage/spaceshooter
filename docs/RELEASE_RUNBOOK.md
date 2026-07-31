@@ -6,7 +6,7 @@ This runbook produces the standalone Windows x86_64 artifact defined by ADR 0007
 
 1. Start from a clean reviewed commit and an annotated `vMAJOR.MINOR.PATCH` candidate tag.
 2. Confirm `VERSION`, `CONTENT_REVISION`, `project.godot`, `CHANGELOG.md`, `KNOWN_ISSUES.md`, and `THIRD_PARTY_NOTICES.md` agree.
-3. Install Godot 4.7.1 stable plus its 4.7.1 Windows export templates, Python 3.10+, Git, and Git LFS.
+3. Install Godot 4.7.1 stable plus its 4.7.1 Windows export templates, Python 3.10+, Git, Git LFS, and Inno Setup 6.7+.
 4. Mount the external `../assets` source library and run `pwsh -File tools/run_project.ps1 assets-source` to archive source/license/hash evidence.
 5. Run `pwsh -File tools/run_project.ps1 all`. Do not continue after any error, warning classified by the runner, leak diagnostic, missing pass marker, forbidden packed path, or checksum failure.
 
@@ -29,7 +29,7 @@ Confirm `Get-AuthenticodeSignature builds/release/galax-hero-release.exe` report
 
 Copy only the versioned release ZIP and its `.sha256` to a clean minimum-spec PC and a mid-tier PC. Verify the ZIP hash before extraction. Complete every applicable row in `MANUAL_QA_MATRIX.md`, including first run, profile creation, Stage 1, controller navigation, save/restart, diagnostics export, offline startup, repair/re-extract, upgrade from each supported save schema, uninstall/reinstall with preserved saves, and rollback to the retained known-good build.
 
-The release package is portable; “install” means extract to a user-selected folder. Uninstall removes that folder. Saves remain in Godot’s per-user Galax Hero data directory unless the player explicitly deletes them.
+Test both the portable ZIP and the versioned installer. The installer defaults to the current user's local Programs directory, supports silent clean-machine testing, and preserves Godot's per-user save directory during uninstall. Run `pwsh -File tools/run_project.ps1 installer-smoke` after building it; this installs to a validated temporary directory, runs the packed Stage 1 smoke, uninstalls, and confirms the executable was removed.
 
 ## 4. Retain and publish
 

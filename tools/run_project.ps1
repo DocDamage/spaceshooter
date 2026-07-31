@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("import", "test", "boot", "soak", "assets", "assets-source", "artifacts", "metadata", "verify", "export-debug", "export-development", "export-qa", "export-demo", "export-rc", "export-release", "export-smoke", "package-release", "all")]
+    [ValidateSet("import", "test", "boot", "soak", "assets", "assets-source", "artifacts", "metadata", "verify", "export-debug", "export-development", "export-qa", "export-demo", "export-rc", "export-release", "export-smoke", "package-release", "installer", "installer-smoke", "all")]
     [string]$Task = "verify",
     [string]$GodotPath = "",
     [switch]$RequireSignature
@@ -281,11 +281,73 @@ function New-ReleasePackage {
     [System.IO.File]::WriteAllText($sbomPath, ($sbom | ConvertTo-Json -Depth 10) + "`n", [System.Text.UTF8Encoding]::new($false))
     $archive = Join-Path $buildDirectory "galax-hero-$version-windows-x86_64.zip"
     if (Test-Path -LiteralPath $archive) { Remove-Item -LiteralPath $archive -Force }
-    $packageFiles = @($executable, "$executable.sha256", "$executable.build.json", $manifestPath, $sbomPath, (Join-Path $ProjectRoot "LICENSE"), (Join-Path $ProjectRoot "CHANGELOG.md"), (Join-Path $ProjectRoot "THIRD_PARTY_NOTICES.md"), (Join-Path $ProjectRoot "KNOWN_ISSUES.md"), (Join-Path $ProjectRoot "docs/SUPPORT_PRIVACY_AND_DIAGNOSTICS.md"), (Join-Path $ProjectRoot "tools/asset_catalog/generated/runtime_asset_report.json"), (Join-Path $ProjectRoot "tools/asset_catalog/generated/runtime_asset_credits.md"))
+    $packageFiles = @($executable, "$executable.sha256", "$executable.build.json", $manifestPath, $sbomPath, (Join-Path $ProjectRoot "LICENSE"), (Join-Path $ProjectRoot "CHANGELOG.md"), (Join-Path $ProjectRoot "THIRD_PARTY_NOTICES.md"), (Join-Path $ProjectRoot "KNOWN_ISSUES.md"), (Join-Path $ProjectRoot "docs/PLAYER_MANUAL.md"), (Join-Path $ProjectRoot "docs/TROUBLESHOOTING_AND_RECOVERY.md"), (Join-Path $ProjectRoot "docs/SUPPORT_PRIVACY_AND_DIAGNOSTICS.md"), (Join-Path $ProjectRoot "docs/RELEASE_ROLLBACK_HOTFIX_AND_LAUNCH.md"), (Join-Path $ProjectRoot "docs/PLAN_COMPLETION_AUDIT.md"), (Join-Path $ProjectRoot "tools/asset_catalog/generated/runtime_asset_report.json"), (Join-Path $ProjectRoot "tools/asset_catalog/generated/runtime_asset_credits.md"))
     Compress-Archive -LiteralPath $packageFiles -DestinationPath $archive -CompressionLevel Optimal
     $archiveHash = (Get-FileHash -LiteralPath $archive -Algorithm SHA256).Hash.ToLowerInvariant()
     [System.IO.File]::WriteAllText("$archive.sha256", "$archiveHash  $([System.IO.Path]::GetFileName($archive))`n", [System.Text.UTF8Encoding]::new($false))
     Write-Host "Release package: $archive`nsha256=$archiveHash" -ForegroundColor Green
+}
+
+function Resolve-InnoSetupCompiler {
+    $command = Get-Command "iscc.exe" -ErrorAction SilentlyContinue
+    if ($null -ne $command) { return $command.Source }
+    $candidates = @(
+        (Join-Path ${env:ProgramFiles(x86)} "Inno Setup 6/ISCC.exe"),
+        (Join-Path $env:ProgramFiles "Inno Setup 6/ISCC.exe"),
+        (Join-Path $env:LOCALAPPDATA "Programs/Inno Setup 6/ISCC.exe")
+    )
+    foreach ($candidate in $candidates) {
+        if (Test-Path -LiteralPath $candidate) { return (Resolve-Path -LiteralPath $candidate).Path }
+    }
+    throw "Inno Setup 6 was not found. Install JRSoftware.InnoSetup with winget."
+}
+
+function New-WindowsInstaller {
+    $releaseExecutable = Join-Path $ProjectRoot "builds/release/galax-hero-release.exe"
+    if (-not (Test-Path -LiteralPath $releaseExecutable)) { throw "Export the release executable before building the installer." }
+    foreach ($required in @("docs/PLAYER_MANUAL.md", "docs/TROUBLESHOOTING_AND_RECOVERY.md")) {
+        if (-not (Test-Path -LiteralPath (Join-Path $ProjectRoot $required))) { throw "Installer input is missing: $required" }
+    }
+    $version = (Get-Content -LiteralPath (Join-Path $ProjectRoot "VERSION") -Raw).Trim()
+    $compiler = Resolve-InnoSetupCompiler
+    $script = Join-Path $ProjectRoot "packaging/windows/GalaxHero.iss"
+    Invoke-Checked -Label "Versioned Windows installer" -Command $compiler -Arguments @("/Qp", "/DMyAppVersion=$version", $script)
+    $installer = Join-Path $ProjectRoot "builds/installer/galax-hero-$version-windows-x86_64-setup.exe"
+    if (-not (Test-Path -LiteralPath $installer)) { throw "Inno Setup did not create the expected installer: $installer" }
+    $signed = Invoke-CodeSigning -Executable $installer
+    $hash = (Get-FileHash -LiteralPath $installer -Algorithm SHA256).Hash.ToLowerInvariant()
+    [System.IO.File]::WriteAllText("$installer.sha256", "$hash  $([System.IO.Path]::GetFileName($installer))`n", [System.Text.UTF8Encoding]::new($false))
+    $record = [ordered]@{ schema_version = 1; product = "Galax Hero"; version = $version; artifact = [System.IO.Path]::GetFileName($installer); sha256 = $hash; signature = if ($signed) { "valid" } else { "unsigned_test_artifact" }; installer = "Inno Setup 6" }
+    [System.IO.File]::WriteAllText("$installer.build.json", ($record | ConvertTo-Json -Depth 5) + "`n", [System.Text.UTF8Encoding]::new($false))
+    Write-Host "Windows installer: $installer`nsha256=$hash" -ForegroundColor Green
+}
+
+function Test-WindowsInstaller {
+    $version = (Get-Content -LiteralPath (Join-Path $ProjectRoot "VERSION") -Raw).Trim()
+    $installer = Join-Path $ProjectRoot "builds/installer/galax-hero-$version-windows-x86_64-setup.exe"
+    if (-not (Test-Path -LiteralPath $installer)) { throw "Build the Windows installer before running its smoke test." }
+    $tempRoot = [System.IO.Path]::GetFullPath([System.IO.Path]::GetTempPath())
+    $installDirectory = [System.IO.Path]::GetFullPath((Join-Path $tempRoot ("GalaxHeroInstallerSmoke_" + [Guid]::NewGuid().ToString("N"))))
+    if (-not $installDirectory.StartsWith($tempRoot, [System.StringComparison]::OrdinalIgnoreCase) -or [System.IO.Path]::GetFileName($installDirectory) -notlike "GalaxHeroInstallerSmoke_*") {
+        throw "Refusing installer smoke outside the validated temporary directory: $installDirectory"
+    }
+    $installLog = Join-Path $ProjectRoot "builds/installer/install-smoke.log"
+    $gameLog = Join-Path $ProjectRoot "builds/installer/installed-game-smoke.log"
+    $uninstallLog = Join-Path $ProjectRoot "builds/installer/uninstall-smoke.log"
+    $installProcess = Start-Process -FilePath $installer -ArgumentList @("/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/DIR=`"$installDirectory`"", "/LOG=`"$installLog`"") -WindowStyle Hidden -Wait -PassThru
+    if ($installProcess.ExitCode -ne 0) { throw "Silent installer exited with code $($installProcess.ExitCode)." }
+    $installedExecutable = Join-Path $installDirectory "galax-hero-release.exe"
+    if (-not (Test-Path -LiteralPath $installedExecutable)) { throw "Installed executable is missing: $installedExecutable" }
+    $gameProcess = Start-Process -FilePath $installedExecutable -ArgumentList @("--headless", "--log-file", "`"$gameLog`"", "--", "--export-smoke") -WindowStyle Hidden -Wait -PassThru
+    $gameOutput = if (Test-Path -LiteralPath $gameLog) { @(Get-Content -LiteralPath $gameLog) } else { @() }
+    if ($gameProcess.ExitCode -ne 0 -or -not ($gameOutput | Where-Object { $_ -match '^EXPORT_SMOKE: PASS' })) { throw "Installed game smoke did not pass." }
+    $uninstaller = Join-Path $installDirectory "unins000.exe"
+    if (-not (Test-Path -LiteralPath $uninstaller)) { throw "Uninstaller is missing from the clean install." }
+    $uninstallProcess = Start-Process -FilePath $uninstaller -ArgumentList @("/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LOG=`"$uninstallLog`"") -WindowStyle Hidden -Wait -PassThru
+    if ($uninstallProcess.ExitCode -ne 0) { throw "Silent uninstaller exited with code $($uninstallProcess.ExitCode)." }
+    if (Test-Path -LiteralPath $installedExecutable) { throw "Uninstall left the game executable behind." }
+    if (Test-Path -LiteralPath $installDirectory) { Remove-Item -LiteralPath $installDirectory -Recurse -Force }
+    Write-Host "Installer clean install, exported-game smoke, and uninstall passed." -ForegroundColor Green
 }
 
 Push-Location $ProjectRoot
@@ -317,6 +379,8 @@ try {
             Invoke-ExportSmoke -Kind "release"
         }
         "package-release" { New-ReleasePackage }
+        "installer" { New-WindowsInstaller }
+        "installer-smoke" { Test-WindowsInstaller }
         "verify" {
             Invoke-ImportValidation
             Test-Metadata
@@ -338,6 +402,8 @@ try {
             Invoke-ExportSmoke -Kind "development"
             Invoke-ExportSmoke -Kind "release"
             New-ReleasePackage
+            New-WindowsInstaller
+            Test-WindowsInstaller
         }
     }
 }

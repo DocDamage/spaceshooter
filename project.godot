@@ -6,7 +6,7 @@ config/name="Galax Hero"
 run/main_scene="res://production/boot/production_boot.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/version="0.20.0"
-config/content_revision="gold-stage1-phase20"
+config/content_revision="completion-hardening-phase21"
 config/icon="res://assets_runtime/ui/galax_hero_app_icon.png"
 
 [development]

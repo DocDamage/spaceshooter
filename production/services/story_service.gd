@@ -32,10 +32,10 @@ func start_dialogue(dialogue_id: StringName, variables: Dictionary = {}) -> bool
 	var definition: DialogueDefinition = _dialogues.get(dialogue_id)
 	if definition == null: return false
 	if definition.one_shot and dialogue_id in completed_dialogue_ids: return false
-	_active_definition = definition
 	if definition.context in ["combat", "objective", "stage_entry", "checkpoint", "pre_miniboss", "post_miniboss", "pre_boss", "post_boss"]:
 		return queue_radio(dialogue_id, variables)
-	var started := adapter.start(definition, variables.merged(story_flags, false))
+	_active_definition = _resolved_definition(definition)
+	var started := adapter.start(_active_definition, _merged_variables(variables))
 	if started:
 		dialogue_event.emit(dialogue_id, &"started")
 		if definition.pause_gameplay: gameplay_pause_requested.emit(true)
@@ -44,8 +44,35 @@ func start_dialogue(dialogue_id: StringName, variables: Dictionary = {}) -> bool
 func queue_radio(dialogue_id: StringName, variables: Dictionary = {}) -> bool:
 	var definition: DialogueDefinition = _dialogues.get(dialogue_id)
 	if definition == null or (definition.one_shot and dialogue_id in completed_dialogue_ids): return false
-	var message := {"message_id": dialogue_id, "context": definition.context, "lines": definition.lines.duplicate(true), "variables": variables.duplicate(true), "priority": definition.priority, "objective_instruction": definition.objective_instruction, "portrait_id": definition.lines[0].get("portrait_id", "")}
+	var resolved_lines := resolve_lines(definition.lines)
+	var message := {"message_id": dialogue_id, "context": definition.context, "lines": resolved_lines, "variables": _merged_variables(variables), "priority": definition.priority, "objective_instruction": definition.objective_instruction, "portrait_id": resolved_lines[0].get("portrait_id", "") if not resolved_lines.is_empty() else ""}
 	return radio_queue.enqueue(message)
+
+func resolve_lines(source_lines: Array) -> Array[Dictionary]:
+	var resolved: Array[Dictionary] = []
+	for raw_line in source_lines:
+		if not raw_line is Dictionary: continue
+		var line: Dictionary = raw_line.duplicate(true)
+		var decision_id := StringName(line.get("decision_id", ""))
+		var variants: Dictionary = line.get("variants", {})
+		if not decision_id.is_empty() and decisions.has(decision_id):
+			var selected_key := str(decisions[decision_id])
+			if variants.has(selected_key): line.text = str(variants[selected_key])
+		line.erase("variants")
+		line.erase("decision_id")
+		resolved.append(line)
+	return resolved
+
+func _resolved_definition(definition: DialogueDefinition) -> DialogueDefinition:
+	var resolved := definition.duplicate(true) as DialogueDefinition
+	resolved.lines = resolve_lines(definition.lines)
+	return resolved
+
+func _merged_variables(variables: Dictionary) -> Dictionary:
+	var merged := story_flags.duplicate(true)
+	merged.merge(decisions, true)
+	merged.merge(variables, true)
+	return merged
 
 func complete_radio(skipped := false) -> void:
 	if radio_queue.current.is_empty(): return

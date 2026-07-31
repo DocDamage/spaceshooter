@@ -2,6 +2,12 @@ class_name NetworkProtocol
 extends RefCounted
 
 const PROTOCOL_VERSION := 19
+const MAX_PACKET_BYTES := 64 * 1024
+const MAX_PAYLOAD_BYTES := 48 * 1024
+const MAX_NESTING_DEPTH := 8
+const MAX_CONTAINER_ENTRIES := 256
+const MAX_ARRAY_ENTRIES := 128
+const MAX_STRING_BYTES := 1024
 const MESSAGE_TYPES: Array[StringName] = [
 	&"player_input", &"actor_spawn", &"actor_despawn", &"damage_confirmation",
 	&"projectile_spawn", &"projectile_interaction", &"boss_phase", &"objective_event",
@@ -31,8 +37,15 @@ static func validate_message(message: Dictionary) -> PackedStringArray:
 	if int(message.protocol) != PROTOCOL_VERSION: errors.append("Protocol version mismatch")
 	if StringName(message.type) not in MESSAGE_TYPES: errors.append("Unknown message type: %s" % message.type)
 	if int(message.sequence) < 1: errors.append("Network sequence must be positive")
+	if int(message.sequence) > 2147483647: errors.append("Network sequence exceeds the supported range")
 	if int(message.sender_peer_id) < 1: errors.append("Sender peer ID must be positive")
+	if int(message.sender_peer_id) > 2: errors.append("Sender peer ID exceeds the two-player protocol")
+	if int(message.tick) < 0 or int(message.tick) > 2147483647: errors.append("Network tick is outside the supported range")
 	if not message.payload is Dictionary: errors.append("Message payload must be a Dictionary")
+	if errors.is_empty():
+		var payload_error := _validate_bounded_variant(message.payload)
+		if not payload_error.is_empty(): errors.append(payload_error)
+		elif var_to_bytes(message.payload).size() > MAX_PAYLOAD_BYTES: errors.append("Network payload exceeds the byte limit")
 	return errors
 
 static func compatibility_manifest(content_revision: StringName, build_version: String = "") -> Dictionary:
@@ -75,3 +88,33 @@ static func _canonicalize(value: Variant) -> Variant:
 	if value is Vector2: return [value.x, value.y]
 	if value is StringName: return String(value)
 	return value
+
+static func _validate_bounded_variant(value: Variant) -> String:
+	return _validate_bounded_variant_recursive(value, 0, [0])
+
+static func _validate_bounded_variant_recursive(value: Variant, depth: int, budget: Array[int]) -> String:
+	if depth > MAX_NESTING_DEPTH: return "Network payload exceeds the nesting limit"
+	if value is Dictionary:
+		budget[0] += value.size()
+		if budget[0] > MAX_CONTAINER_ENTRIES: return "Network payload contains too many fields"
+		for key in value:
+			if str(key).to_utf8_buffer().size() > MAX_STRING_BYTES: return "Network field name is too long"
+			var error := _validate_bounded_variant_recursive(value[key], depth + 1, budget)
+			if not error.is_empty(): return error
+		return ""
+	if value is Array:
+		if value.size() > MAX_ARRAY_ENTRIES: return "Network array exceeds the entry limit"
+		budget[0] += value.size()
+		if budget[0] > MAX_CONTAINER_ENTRIES: return "Network payload contains too many entries"
+		for entry in value:
+			var error := _validate_bounded_variant_recursive(entry, depth + 1, budget)
+			if not error.is_empty(): return error
+		return ""
+	if value is String or value is StringName:
+		if str(value).to_utf8_buffer().size() > MAX_STRING_BYTES: return "Network string exceeds the byte limit"
+		return ""
+	if value is float and not is_finite(value): return "Network number must be finite"
+	if value is Object or value is Callable or value is Signal: return "Network payload contains an unsupported object"
+	if not (value == null or value is bool or value is int or value is float or value is Vector2 or value is Vector2i or value is Vector3 or value is Vector3i or value is Color):
+		return "Network payload contains an unsupported value type"
+	return ""

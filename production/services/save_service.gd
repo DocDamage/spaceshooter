@@ -6,6 +6,11 @@ signal recovery_required(report: Dictionary)
 
 const SCHEMA_VERSION := 9
 const DEFAULT_ROOT := "user://saves"
+const MAX_SAVE_FILE_BYTES := 8 * 1024 * 1024
+const MAX_PAYLOAD_BYTES := 6 * 1024 * 1024
+const MAX_NESTING_DEPTH := 32
+const MAX_CONTAINER_ENTRIES := 20000
+const MAX_STRING_BYTES := 1024 * 1024
 
 var status: StringName = &"idle"
 var last_snapshot: Dictionary = {}
@@ -171,6 +176,9 @@ func _read_document(path: String, migrate: bool) -> Dictionary:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if file == null:
 		return {"error": FileAccess.get_open_error(), "message": "File could not be opened.", "payload": {}}
+	if file.get_length() > MAX_SAVE_FILE_BYTES:
+		file.close()
+		return {"error": ERR_FILE_CORRUPT, "message": "Save exceeds the safe file-size limit.", "payload": {}}
 	var json := JSON.new()
 	var parse_error := json.parse(file.get_as_text())
 	if parse_error != OK or not json.data is Dictionary:
@@ -195,17 +203,24 @@ func _validate_document(document: Dictionary) -> Dictionary:
 	if document.get("format") != "galax_hero_save" or not document.get("payload_json") is String:
 		return {"error": ERR_FILE_CORRUPT, "message": "Save envelope is invalid.", "payload": {}}
 	var payload_text: String = document.payload_json
+	if payload_text.to_utf8_buffer().size() > MAX_PAYLOAD_BYTES:
+		return {"error": ERR_FILE_CORRUPT, "message": "Save payload exceeds the safe size limit.", "payload": {}}
 	if String(document.get("checksum", "")) != payload_text.sha256_text():
 		return {"error": ERR_FILE_CORRUPT, "message": "Checksum verification failed.", "payload": {}}
 	var parsed = JSON.parse_string(payload_text)
 	if not parsed is Dictionary:
 		return {"error": ERR_FILE_CORRUPT, "message": "Save payload is not a dictionary.", "payload": {}}
+	var bound_error := _validate_value_bounds(parsed)
+	if not bound_error.is_empty():
+		return {"error": ERR_FILE_CORRUPT, "message": bound_error, "payload": {}}
 	return {"error": OK, "message": "Valid save.", "payload": parsed}
 
 func _write_document(path: String, document: Dictionary) -> Error:
 	return _write_text(path, JSON.stringify(document, "  "))
 
 func _write_text(path: String, text: String) -> Error:
+	if text.to_utf8_buffer().size() > MAX_SAVE_FILE_BYTES:
+		return ERR_INVALID_DATA
 	var error := _ensure_parent(path)
 	if error != OK:
 		return error
@@ -231,10 +246,31 @@ func _delete_if_exists(path: String) -> void:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 func _safe_id(value: StringName) -> String:
-	var safe := String(value).to_lower()
-	for character in ["/", "\\", ":", "..", " "]:
-		safe = safe.replace(character, "_")
-	return safe
+	var safe := InputSanitizer.safe_storage_key(String(value))
+	return safe if not safe.is_empty() else "invalid_profile"
+
+func _validate_value_bounds(value: Variant) -> String:
+	return _validate_value_bounds_recursive(value, 0, [0])
+
+func _validate_value_bounds_recursive(value: Variant, depth: int, budget: Array[int]) -> String:
+	if depth > MAX_NESTING_DEPTH:
+		return "Save nesting exceeds the safe depth limit."
+	if value is Dictionary:
+		budget[0] += value.size()
+		if budget[0] > MAX_CONTAINER_ENTRIES: return "Save contains too many fields."
+		for key in value:
+			if str(key).to_utf8_buffer().size() > MAX_STRING_BYTES: return "Save field name exceeds the safe length limit."
+			var error := _validate_value_bounds_recursive(value[key], depth + 1, budget)
+			if not error.is_empty(): return error
+	elif value is Array:
+		budget[0] += value.size()
+		if budget[0] > MAX_CONTAINER_ENTRIES: return "Save contains too many entries."
+		for entry in value:
+			var error := _validate_value_bounds_recursive(entry, depth + 1, budget)
+			if not error.is_empty(): return error
+	elif value is String and value.to_utf8_buffer().size() > MAX_STRING_BYTES:
+		return "Save string exceeds the safe length limit."
+	return ""
 
 func _set_status(value: StringName) -> void:
 	status = value

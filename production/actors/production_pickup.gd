@@ -4,6 +4,8 @@ extends PooledCombatObject
 signal collected(drop: Dictionary, collector_id: StringName)
 
 const PICKUP_TEXTURE := preload("res://assets_runtime/pickups/pickup_credits_01_sheet.png")
+const ENERGY_TEXTURE := preload("res://assets_runtime/pickups/pickup_energy_container.png")
+const HEALTH_TEXTURE := preload("res://assets_runtime/pickups/pickup_health_container.png")
 
 var actor_id: StringName
 var drop: Dictionary = {}
@@ -75,9 +77,11 @@ func _authorized(player_id: StringName) -> bool:
 
 func _draw() -> void:
 	var tint := Color("78f5ff")
+	var texture: Texture2D = PICKUP_TEXTURE
+	var source := Rect2(0, 0, 16, 16)
 	match StringName(drop.get("category", &"currency")):
-		&"healing": tint = Color("71ff8b")
-		&"experience": tint = Color("c792ff")
-		&"temporary_weapon_power": tint = Color("ffd36d")
+		&"healing": tint = Color("71ff8b"); texture = HEALTH_TEXTURE; source = Rect2(Vector2.ZERO, HEALTH_TEXTURE.get_size())
+		&"experience": tint = Color("c792ff"); texture = ENERGY_TEXTURE; source = Rect2(Vector2.ZERO, ENERGY_TEXTURE.get_size())
+		&"temporary_weapon_power": tint = Color("ffd36d"); texture = ENERGY_TEXTURE; source = Rect2(Vector2.ZERO, ENERGY_TEXTURE.get_size())
 	draw_circle(Vector2.ZERO, 13.0, Color(tint, 0.22))
-	draw_texture_rect_region(PICKUP_TEXTURE, Rect2(-8, -8, 16, 16), Rect2(0, 0, 16, 16), tint)
+	draw_texture_rect_region(texture, Rect2(-10, -10, 20, 20), source, tint)

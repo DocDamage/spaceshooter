@@ -111,9 +111,18 @@ func show_page(page: StringName, push_history := true) -> void:
 func _build_shell() -> void:
 	root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.theme = GalaxHeroTheme.create()
 	add_child(root)
+	var key_art := TextureRect.new()
+	key_art.texture = load("res://assets_runtime/backgrounds/background_convergence_gold_sheet.png") as Texture2D
+	key_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	key_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	key_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	key_art.modulate = Color(0.48, 0.62, 0.84, 0.48)
+	key_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(key_art)
 	var backdrop := ColorRect.new()
-	backdrop.color = Color(0.015, 0.035, 0.08, 0.97)
+	backdrop.color = Color(0.015, 0.035, 0.08, 0.88)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_child(backdrop)
 	var margin := MarginContainer.new()

@@ -21,6 +21,13 @@ var event_bus: TypedEventBus
 var absorbed := false
 var visual_texture: Texture2D
 
+const DEFAULT_VISUALS := {
+	&"player_bullet": "res://assets_runtime/projectiles/projectile_plasma_lance.png",
+	&"enemy_bullet": "res://assets_runtime/projectiles/projectile_plasma_orb_01.png",
+	&"missile": "res://assets_runtime/projectiles/projectile_enemy_missile.png",
+	&"mine": "res://assets_runtime/projectiles/projectile_reactor_core.png",
+}
+
 func _ready() -> void:
 	collision_layer = 0
 	collision_mask = 0
@@ -58,7 +65,12 @@ func configure_from_pool(configuration: Dictionary) -> void:
 		speed = float(configuration.get("speed", 0.0))
 		remaining_lifetime = float(configuration.get("lifetime", 5.0))
 		team = configuration.get("team", &"neutral")
-		visual_texture = null
+		var configured_visual := String(configuration.get("visual_asset_path", ""))
+		visual_texture = load(configured_visual) as Texture2D if not configured_visual.is_empty() and ResourceLoader.exists(configured_visual) else null
+	if visual_texture == null:
+		var fallback_path := String(DEFAULT_VISUALS.get(pool_category, ""))
+		if not fallback_path.is_empty() and ResourceLoader.exists(fallback_path):
+			visual_texture = load(fallback_path) as Texture2D
 	if visual_texture == null and ResourceLoader.exists("res://assets_runtime/projectiles/projectile_plasma_orb_01.png"):
 		visual_texture = load("res://assets_runtime/projectiles/projectile_plasma_orb_01.png") as Texture2D
 	velocity = direction.normalized() * speed

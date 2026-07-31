@@ -88,7 +88,10 @@ func _configure_campaign() -> bool:
 	var profile := services.profiles.get_progression_profile()
 	if profile == null: return false
 	if campaign_controller == null: campaign_controller = FullCampaignController.new()
-	return campaign_controller.configure(services.content_database, services, profile)
+	if not campaign_controller.configure(services.content_database, services, profile): return false
+	services.story.story_flags = campaign_controller.campaign.story_flags.duplicate(true)
+	services.story.decisions = campaign_controller.campaign.decisions.duplicate(true)
+	return true
 
 func _launch_campaign_stage(global_stage: int) -> void:
 	if OS.has_feature("demo") and global_stage != 1:
@@ -160,7 +163,7 @@ func _start_session(global_stage: int, config: GameSessionConfig, resume_snapsho
 	status_label.text = "CAMPAIGN %d/60  •  %s  •  seed %d%s" % [global_stage, mission_definition.display_name, config.stage_seed, diagnostics_hint]
 
 func _show_main_menu(open_campaign := false) -> void:
-	services.audio.play_music(MENU_MUSIC, true)
+	services.audio.transition_music(MENU_MUSIC, &"menu", services.audio.music_crossfade_seconds, true)
 	main_menu = MenuShell.new()
 	main_menu.name = "MainMenuShell"
 	main_menu.configure(services, false, campaign_controller)
@@ -223,6 +226,7 @@ func _launch_mode(mode_id: StringName, global_stage: int, difficulty: int, seed:
 
 func _show_pause_menu() -> void:
 	get_tree().paused = true
+	services.audio.set_music_paused(true)
 	pause_menu = MenuShell.new()
 	pause_menu.name = "PauseMenuShell"
 	pause_menu.configure(services, true)
@@ -234,6 +238,7 @@ func _resume_mission() -> void:
 		pause_menu.queue_free()
 		pause_menu = null
 	get_tree().paused = false
+	services.audio.set_music_paused(false)
 
 func _on_setting_changed(key: StringName, value: Variant) -> void:
 	match key:
@@ -318,6 +323,7 @@ func _cleanup_current_session() -> void:
 	if session != null: session.queue_free(); session = null; mission = null
 
 func _show_campaign_results(completion: Dictionary) -> void:
+	services.audio.transition_music(MENU_MUSIC, &"results", services.audio.music_crossfade_seconds, true)
 	results_layer = CanvasLayer.new()
 	results_layer.layer = 60
 	add_child(results_layer)
@@ -329,7 +335,7 @@ func _show_campaign_results(completion: Dictionary) -> void:
 	var results_dialogue := services.content_database.get_definition(results_id, &"dialogue") as DialogueDefinition
 	if results_dialogue != null:
 		var lines := PackedStringArray()
-		for line in results_dialogue.lines:
+		for line in services.story.resolve_lines(results_dialogue.lines):
 			lines.append("%s: %s" % [line.get("speaker", ""), line.get("text", "")])
 			if not line.get("choices", []).is_empty(): choices = line.get("choices", []).duplicate(true)
 		narrative = "\n".join(lines)
@@ -339,7 +345,8 @@ func _show_campaign_results(completion: Dictionary) -> void:
 	results_layer.add_child(results_screen)
 
 func _record_campaign_decision(decision_id: StringName, value: Variant) -> void:
-	if campaign_controller != null: campaign_controller.record_campaign_decision(decision_id, value)
+	if campaign_controller != null and campaign_controller.record_campaign_decision(decision_id, value):
+		services.story.record_decision(decision_id, value)
 
 func _return_to_campaign_map() -> void:
 	_cleanup_current_session()

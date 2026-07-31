@@ -14,6 +14,9 @@ extends ContentDefinition
 @export var boss_id: StringName
 @export var mission_rewards: Dictionary = {}
 @export var dialogue_hooks: Dictionary = {}
+@export_file("*.png", "*.webp") var background_asset_path := ""
+@export_file("*.mp3", "*.ogg", "*.wav") var music_asset_path := ""
+@export var music_state: StringName = &"stage"
 
 func get_content_type() -> StringName:
 	return &"mission"
@@ -24,4 +27,8 @@ func validate_definition() -> PackedStringArray:
 		errors.append("player_ship_id is required for %s" % stable_id)
 	if recipe != null:
 		errors.append_array(recipe.validate_definition())
+	if not background_asset_path.is_empty() and not ResourceLoader.exists(background_asset_path):
+		errors.append("background_asset_path does not exist for %s" % stable_id)
+	if not music_asset_path.is_empty() and not ResourceLoader.exists(music_asset_path):
+		errors.append("music_asset_path does not exist for %s" % stable_id)
 	return errors

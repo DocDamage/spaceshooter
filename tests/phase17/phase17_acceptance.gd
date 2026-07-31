@@ -74,6 +74,9 @@ func _test_platform_foundation() -> void:
 	var resolved := hub.platform.resolve_cloud_conflict("profile.json", &"keep_both")
 	_assert(conflict.status == &"conflict" and not conflict.resolved and resolved.resolved and resolved.choice == &"keep_both", "cloud conflicts require an explicit local, remote, or keep-both choice")
 	var unlocks := [0]
+	var achievement_root := "user://phase17_achievements_%d" % Time.get_ticks_usec()
+	_assert(hub.achievements.configure_storage("%s/achievements.json" % achievement_root), "achievement storage can be isolated for deterministic provider tests")
 	hub.achievements.achievement_unlocked.connect(func(_id: StringName) -> void: unlocks[0] += 1)
 	hub.achievements.unlock(&"achievement.phase17"); hub.achievements.unlock(&"achievement.phase17")
 	_assert(unlocks[0] == 1 and hub.achievements.is_unlocked(&"achievement.phase17") and hub.platform.set_rich_presence({"status": "Testing modes"}) and not hub.platform.glyph_for_action(&"game_a").is_empty(), "achievements unlock once while rich presence and input glyphs remain provider-agnostic")
+	TestSupport.remove_tree(achievement_root)
