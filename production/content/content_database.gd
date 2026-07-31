@@ -81,12 +81,23 @@ func _build_index(definitions: Array[ContentDefinition], source_paths: Dictionar
 		for dependency_id in definition.dependency_ids:
 			if not _by_id.has(dependency_id):
 				_validation_errors.append("%s requires missing content ID: %s" % [definition.stable_id, dependency_id])
+		if definition is MissionDefinition:
+			var mission := definition as MissionDefinition
+			_validate_reference(mission.stable_id, mission.player_ship_id, &"ship")
+			for enemy_id in mission.enemy_ids: _validate_reference(mission.stable_id, enemy_id, &"enemy")
+			if not mission.miniboss_id.is_empty(): _validate_reference(mission.stable_id, mission.miniboss_id, &"boss")
+			if not mission.boss_id.is_empty(): _validate_reference(mission.stable_id, mission.boss_id, &"boss")
 	_content_version = "|".join(versions)
 	if not _validation_errors.is_empty():
 		validation_failed.emit(_validation_errors)
 		return false
 	reloaded.emit(_by_id.size())
 	return true
+
+func _validate_reference(owner_id: StringName, referenced_id: StringName, expected_type: StringName) -> void:
+	var referenced: ContentDefinition = _by_id.get(referenced_id)
+	if referenced == null: _validation_errors.append("%s references missing %s ID: %s" % [owner_id, expected_type, referenced_id])
+	elif referenced.get_content_type() != expected_type: _validation_errors.append("%s references %s as %s instead of %s" % [owner_id, referenced_id, referenced.get_content_type(), expected_type])
 
 func get_definition(stable_id: StringName, expected_type: StringName = &"") -> ContentDefinition:
 	var definition: ContentDefinition = _by_id.get(stable_id)

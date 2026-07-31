@@ -37,12 +37,42 @@ func play(stream: AudioStream, bus: StringName, priority := 1, pitch_variation :
 		for voice in voices:
 			if int(voice.get_meta(&"priority", 1)) < priority: candidate = voice; break
 		if candidate == null: return null
-		candidate.stop(); candidate.queue_free(); voices.erase(candidate)
+		candidate.stop(); candidate.stream = null; voices.erase(candidate)
+		if candidate.get_parent() == self: remove_child(candidate)
+		candidate.free()
 	var emitter := AudioStreamPlayer.new()
 	emitter.bus = String(bus); emitter.stream = stream; emitter.pitch_scale = clampf(1.0 + randf_range(-pitch_variation, pitch_variation), 0.85, 1.15); emitter.set_meta(&"priority", priority); emitter.set_meta(&"position_2d", position_2d); add_child(emitter); voices.append(emitter); active_emitters[bus] = voices
-	emitter.finished.connect(func(): voices.erase(emitter); emitter.queue_free())
-	emitter.play()
+	emitter.finished.connect(func():
+		voices.erase(emitter)
+		emitter.stream = null
+		emitter.queue_free())
+	if DisplayServer.get_name() == "headless":
+		emitter.set_meta(&"headless_active", true)
+	else:
+		emitter.play()
 	return emitter
+
+func play_music(stream: AudioStream, looped := true) -> AudioStreamPlayer:
+	if stream == null: return null
+	stop_bus(&"Music")
+	_set_stream_loop(stream, looped)
+	return play(stream, &"Music", 10)
+
+func play_path(asset_path: String, bus: StringName, priority := 1, pitch_variation := 0.0, position_2d := Vector2.ZERO) -> AudioStreamPlayer:
+	if asset_path.is_empty() or not ResourceLoader.exists(asset_path): return null
+	return play(load(asset_path) as AudioStream, bus, priority, pitch_variation, position_2d)
+
+func stop_bus(bus: StringName) -> void:
+	if bus not in BUS_NAMES: return
+	for voice in (active_emitters.get(bus, []) as Array).duplicate():
+		if not is_instance_valid(voice): continue
+		var emitter := voice as AudioStreamPlayer
+		emitter.stop()
+		emitter.set_meta(&"headless_active", false)
+		emitter.stream = null
+		if emitter.get_parent() == self: remove_child(emitter)
+		emitter.free()
+	active_emitters[bus] = []
 
 func set_dialogue_ducking(active: bool) -> void:
 	for bus in [&"Music", &"Ambience", &"Weapons", &"Explosions"]:
@@ -50,8 +80,13 @@ func set_dialogue_ducking(active: bool) -> void:
 		if index >= 0: AudioServer.set_bus_volume_db(index, _setting_db(bus) + (_dialogue_duck_db if active else 0.0))
 
 func transition_boss_music(stream: AudioStream) -> AudioStreamPlayer:
-	for voice in active_emitters.get(&"Music", []): (voice as AudioStreamPlayer).stop()
-	return play(stream, &"Music", 10)
+	return play_music(stream, true)
+
+func stop_all() -> void:
+	for bus in active_emitters.keys(): stop_bus(bus)
+
+func _exit_tree() -> void:
+	stop_all()
 
 func active_voice_count(bus: StringName = &"") -> int:
 	if not bus.is_empty(): _prune(bus); return (active_emitters.get(bus, []) as Array).size()
@@ -83,4 +118,10 @@ func _setting_db(bus: StringName) -> float:
 	return linear_to_db(clampf(float(settings.get_setting(key, 1.0)) if settings != null else 1.0, 0.0001, 1.0))
 
 func _prune(bus: StringName) -> void:
-	active_emitters[bus] = (active_emitters.get(bus, []) as Array).filter(func(voice): return is_instance_valid(voice) and (voice as AudioStreamPlayer).playing)
+	active_emitters[bus] = (active_emitters.get(bus, []) as Array).filter(func(voice): return is_instance_valid(voice) and ((voice as AudioStreamPlayer).playing or bool(voice.get_meta(&"headless_active", false))))
+
+func _set_stream_loop(stream: AudioStream, looped: bool) -> void:
+	for property in stream.get_property_list():
+		if StringName(property.get("name", &"")) == &"loop":
+			stream.set("loop", looped)
+			return

@@ -4,6 +4,7 @@ extends CanvasLayer
 signal start_requested
 signal resume_requested
 signal campaign_stage_requested(global_stage: int)
+signal mode_requested(mode_id: StringName, global_stage: int, difficulty: int, seed: int, player_count: int, ship_id: StringName, loadout: Dictionary)
 
 var services: ServiceHub
 var root: Control
@@ -20,6 +21,12 @@ var campaign_controller: FullCampaignController
 var campaign_model: CampaignMapModel
 var campaign_ship_id: StringName = &"ship.vanguard"
 var campaign_local_players := 1
+var campaign_loadout := {&"primary": &"weapon.pulse_cannon", &"secondary": &"weapon.spread_cannon", &"heavy": &"weapon.missile_launcher", &"spell": &"spell.aegis", &"melee": &"melee.energy_blade", &"super": &"super.overdrive"}
+var selected_mode_id: StringName = &"arcade"
+var mode_stage := 1
+var mode_difficulty := 50
+var mode_seed := 0
+var mode_players := 1
 
 func configure(service_hub: ServiceHub, pause_shell := false, full_campaign: FullCampaignController = null) -> void:
 	services = service_hub
@@ -33,6 +40,10 @@ func set_campaign_controller(full_campaign: FullCampaignController) -> void:
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	var selected_profile := services.profiles.get_progression_profile() if services != null else null
+	if selected_profile != null:
+		campaign_ship_id = StringName(selected_profile.profile_settings.get("campaign_ship_id", campaign_ship_id))
+		campaign_loadout.merge(selected_profile.profile_settings.get("campaign_loadout", {}), true)
 	_build_shell()
 	services.input.active_device_changed.connect(_on_active_device_changed)
 	services.input.controller_connection_changed.connect(_on_controller_connection_changed)
@@ -67,6 +78,14 @@ func show_page(page: StringName, push_history := true) -> void:
 		&"main": content = _main_page()
 		&"pause": content = _pause_page()
 		&"campaign": content = _campaign_page()
+		&"modes": content = _modes_page()
+		&"hangar": content = _hangar_page()
+		&"inventory": content = _inventory_page()
+		&"skills": content = _skills_page()
+		&"upgrades": content = _upgrades_page()
+		&"codex": content = _codex_page()
+		&"online": content = _online_page()
+		&"credits": content = _credits_page()
 		&"profiles": content = _profiles_page()
 		&"save_recovery": content = _save_recovery_page()
 		&"settings": content = _settings_page()
@@ -109,12 +128,16 @@ func _build_shell() -> void:
 	layout.add_child(prompt_label)
 
 func _main_page() -> Control:
-	var box := _page_box("Pilot systems online.")
+	var box := _page_box("Pilot systems online. Campaign progress, local profiles, and settings save automatically.")
+	_add_nav_button(box, "Continue", _continue_campaign)
 	_add_nav_button(box, "Campaign Map — Operations 1–6", func(): show_page(&"campaign"))
-	_add_nav_button(box, "Launch Stage 1 — First Contact", func(): start_requested.emit())
-	_add_nav_button(box, "Profile Select", func(): show_page(&"profiles"))
+	_add_nav_button(box, "Modes", func(): show_page(&"modes"))
+	_add_nav_button(box, "Hangar & Progression", func(): show_page(&"hangar"))
+	_add_nav_button(box, "Codex", func(): show_page(&"codex"))
+	_add_nav_button(box, "Profiles", func(): show_page(&"profiles"))
+	_add_nav_button(box, "Online Co-op", func(): show_page(&"online"))
 	_add_nav_button(box, "Settings", func(): show_page(&"settings"))
-	_add_nav_button(box, "Input Test", func(): show_page(&"input_test"))
+	_add_nav_button(box, "Credits", func(): show_page(&"credits"))
 	var quit := UIComponentLibrary.secondary_button("Quit")
 	quit.pressed.connect(_confirm_quit)
 	box.add_child(quit)
@@ -180,6 +203,158 @@ func selected_campaign_ship_id() -> StringName:
 func selected_campaign_player_count() -> int:
 	return campaign_local_players
 
+func selected_campaign_loadout() -> Dictionary:
+	return campaign_loadout.duplicate(true)
+
+func _continue_campaign() -> void:
+	if campaign_controller == null: return
+	var target := 1
+	for stage in range(1, 61):
+		if campaign_controller.stage_state(stage) == &"available": target = stage; break
+	campaign_stage_requested.emit(target)
+
+func _modes_page() -> Control:
+	if campaign_controller == null: return _message_page("Modes unavailable", "Campaign content could not be configured for mode reuse.")
+	var catalog := ModeCatalog.all()
+	var mode_ids: Array[StringName] = []
+	var mode_names := PackedStringArray()
+	for mode_id in catalog:
+		mode_ids.append(mode_id); mode_names.append((catalog[mode_id] as ModeDefinition).display_name)
+	var selected_index := maxi(0, mode_ids.find(selected_mode_id))
+	selected_mode_id = mode_ids[selected_index]
+	var selected_mode := catalog[selected_mode_id] as ModeDefinition
+	var box := _page_box("Configure a local run. Mode results use local scoreboards and never mutate campaign rewards.")
+	var mode_picker := UIComponentLibrary.drop_down(mode_names, selected_index)
+	mode_picker.item_selected.connect(func(index): selected_mode_id = mode_ids[index]; show_page(&"modes", false))
+	_add_labeled_control(box, "Mode", mode_picker)
+	var summary := Label.new(); summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	summary.text = "Lives %s • Continues %s • %s • %s" % ["Unlimited" if selected_mode.starting_lives == 0 else selected_mode.starting_lives, "Unlimited" if selected_mode.continue_limit < 0 else selected_mode.continue_limit, "Checkpoints" if selected_mode.checkpoints_enabled else "No checkpoints", "Local leaderboard" if selected_mode.leaderboard_eligible else "Practice run"]
+	box.add_child(summary)
+	var available_stages: Array[int] = []
+	var stage_names := PackedStringArray()
+	for stage in range(1, 61):
+		if campaign_controller.stage_state(stage) in [&"available", &"completed"]:
+			available_stages.append(stage); stage_names.append("%02d — %s" % [stage, campaign_controller.mission_for_stage(stage).display_name])
+	if available_stages.is_empty(): available_stages.append(1); stage_names.append("01 — First Contact")
+	var stage_index := maxi(0, available_stages.find(mode_stage)); mode_stage = available_stages[stage_index]
+	var stage_picker := UIComponentLibrary.drop_down(stage_names, stage_index)
+	stage_picker.item_selected.connect(func(index): mode_stage = available_stages[index])
+	_add_labeled_control(box, "Stage / encounter set", stage_picker)
+	var difficulty := UIComponentLibrary.slider(0, 100, mode_difficulty, 5)
+	difficulty.value_changed.connect(func(value): mode_difficulty = int(value))
+	_add_labeled_control(box, "Difficulty", difficulty)
+	var seed_edit := LineEdit.new(); seed_edit.text = str(mode_seed); seed_edit.placeholder_text = "0 = stage default"; seed_edit.custom_minimum_size.x = 180
+	seed_edit.text_changed.connect(func(value): mode_seed = int(value) if value.is_valid_int() else 0)
+	_add_labeled_control(box, "Seed", seed_edit)
+	var players := UIComponentLibrary.drop_down(PackedStringArray(["Solo", "Local Co-op"]), mode_players - 1)
+	players.disabled = not selected_mode.multiplayer_allowed
+	if players.disabled: mode_players = 1; players.select(0)
+	players.item_selected.connect(func(index): mode_players = index + 1)
+	_add_labeled_control(box, "Players", players)
+	var rules := Label.new(); rules.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; rules.text = _format_dictionary(selected_mode.rules); box.add_child(rules)
+	var launch := UIComponentLibrary.primary_button("Launch %s" % selected_mode.display_name)
+	launch.pressed.connect(func(): mode_requested.emit(selected_mode_id, mode_stage, mode_difficulty, mode_seed, mode_players, campaign_ship_id, campaign_loadout.duplicate(true)))
+	box.add_child(launch)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _hangar_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	if profile == null: return _message_page("Hangar unavailable", "Select a valid profile first.")
+	var box := _page_box("%s • Level %d • %d credits • %d stat points • %d skill points" % [profile.display_name, profile.level, profile.currency, profile.statistic_points, profile.skill_points])
+	var ships := _available_definitions(&"ship", profile)
+	_add_definition_picker(box, "Ship", ships, campaign_ship_id, func(id: StringName): campaign_ship_id = id; _persist_hangar(profile))
+	var weapons := _available_definitions(&"weapon", profile)
+	_add_definition_picker(box, "Primary", weapons, StringName(campaign_loadout.get(&"primary", &"weapon.pulse_cannon")), func(id: StringName): _set_loadout(profile, &"primary", id))
+	_add_definition_picker(box, "Secondary", weapons, StringName(campaign_loadout.get(&"secondary", &"weapon.spread_cannon")), func(id: StringName): _set_loadout(profile, &"secondary", id))
+	_add_definition_picker(box, "Heavy", weapons, StringName(campaign_loadout.get(&"heavy", &"weapon.missile_launcher")), func(id: StringName): _set_loadout(profile, &"heavy", id))
+	_add_definition_picker(box, "Spell", _available_definitions(&"spell", profile), StringName(campaign_loadout.get(&"spell", &"spell.aegis")), func(id: StringName): _set_loadout(profile, &"spell", id))
+	_add_definition_picker(box, "Melee", _available_definitions(&"melee", profile), StringName(campaign_loadout.get(&"melee", &"melee.energy_blade")), func(id: StringName): _set_loadout(profile, &"melee", id))
+	_add_definition_picker(box, "Super", _available_definitions(&"super_mode", profile), StringName(campaign_loadout.get(&"super", &"super.overdrive")), func(id: StringName): _set_loadout(profile, &"super", id))
+	var wingmen := _available_definitions(&"wingman", profile)
+	if not wingmen.is_empty(): _add_definition_picker(box, "Wingman", wingmen, StringName(campaign_loadout.get(&"wingman", wingmen[0].stable_id)), func(id: StringName): _set_loadout(profile, &"wingman", id))
+	var stat_title := Label.new(); stat_title.text = "STAT ALLOCATION"; stat_title.add_theme_font_size_override("font_size", 20); box.add_child(stat_title)
+	for stat in [&"power", &"defense", &"mobility", &"systems", &"command"]:
+		var row := HBoxContainer.new(); var label := Label.new(); label.text = "%s  %d/%d" % [String(stat).capitalize(), int(profile.allocated_stats.get(stat, 0)), ProgressionProfile.MAX_STAT_RANK]; label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(label)
+		var add := UIComponentLibrary.secondary_button("+1"); add.disabled = profile.statistic_points <= 0 or int(profile.allocated_stats.get(stat, 0)) >= ProgressionProfile.MAX_STAT_RANK; add.pressed.connect(func(): if profile.allocate_stat(stat): _persist_hangar(profile); show_page(&"hangar", false)); row.add_child(add); box.add_child(row)
+	_add_nav_button(box, "Inventory & Equipment", func(): show_page(&"inventory"))
+	_add_nav_button(box, "Skill Trees", func(): show_page(&"skills"))
+	_add_nav_button(box, "Weapon & Spell Upgrades", func(): show_page(&"upgrades"))
+	_add_back_button(box)
+	return _scroll(box)
+
+func _inventory_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	var definitions: Array[EquipmentDefinition] = []
+	for content in services.content_database.get_definitions_by_type(&"equipment"):
+		if content is EquipmentDefinition: definitions.append(content)
+	var manager := InventoryManager.new(profile, definitions)
+	var box := _page_box("Equipment is persistent. Favorite, locked, or equipped items cannot be sold or dismantled.")
+	if profile.inventory.is_empty():
+		var empty := Label.new(); empty.text = "No equipment acquired yet. Mission rewards will appear here."; box.add_child(empty)
+	for item in manager.sorted_items(&"rarity"):
+		var definition := services.content_database.get_definition(StringName(item.definition_id), &"equipment") as EquipmentDefinition
+		if definition == null: continue
+		var row := HBoxContainer.new(); var label := Label.new(); label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; label.text = "%s • %s\n%s" % [definition.display_name, String(definition.slot).capitalize(), _format_dictionary(definition.modifiers)]; row.add_child(label)
+		var equip := UIComponentLibrary.secondary_button("EQUIP"); equip.disabled = profile.equipped.get(definition.slot) == item.instance_id; equip.pressed.connect(func(): if manager.equip(StringName(item.instance_id), definition.slot, campaign_ship_id): _persist_hangar(profile); show_page(&"inventory", false)); row.add_child(equip)
+		var favorite := UIComponentLibrary.icon_button("★" if bool(item.favorite) else "☆", "Toggle favorite"); favorite.pressed.connect(func(): manager.set_favorite(StringName(item.instance_id), not bool(item.favorite)); _persist_hangar(profile); show_page(&"inventory", false)); row.add_child(favorite)
+		var sell := UIComponentLibrary.secondary_button("SELL %d" % definition.sell_value); sell.disabled = bool(item.favorite) or bool(item.locked) or item.instance_id in profile.equipped.values(); sell.pressed.connect(func(): manager.sell(StringName(item.instance_id)); _persist_hangar(profile); show_page(&"inventory", false)); row.add_child(sell); box.add_child(row)
+	var presets := HBoxContainer.new(); var save_preset := UIComponentLibrary.secondary_button("Save Equipment Preset"); save_preset.pressed.connect(func(): manager.save_preset(&"preset.quick"); _persist_hangar(profile)); presets.add_child(save_preset); var load_preset := UIComponentLibrary.secondary_button("Load Equipment Preset"); load_preset.disabled = not profile.loadout_presets.has(&"preset.quick"); load_preset.pressed.connect(func(): manager.load_preset(&"preset.quick", campaign_ship_id); _persist_hangar(profile); show_page(&"inventory", false)); presets.add_child(load_preset); box.add_child(presets)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _skills_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	var definitions: Array[SkillNodeDefinition] = []
+	for content in services.content_database.get_definitions_by_type(&"skill_node"):
+		if content is SkillNodeDefinition: definitions.append(content)
+	definitions.sort_custom(func(a: SkillNodeDefinition, b: SkillNodeDefinition): return String(a.tree) < String(b.tree) or (a.tree == b.tree and String(a.stable_id) < String(b.stable_id)))
+	var manager := SkillTreeManager.new(profile, definitions)
+	var box := _page_box("Skill points: %d. Prerequisites, ranks, and exclusive choices are enforced by the profile." % profile.skill_points)
+	for node in definitions:
+		var row := HBoxContainer.new(); var label := Label.new(); label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; label.text = "%s / %s • Rank %d/%d • Cost %d\n%s" % [String(node.tree).capitalize(), node.display_name, int(profile.skill_trees.get(node.stable_id, 0)), node.maximum_rank, node.cost, node.description]; label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; row.add_child(label)
+		var buy := UIComponentLibrary.secondary_button("PURCHASE"); buy.disabled = not manager.can_purchase(node.stable_id); buy.pressed.connect(func(): if manager.purchase(node.stable_id): _persist_hangar(profile); show_page(&"skills", false)); row.add_child(buy); box.add_child(row)
+	var respec := UIComponentLibrary.secondary_button("Respec — 250 credits"); respec.disabled = manager.total_spent() <= 0 or profile.currency < 250; respec.pressed.connect(_confirm_respec.bind(manager, profile)); box.add_child(respec)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _upgrades_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	var box := _page_box("Permanent upgrades consume credits and apply to future campaign runs.")
+	for type in [&"weapon", &"spell"]:
+		for content in _available_definitions(type, profile):
+			var current := int((profile.spell_levels if type == &"spell" else profile.weapon_levels).get(content.stable_id, 1))
+			var cost := current * 200
+			var row := HBoxContainer.new(); var label := Label.new(); label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; label.text = "%s • Level %d/%d" % [content.display_name, current, ProgressionProfile.MAX_ABILITY_LEVEL]; row.add_child(label)
+			var upgrade := UIComponentLibrary.secondary_button("UPGRADE %d" % cost); upgrade.disabled = current >= ProgressionProfile.MAX_ABILITY_LEVEL or profile.currency < cost; upgrade.pressed.connect(func(): if profile.upgrade_ability(content.stable_id, type == &"spell", cost): _persist_hangar(profile); show_page(&"upgrades", false)); row.add_child(upgrade); box.add_child(row)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _codex_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	var entries := services.content_database.get_definitions_by_type(&"codex_entry")
+	var box := _page_box("Recovered intelligence is stored by category. Locked records reveal only their category.")
+	if entries.is_empty(): var empty := Label.new(); empty.text = "No codex records are installed."; box.add_child(empty)
+	for content in entries:
+		var entry := content as CodexEntryDefinition
+		var unlocked := entry.stable_id in profile.codex_unlocks or entry.unlock_rule.is_empty()
+		var label := Label.new(); label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; label.text = "%s / %s\n%s" % [String(entry.category).capitalize(), entry.display_name if unlocked else "LOCKED RECORD", entry.body if unlocked else "Complete related campaign objectives to decrypt this record."]; box.add_child(label)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _online_page() -> Control:
+	var box := _page_box("Online co-op is a post-launch gated update and is not part of the 1.0 shipping promise.")
+	var message := Label.new(); message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; message.text = "The host-authoritative test lab remains in the codebase, but public matchmaking and invitations stay disabled until complete missions pass real-machine latency, loss, reconnect, attribution, save, boss, reward, and 60-minute soak gates on two PCs and two networks."; box.add_child(message)
+	var status := UIComponentLibrary.secondary_button("ONLINE RELEASE GATE: CLOSED"); status.disabled = true; box.add_child(status)
+	_add_back_button(box)
+	return box
+
+func _credits_page() -> Control:
+	var box := _page_box("GALAX HERO\nCreated and published by the project owner.")
+	var text := Label.new(); text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; text.text = "Built with Godot Engine 4.7.1. Approved runtime art and audio are selected from the owner's licensed local asset library. Exact source, license, hash, approval, and attribution records ship from the asset manifest and THIRD_PARTY_NOTICES.md.\n\nQuality, accessibility, localization, and playtest contributors should be appended here before release."; box.add_child(text)
+	_add_back_button(box)
+	return box
+
 func _pause_page() -> Control:
 	var box := _page_box("Mission paused")
 	_add_nav_button(box, "Resume", func(): resume_requested.emit())
@@ -238,6 +413,30 @@ func _settings_page() -> Control:
 	var box := _page_box("Settings save automatically.")
 	_add_nav_button(box, "Accessibility", func(): show_page(&"accessibility"))
 	_add_nav_button(box, "Controls & Rebinding", func(): show_page(&"bindings"))
+	_add_nav_button(box, "Input Test", func(): show_page(&"input_test"))
+	_add_slider_setting(box, "Master volume", &"master_volume", 0.0, 1.0, 0.05)
+	_add_slider_setting(box, "Music volume", &"music_volume", 0.0, 1.0, 0.05)
+	_add_slider_setting(box, "Weapons volume", &"weapons_volume", 0.0, 1.0, 0.05)
+	_add_slider_setting(box, "Explosions volume", &"explosions_volume", 0.0, 1.0, 0.05)
+	_add_slider_setting(box, "Dialogue volume", &"dialogue_volume", 0.0, 1.0, 0.05)
+	_add_toggle_setting(box, "Mute all audio", &"audio_muted")
+	var ranges := PackedStringArray(["Full", "Night"])
+	var range_picker := UIComponentLibrary.drop_down(ranges, 1 if String(services.settings.get_setting(&"dynamic_range", "full")) == "night" else 0)
+	range_picker.item_selected.connect(func(index): services.settings.set_setting(&"dynamic_range", ranges[index].to_lower()))
+	_add_labeled_control(box, "Dynamic range", range_picker)
+	var window_modes := PackedStringArray(["Windowed", "Fullscreen", "Borderless"])
+	var window_values := ["windowed", "fullscreen", "borderless"]
+	var window_index := maxi(0, window_values.find(String(services.settings.get_setting(&"window_mode", "windowed"))))
+	var window_picker := UIComponentLibrary.drop_down(window_modes, window_index)
+	window_picker.item_selected.connect(func(index): services.settings.set_setting(&"window_mode", window_values[index]))
+	_add_labeled_control(box, "Display mode", window_picker)
+	_add_toggle_setting(box, "VSync", &"vsync_enabled")
+	var frame_rates := PackedStringArray(["60 FPS", "120 FPS", "144 FPS", "Unlimited"])
+	var frame_values := [60, 120, 144, 0]
+	var frame_index := maxi(0, frame_values.find(int(services.settings.get_setting(&"frame_rate_limit", 60))))
+	var frame_picker := UIComponentLibrary.drop_down(frame_rates, frame_index)
+	frame_picker.item_selected.connect(func(index): services.settings.set_setting(&"frame_rate_limit", frame_values[index]))
+	_add_labeled_control(box, "Frame-rate limit", frame_picker)
 	_add_slider_setting(box, "Controller dead zone", &"controller_dead_zone", 0.05, 0.75, 0.05)
 	_add_slider_setting(box, "Aim sensitivity", &"aim_sensitivity", 0.25, 2.0, 0.05)
 	_add_slider_setting(box, "Movement sensitivity", &"movement_sensitivity", 0.25, 2.0, 0.05)
@@ -389,6 +588,51 @@ func _add_labeled_control(box: VBoxContainer, text: String, control: Control) ->
 	var label := Label.new(); label.text = text; label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(label)
 	row.add_child(control)
 	box.add_child(row)
+
+func _available_definitions(content_type: StringName, profile: ProgressionProfile) -> Array[ContentDefinition]:
+	var result: Array[ContentDefinition] = []
+	var starting_ids := [&"ship.vanguard", &"ship.bastion", &"weapon.pulse_cannon", &"weapon.spread_cannon", &"weapon.missile_launcher", &"weapon.rail", &"spell.aegis", &"melee.energy_blade", &"super.overdrive"]
+	for content in services.content_database.get_definitions_by_type(content_type):
+		if content.stable_id in starting_ids or content.stable_id in profile.unlocked_content: result.append(content)
+	if result.is_empty() and content_type != &"wingman": result = services.content_database.get_definitions_by_type(content_type)
+	result.sort_custom(func(a: ContentDefinition, b: ContentDefinition): return a.display_name.naturalnocasecmp_to(b.display_name) < 0)
+	return result
+
+func _add_definition_picker(box: VBoxContainer, title: String, definitions: Array[ContentDefinition], selected_id: StringName, callback: Callable) -> void:
+	if definitions.is_empty(): return
+	var names := PackedStringArray(); var selected_index := 0
+	for index in definitions.size():
+		names.append(definitions[index].display_name)
+		if definitions[index].stable_id == selected_id: selected_index = index
+	var picker := UIComponentLibrary.drop_down(names, selected_index)
+	picker.item_selected.connect(func(index): callback.call(definitions[index].stable_id))
+	_add_labeled_control(box, title, picker)
+
+func _set_loadout(profile: ProgressionProfile, slot: StringName, content_id: StringName) -> void:
+	campaign_loadout[slot] = content_id
+	_persist_hangar(profile)
+
+func _persist_hangar(profile: ProgressionProfile) -> void:
+	if profile == null: return
+	profile.profile_settings.campaign_ship_id = campaign_ship_id
+	profile.profile_settings.campaign_loadout = campaign_loadout.duplicate(true)
+	services.profiles.persist_profile(profile.profile_id)
+
+func _format_dictionary(values: Dictionary) -> String:
+	if values.is_empty(): return "Standard rules"
+	var parts := PackedStringArray()
+	for key in values:
+		var value = values[key]
+		parts.append("%s: %s" % [String(key).replace("_", " ").capitalize(), str(value).replace("_", " ")])
+	return " • ".join(parts)
+
+func _confirm_respec(manager: SkillTreeManager, profile: ProgressionProfile) -> void:
+	var dialog := UIComponentLibrary.confirmation_dialog("Respec all skills?", "Refund all spent skill points for 250 credits. Equipment and permanent weapon/spell levels are unchanged.")
+	root.add_child(dialog)
+	dialog.confirmed.connect(func():
+		var result := manager.respec(true, false, 250)
+		if bool(result.get("success", false)): _persist_hangar(profile); show_page(&"skills", false))
+	dialog.popup_centered()
 
 func _go_back() -> void:
 	if not page_stack.is_empty():

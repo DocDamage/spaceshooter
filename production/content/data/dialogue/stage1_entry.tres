@@ -6,4 +6,6 @@ stable_id = &"dialogue.stage1_entry"
 display_name = "First Contact Entry"
 context = "stage_entry"
 one_shot = true
-lines = Array[Dictionary]([{"speaker": "Command", "text": "Weapons free. Keep the convoy lane clear."}])
+priority = 6
+objective_instruction = true
+lines = Array[Dictionary]([{"speaker": "Command", "text": "Weapons free. Use focus for small corrections; keep the convoy lane clear."}, {"speaker": "Nova", "text": "Raider screen in sight. Building a chain now."}])

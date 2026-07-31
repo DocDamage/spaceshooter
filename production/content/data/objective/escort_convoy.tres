@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ObjectiveDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/objective_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"objective.escort_convoy"
+display_name = "Shield the Convoy"
+objective_type = "escort"
+target_id = &"objective_actor.convoy"
+target_count = 1
+duration_seconds = 12.0
+fail_on_neutral_damage = true
+reward = {"credits": 325}
+

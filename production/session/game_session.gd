@@ -130,6 +130,7 @@ func restore_checkpoint(snapshot: Dictionary) -> bool:
 	for key in [&"checkpoint_id", &"mission_id", &"seed", &"route", &"session_run_id", &"participants", &"objective_state", &"temporary_upgrades", &"pending_rewards"]:
 		if not snapshot.has(key): return false
 	if StringName(snapshot.mission_id) != config.mission_definition.stable_id: return false
+	checkpoint_snapshot = snapshot.duplicate(true)
 	stage_seed = int(snapshot.seed)
 	current_segment = maxi(0, int(snapshot.get("segment", 0)))
 	current_route.assign(snapshot.route)
@@ -153,30 +154,41 @@ func restore_checkpoint(snapshot: Dictionary) -> bool:
 		online_coop.event_sequence = maxi(online_coop.event_sequence, int(snapshot.online_state.get("event_sequence", 0)))
 	return true
 
-func complete_session(success: bool) -> void:
-	if mission_state.get("status") == &"complete":
+func complete_session(success: bool, reason: StringName = &"") -> void:
+	if mission_state.get("status") in [&"complete", &"failed", &"abandoned"]:
 		return
-	mission_state.status = &"complete"
+	mission_state.status = &"complete" if success else (&"abandoned" if reason == &"abandoned" else &"failed")
+	var metrics: Dictionary = mission_state.get("metrics", {}).duplicate(true)
+	var experience_total := 0
+	for value in reward_state.get("experience_by_player", {}).values(): experience_total += int(value)
 	completion_result = {
 		"success": success,
+		"failure_reason": reason,
 		"mission_id": config.mission_definition.stable_id,
 		"seed": stage_seed,
 		"transaction_id": StringName("reward.%s" % session_run_id),
 		"completed": success,
 		"base_currency": int(reward_state.get("credits", 0)),
-		"base_xp": int(objective_state.get("defeated", 0)) * 100,
+		"base_xp": experience_total if experience_total > 0 else int(objective_state.get("defeated", 0)) * 100,
 		"rewards": reward_state.duplicate(true),
 		"objectives": objective_state.duplicate(true),
 		"run_metadata": {"active_assists": _active_assists(), "accessibility_allowed": true},
-		"cooperative": local_coop.checkpoint_snapshot() if local_coop != null else {}
+		"cooperative": local_coop.checkpoint_snapshot() if local_coop != null else {},
+		"route": current_route.duplicate(),
+		"checkpoint_available": not checkpoint_snapshot.is_empty()
 	}
+	completion_result.merge(metrics, true)
 	if online_coop != null:
 		completion_result.online = {"authority_peer_id": online_coop.authority_peer_id, "stage_graph_hash": online_coop.stage_graph_hash, "authoritative_score": online_coop.world_state.score, "diagnostics": online_coop.diagnostics.snapshot()}
-	for profile_id in config.selected_profiles:
-		services.saves.clear_checkpoint(profile_id)
-	services.saves.save_snapshot(create_checkpoint(&"mission_complete"))
+	if success:
+		for profile_id in config.selected_profiles:
+			services.saves.clear_checkpoint(profile_id)
+		services.saves.save_snapshot(create_checkpoint(&"mission_complete"))
 	services.game_flow.transition_to(&"results")
 	session_completed.emit(completion_result)
+
+func abandon_session() -> void:
+	complete_session(false, &"abandoned")
 
 func _active_assists() -> Array[StringName]:
 	var assists: Array[StringName] = []

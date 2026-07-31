@@ -4,7 +4,7 @@ extends Node
 signal actor_registered(actor_id: StringName, category: StringName, actor: Node)
 signal actor_unregistered(actor_id: StringName, category: StringName)
 
-const VALID_CATEGORIES := [&"player", &"wingman", &"enemy", &"boss", &"projectile", &"pickup", &"hazard"]
+const VALID_CATEGORIES := [&"player", &"wingman", &"enemy", &"miniboss", &"boss", &"projectile", &"pickup", &"hazard", &"objective"]
 
 var _actors: Dictionary = {}
 var _category_ids: Dictionary = {}

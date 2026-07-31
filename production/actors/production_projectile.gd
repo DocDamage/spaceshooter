@@ -19,6 +19,7 @@ var target: Node2D
 var registry: ActorRegistry
 var event_bus: TypedEventBus
 var absorbed := false
+var visual_texture: Texture2D
 
 func _ready() -> void:
 	collision_layer = 0
@@ -51,14 +52,19 @@ func configure_from_pool(configuration: Dictionary) -> void:
 		team = definition.team
 		interaction_tags.assign(definition.interaction_tags)
 		pool_category = definition.pool_category
+		visual_texture = load(definition.visual_asset_path) as Texture2D if not definition.visual_asset_path.is_empty() and ResourceLoader.exists(definition.visual_asset_path) else null
 	else:
 		damage = float(configuration.get("damage", 0.0))
 		speed = float(configuration.get("speed", 0.0))
 		remaining_lifetime = float(configuration.get("lifetime", 5.0))
 		team = configuration.get("team", &"neutral")
+		visual_texture = null
+	if visual_texture == null and ResourceLoader.exists("res://assets_runtime/projectiles/projectile_plasma_orb_01.png"):
+		visual_texture = load("res://assets_runtime/projectiles/projectile_plasma_orb_01.png") as Texture2D
 	velocity = direction.normalized() * speed
 	absorbed = false
 	_apply_collision_team()
+	queue_redraw()
 
 func activate_from_pool(spawn_transform := Transform2D.IDENTITY) -> bool:
 	var activated := super.activate_from_pool(spawn_transform)
@@ -88,6 +94,7 @@ func reset_pool_object() -> void:
 	registry = null
 	event_bus = null
 	absorbed = false
+	visual_texture = null
 	collision_layer = 0
 	collision_mask = 0
 
@@ -142,7 +149,10 @@ func _on_area_entered(area: Area2D) -> void:
 	if remaining_pierces > 0:
 		remaining_pierces -= 1
 	else:
-		deactivate_to_pool()
+		# Area overlap signals are emitted while physics is flushing queries. Deferring
+		# the pool transition avoids mutating monitoring/collision state in that callback.
+		absorbed = true
+		call_deferred("deactivate_to_pool")
 
 func _apply_collision_team() -> void:
 	if team == &"players":
@@ -156,4 +166,13 @@ func _apply_collision_team() -> void:
 		collision_mask = 0
 
 func _draw() -> void:
-	draw_circle(Vector2.ZERO, definition.collision_radius if definition != null else 5.0, Color("69efff") if team == &"players" else Color("ff6688"))
+	var radius := definition.collision_radius if definition != null else 5.0
+	var color := Color("69efff") if team == &"players" else Color("ff6688")
+	draw_circle(Vector2.ZERO, radius + 1.5, Color(color, 0.28))
+	if visual_texture != null:
+		var size := visual_texture.get_size()
+		var scale_factor := maxf(1.0, radius * 2.0 / maxf(size.x, size.y))
+		size *= scale_factor
+		draw_texture_rect(visual_texture, Rect2(-size * 0.5, size), false, color)
+	else:
+		draw_circle(Vector2.ZERO, radius, color)

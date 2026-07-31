@@ -18,8 +18,16 @@ func _run() -> void:
 	_test_campaign()
 	_test_pilots_codex_and_persistence(hub)
 	await _test_wingmen()
-	if failures.is_empty(): print("PHASE 12 ACCEPTANCE: all %d checks passed" % passed_count); quit(0)
-	else: print("PHASE 12 ACCEPTANCE: %d check(s) failed" % failures.size()); quit(1)
+	if failures.is_empty(): print("PHASE 12 ACCEPTANCE: all %d checks passed" % passed_count); _finish(0)
+	else: print("PHASE 12 ACCEPTANCE: %d check(s) failed" % failures.size()); _finish(1)
+
+func _finish(exit_code: int) -> void:
+	TestSupport.free_root_nodes(self)
+	call_deferred("_quit_after_cleanup", exit_code)
+
+func _quit_after_cleanup(exit_code: int) -> void:
+	await process_frame
+	quit(exit_code)
 
 func _dialogue(id: StringName, context: String, one_shot := false, objective := false) -> DialogueDefinition:
 	var definition := DialogueDefinition.new(); definition.stable_id = id; definition.display_name = String(id); definition.context = context

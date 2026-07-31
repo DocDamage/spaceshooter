@@ -93,7 +93,8 @@ func _physics_process(delta: float) -> void:
 	external_phase_transition = false
 	challenge_tracker.tick(delta)
 	var phase := phase_machine.current_phase()
-	var extras: Array[StringName] = active_variant.additional_summon_ids if active_variant != null else []
+	var extras: Array[StringName] = []
+	if active_variant != null: extras.assign(active_variant.additional_summon_ids)
 	summon_controller.tick(delta, phase, extras)
 	if attack_controller != null: attack_controller.tick(delta)
 	if movement_controller != null: movement_controller.tick(delta, movement_multiplier)

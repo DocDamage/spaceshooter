@@ -15,4 +15,5 @@ phases = Array[ExtResource("2")]([ExtResource("2")])
 guaranteed_rewards = {"credits": 180, "xp": 90}
 arena_profile = {"bounds": Rect2(20, 120, 500, 800), "safe_entry": Vector2(270, 860), "scroll_mode": &"stationary"}
 intro_dialogue_id = &"dialogue.miniboss_corsair_ace"
-visual_asset_path = "res://assets_runtime/enemies/ship_pirate_fighter.png"
+visual_asset_path = "res://assets_runtime/enemies/boss_raider_command_final.png"
+visual_scale = 0.64

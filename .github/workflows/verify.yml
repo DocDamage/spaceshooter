@@ -1,0 +1,64 @@
+name: Verify Galax Hero
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  GODOT_VERSION: "4.7.1"
+  GODOT_RELEASE: "4.7.1-stable"
+
+jobs:
+  verify-windows:
+    runs-on: windows-2025
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Install pinned Godot editor and export templates
+        shell: pwsh
+        run: |
+          $download = Join-Path $env:RUNNER_TEMP "godot-download"
+          $editorZip = Join-Path $download "godot.zip"
+          $templatesPackage = Join-Path $download "templates.tpz"
+          $templatesZip = Join-Path $download "templates.zip"
+          $editorDirectory = Join-Path $download "editor"
+          $templateExtract = Join-Path $download "template-extract"
+          $templateTarget = Join-Path $env:APPDATA "Godot/export_templates/$env:GODOT_VERSION.stable"
+          New-Item -ItemType Directory -Path $download,$editorDirectory,$templateExtract,$templateTarget -Force | Out-Null
+          Invoke-WebRequest "https://github.com/godotengine/godot/releases/download/$env:GODOT_RELEASE/Godot_v$env:GODOT_RELEASE`_win64.exe.zip" -OutFile $editorZip
+          Invoke-WebRequest "https://github.com/godotengine/godot/releases/download/$env:GODOT_RELEASE/Godot_v$env:GODOT_RELEASE`_export_templates.tpz" -OutFile $templatesPackage
+          Expand-Archive -LiteralPath $editorZip -DestinationPath $editorDirectory
+          Copy-Item -LiteralPath $templatesPackage -Destination $templatesZip
+          Expand-Archive -LiteralPath $templatesZip -DestinationPath $templateExtract
+          Copy-Item -Path (Join-Path $templateExtract "templates/*") -Destination $templateTarget -Recurse -Force
+          $godot = (Get-ChildItem -LiteralPath $editorDirectory -Filter "Godot*.exe" | Where-Object Name -NotMatch "console" | Select-Object -First 1).FullName
+          "GODOT_EXE=$godot" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Verify imports, metadata, assets, tests, leaks, and boot
+        shell: pwsh
+        run: ./tools/run_project.ps1 verify -GodotPath $env:GODOT_EXE
+
+      - name: Export debug and release builds
+        shell: pwsh
+        run: |
+          ./tools/run_project.ps1 export-debug -GodotPath $env:GODOT_EXE
+          ./tools/run_project.ps1 export-release -GodotPath $env:GODOT_EXE
+
+      - name: Retain versioned build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: galax-hero-${{ github.sha }}-windows
+          path: builds/**
+          if-no-files-found: error
+          retention-days: 30

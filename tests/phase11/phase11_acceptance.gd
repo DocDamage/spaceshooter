@@ -19,8 +19,24 @@ func _run() -> void:
 	_test_effect_budget()
 	await _test_audio_and_vibration()
 	await _test_ship_and_stress()
-	if failures.is_empty(): print("PHASE 11 ACCEPTANCE: all %d checks passed" % passed_count); quit(0)
-	else: print("PHASE 11 ACCEPTANCE: %d check(s) failed" % failures.size()); quit(1)
+	if failures.is_empty(): print("PHASE 11 ACCEPTANCE: all %d checks passed" % passed_count); _finish(0)
+	else: print("PHASE 11 ACCEPTANCE: %d check(s) failed" % failures.size()); _finish(1)
+
+func _finish(exit_code: int) -> void:
+	for child in root.get_children():
+		if child is ServiceHub and child.audio != null:
+			child.audio.stop_all()
+	call_deferred("_free_after_audio_shutdown", exit_code)
+
+func _free_after_audio_shutdown(exit_code: int) -> void:
+	for ignored in 5: await process_frame
+	settings = null
+	TestSupport.free_root_nodes(self)
+	call_deferred("_quit_after_cleanup", exit_code)
+
+func _quit_after_cleanup(exit_code: int) -> void:
+	for ignored in 5: await process_frame
+	quit(exit_code)
 
 func _test_coordinate_model() -> void:
 	var actor := Area2D.new(); actor.position = Vector2(100, 200); root.add_child(actor)
@@ -63,7 +79,8 @@ func _test_audio_and_vibration() -> void:
 	var buses_valid := true
 	for bus in GameAudioService.BUS_NAMES: buses_valid = buses_valid and AudioServer.get_bus_index(bus) >= 0
 	_assert(buses_valid, "all nine Phase 11 audio buses exist")
-	var stream := AudioStreamGenerator.new(); stream.mix_rate = 11025.0
+	var stream := AudioStreamWAV.new(); stream.format = AudioStreamWAV.FORMAT_8_BITS; stream.mix_rate = 11025
+	var silence := PackedByteArray(); silence.resize(11025); silence.fill(128); stream.data = silence
 	for index in 30: hub.audio.play(stream, &"Weapons", index % 3)
 	_assert(hub.audio.active_voice_count(&"Weapons") <= int(hub.audio.voice_limits[&"Weapons"]), "dense combat audio obeys per-bus voice limits")
 	hub.settings.set_setting(&"vibration_enabled", false, false)

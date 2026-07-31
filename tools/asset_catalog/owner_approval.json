@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "approved_by": "project_owner",
+  "approved_on": "2026-07-31",
+  "scope": "all assets available in the Galax Hero workspace asset library",
+  "permission": "approved for evaluation, modification, runtime promotion, and distribution in Galax Hero",
+  "runtime_rule": "approval does not automatically promote source assets; only catalog entries with import_status=approved and a validated assets_runtime path ship",
+  "attribution_rule": "original attribution and third-party license obligations remain in force"
+}

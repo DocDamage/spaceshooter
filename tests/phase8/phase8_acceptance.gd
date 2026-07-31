@@ -23,8 +23,19 @@ func _run() -> void:
 	_test_rewards_and_persistence()
 	_test_ability_upgrades(database)
 	_test_reports()
-	if failures.is_empty(): print("PHASE 8 ACCEPTANCE: all %d checks passed" % passed_count); quit(0)
-	else: print("PHASE 8 ACCEPTANCE: %d check(s) failed" % failures.size()); quit(1)
+	if failures.is_empty(): print("PHASE 8 ACCEPTANCE: all %d checks passed" % passed_count); _finish(0)
+	else: print("PHASE 8 ACCEPTANCE: %d check(s) failed" % failures.size()); _finish(1)
+
+func _finish(exit_code: int) -> void:
+	TestSupport.remove_tree("user://phase8_acceptance.json")
+	TestSupport.remove_tree("user://phase8_level_curve.csv")
+	TestSupport.remove_tree("user://phase8_economy.csv")
+	TestSupport.free_root_nodes(self)
+	call_deferred("_quit_after_cleanup", exit_code)
+
+func _quit_after_cleanup(exit_code: int) -> void:
+	await process_frame
+	quit(exit_code)
 
 func _test_experience() -> void:
 	var profile := ProgressionProfile.new(); profile.add_experience(ExperienceCurve.xp_to_next(1) + ExperienceCurve.xp_to_next(2) + 17)
@@ -86,7 +97,7 @@ func _test_rewards_and_persistence() -> void:
 	var reward := RewardCalculator.calculate({"completed": true, "base_xp": 1000, "base_currency": 500, "difficulty_multiplier": 1.2, "objectives_completed": 2, "max_chain": 20, "score": 100000, "damage_taken": 0, "boss_challenge": true, "secret_route": true})
 	_assert(reward.xp > 1000 and reward.currency > 500, "mission rewards account for performance and challenges")
 	_assert(RewardCalculator.claim(profile, &"mission.1", reward) and not RewardCalculator.claim(profile, &"mission.1", reward), "results rewards cannot be duplicated by reload")
-	var service := SaveService.new(); var snapshot := profile.to_snapshot(); var path := "user://phase8_acceptance.json"
+	var service := SaveService.new(); root.add_child(service); var snapshot := profile.to_snapshot(); var path := "user://phase8_acceptance.json"
 	_assert(service.save_snapshot_atomic(snapshot, path) == OK, "profile saves atomically")
 	var restored := ProgressionProfile.from_snapshot(service.load_snapshot(path))
 	_assert(restored.currency == profile.currency and restored.claimed_reward_ids == profile.claimed_reward_ids, "complete persistent build saves and reloads")
@@ -95,7 +106,7 @@ func _test_ability_upgrades(database: ContentDatabase) -> void:
 	var profile := ProgressionProfile.new(); profile.currency = 10000
 	_assert(profile.upgrade_ability(&"weapon.pulse_cannon", false, 100) and int(profile.weapon_levels[&"weapon.pulse_cannon"]) == 2, "permanent weapon upgrades persist in profile")
 	_assert(profile.upgrade_ability(&"spell.nova", true, 100) and int(profile.spell_levels[&"spell.nova"]) == 2, "permanent spell upgrades persist in profile")
-	var runtime := WeaponRuntime.new(); var weapon: WeaponDefinition = database.get_definition(&"weapon.pulse_cannon", &"weapon"); runtime.upgrade_levels = {weapon.stable_id: 8}; runtime.global_damage_multiplier = 1.25
+	var runtime := WeaponRuntime.new(); root.add_child(runtime); var weapon: WeaponDefinition = database.get_definition(&"weapon.pulse_cannon", &"weapon"); runtime.upgrade_levels = {weapon.stable_id: 8}; runtime.global_damage_multiplier = 1.25
 	var spec := runtime.get_effective_spec(weapon)
 	_assert(spec.damage > weapon.damage * 1.25 and spec.cooldown < weapon.cooldown_seconds and spec.visual_intensity > 1.0, "persistent build and weapon levels alter combat and presentation parameters")
 

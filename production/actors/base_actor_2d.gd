@@ -84,7 +84,10 @@ func despawn_actor() -> void:
 	if not active and not _registered:
 		return
 	active = false
-	monitoring = false
+	# Destruction is commonly reached from Area2D overlap signals. Collision state
+	# must change after the physics query flush to avoid unsafe callback mutation.
+	if is_inside_tree(): set_deferred("monitoring", false)
+	else: monitoring = false
 	if _registered and registry != null:
 		registry.unregister_actor(actor_id)
 	_registered = false

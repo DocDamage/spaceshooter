@@ -33,6 +33,7 @@ DEFAULT_SOURCE = WORKSPACE_ROOT / "assets"
 DEFAULT_OUTPUT = PROJECT_ROOT / "tools" / "asset_catalog" / "generated"
 DEFAULT_RUNTIME = PROJECT_ROOT / "assets_runtime"
 CONFIG_PATH = TOOL_DIR / "catalog_config.json"
+OWNER_APPROVAL_PATH = TOOL_DIR / "owner_approval.json"
 SCHEMA_VERSION = 1
 SOURCE_EXTENSIONS = {
     ".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".eps", ".psd",
@@ -174,6 +175,14 @@ def build_manifest(source_root: Path, config: dict[str, Any]) -> dict[str, Any]:
     by_hash: dict[str, str] = {}
     used_ids: set[str] = set()
     overrides = load_overrides(config)
+    owner_approval = load_json(OWNER_APPROVAL_PATH) if OWNER_APPROVAL_PATH.is_file() else {}
+    # The attestation is scoped to this project's actual workspace library. It
+    # must never silently legalize an arbitrary source root passed by a caller.
+    owner_attests_library = (
+        source_root.resolve() == DEFAULT_SOURCE.resolve()
+        and owner_approval.get("scope", "").lower().startswith("all assets")
+        and "distribution" in owner_approval.get("permission", "").lower()
+    )
     files = sorted(
         (path for path in source_root.rglob("*") if path.is_file() and path.suffix.lower() in SOURCE_EXTENSIONS),
         key=lambda path: relative_posix(path, source_root).lower(),
@@ -194,6 +203,9 @@ def build_manifest(source_root: Path, config: dict[str, Any]) -> dict[str, Any]:
         used_ids.add(stable_id)
         license_path = nearest_license(path, source_root)
         license_status, commercial_use, attribution = classify_license(license_path)
+        if owner_attests_library and license_status in {"missing", "needs_review"}:
+            license_status = "owner_attested"
+            commercial_use = True
         duplicate_of = by_hash.get(digest, "")
         if not duplicate_of:
             by_hash[digest] = stable_id
@@ -222,7 +234,7 @@ def build_manifest(source_root: Path, config: dict[str, Any]) -> dict[str, Any]:
             "screen_layer": "world",
             "pseudo_altitude": "mid",
             "palette_family": "unknown",
-            "license_source": relative_posix(license_path, source_root) if license_path else "",
+            "license_source": relative_posix(license_path, source_root) if license_path else ("tools/asset_catalog/owner_approval.json" if owner_attests_library else ""),
             "license_status": license_status,
             "commercial_use": commercial_use,
             "attribution_required": attribution,

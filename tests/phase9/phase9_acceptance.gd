@@ -19,11 +19,21 @@ func _run() -> void:
 	_test_profiles()
 	_test_content_reconciliation()
 	_test_checkpoint_and_rewards()
-	if failures.is_empty(): print("PHASE 9 ACCEPTANCE: all %d checks passed" % passed_count); quit(0)
-	else: print("PHASE 9 ACCEPTANCE: %d check(s) failed" % failures.size()); quit(1)
+	if failures.is_empty(): print("PHASE 9 ACCEPTANCE: all %d checks passed" % passed_count); _finish(0)
+	else: print("PHASE 9 ACCEPTANCE: %d check(s) failed" % failures.size()); _finish(1)
+
+func _finish(exit_code: int) -> void:
+	TestSupport.remove_tree(test_root)
+	TestSupport.free_root_nodes(self)
+	call_deferred("_quit_after_cleanup", exit_code)
+
+func _quit_after_cleanup(exit_code: int) -> void:
+	await process_frame
+	quit(exit_code)
 
 func _service(folder: String) -> SaveService:
 	var service := SaveService.new()
+	root.add_child(service)
 	service.configure_storage("%s/%s" % [test_root, folder])
 	return service
 
@@ -64,7 +74,7 @@ func _test_migration() -> void:
 
 func _test_profiles() -> void:
 	var saves := _service("profiles")
-	var profiles := ProfileService.new(); profiles.save_service = saves
+	var profiles := ProfileService.new(); root.add_child(profiles); profiles.save_service = saves
 	var first := profiles.create_profile("Ace", &"profile.ace")
 	first.playtime_seconds = 3720; first.campaign_progress = {"percent": 25}; first.last_played_stage = &"mission.3"; first.new_game_plus_cycle = 2
 	profiles.persist_profile(first.profile_id)

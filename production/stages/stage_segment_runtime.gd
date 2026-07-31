@@ -15,12 +15,16 @@ var _objective_ids: Array[StringName] = []
 var _completion_emitted := false
 var _external_gates: Dictionary = {}
 var parallax: ParallaxPresentation
+var runtime_context: Dictionary = {}
+var hazards: Array[StageHazard] = []
+var objective_actors: Array[ObjectiveActor] = []
 
-func configure(segment_definition: StageSegmentDefinition, objectives: ObjectiveController, secrets: SecretController) -> bool:
+func configure(segment_definition: StageSegmentDefinition, objectives: ObjectiveController, secrets: SecretController, context: Dictionary = {}) -> bool:
 	if is_inside_tree() or segment_definition == null: return false
 	definition = segment_definition
 	objective_controller = objectives
 	secret_controller = secrets
+	runtime_context = context.duplicate()
 	return definition.validate_definition().is_empty()
 
 func _ready() -> void:
@@ -31,10 +35,13 @@ func _ready() -> void:
 	objective_controller.register(definition.objectives)
 	secret_controller.register(definition.secrets)
 	objective_controller.start(&"segment_start")
+	_build_objective_actors()
 	wave_scheduler = WaveScheduler.new()
 	wave_scheduler.name = "WaveScheduler"
 	wave_scheduler.configure(definition.waves)
 	wave_scheduler.enemy_spawn_requested.connect(func(enemy_id, spawn_position, formation, slot): enemy_spawn_requested.emit(enemy_id, spawn_position, formation, slot))
+	wave_scheduler.wave_completed.connect(_on_wave_completed)
+	wave_scheduler.formation_bonus.connect(_on_formation_bonus)
 	add_child(wave_scheduler)
 	active = true
 	if not definition.waves.is_empty(): wave_scheduler.start()
@@ -66,7 +73,13 @@ func complete() -> void:
 	segment_completed.emit(definition.stable_id)
 
 func snapshot() -> Dictionary:
-	return {"segment_id": definition.stable_id, "elapsed": elapsed, "active": active, "wave": wave_scheduler.snapshot() if wave_scheduler != null else {}, "objectives": objective_controller.snapshot(), "secrets": secret_controller.snapshot(), "external_gates": _external_gates.keys()}
+	var hazard_state: Array[Dictionary] = []
+	for hazard in hazards:
+		if is_instance_valid(hazard): hazard_state.append(hazard.snapshot())
+	var actor_state: Array[Dictionary] = []
+	for actor in objective_actors:
+		if is_instance_valid(actor): actor_state.append(actor.snapshot())
+	return {"segment_id": definition.stable_id, "elapsed": elapsed, "active": active, "wave": wave_scheduler.snapshot() if wave_scheduler != null else {}, "objectives": objective_controller.snapshot(), "secrets": secret_controller.snapshot(), "external_gates": _external_gates.keys(), "hazards": hazard_state, "objective_actors": actor_state}
 
 func restore(data: Dictionary) -> bool:
 	if definition == null or StringName(data.get("segment_id", "")) != definition.stable_id: return false
@@ -77,6 +90,10 @@ func restore(data: Dictionary) -> bool:
 	_external_gates.clear()
 	for gate_id in data.get("external_gates", []): _external_gates[StringName(gate_id)] = true
 	if wave_scheduler != null and not data.get("wave", {}).is_empty(): wave_scheduler.restore(data.wave)
+	var hazard_state: Array = data.get("hazards", [])
+	for index in mini(hazards.size(), hazard_state.size()): hazards[index].restore(hazard_state[index])
+	var actor_state: Array = data.get("objective_actors", [])
+	for index in mini(objective_actors.size(), actor_state.size()): objective_actors[index].restore(actor_state[index])
 	return true
 
 func validate_local_multiplayer(local_players: int) -> bool:
@@ -97,7 +114,33 @@ func _build_backgrounds() -> void:
 
 func _build_hazards() -> void:
 	for hazard_id in definition.hazard_ids:
-		var hazard := Node2D.new()
-		hazard.name = "Hazard_%s" % hazard_id
-		hazard.set_meta(&"hazard_id", hazard_id)
-		add_child(hazard)
+		var count := 6 if hazard_id in [&"hazard.asteroids", &"hazard.debris"] else (2 if hazard_id in [&"hazard.turret_wall", &"hazard.crossfire"] else 1)
+		for index in count:
+			var hazard := HazardFactory.create(hazard_id, hazards.size(), runtime_context)
+			hazards.append(hazard)
+			add_child(hazard)
+
+func _build_objective_actors() -> void:
+	for objective in definition.objectives:
+		if objective.objective_type in ["survive", "time_route", "chain", "avoid_neutral_damage"]: continue
+		for index in objective.target_count:
+			var actor := ObjectiveActor.new()
+			actor.name = "ObjectiveActor_%s_%d" % [objective.stable_id, index]
+			actor.configure_objective(objective, index, objective_controller, runtime_context)
+			objective_actors.append(actor)
+			add_child(actor)
+
+func _on_wave_completed(_wave_id: StringName, reward_hooks: Array[Dictionary]) -> void:
+	var game_session := runtime_context.get("session") as GameSession
+	for hook in reward_hooks:
+		var amount := maxi(0, int(hook.get("amount", 0)))
+		match StringName(hook.get("category", &"score")):
+			&"score": _on_formation_bonus(amount)
+			&"credits":
+				if game_session != null: game_session.reward_state.credits = int(game_session.reward_state.get("credits", 0)) + amount
+			&"experience":
+				if game_session != null: game_session.reward_state.base_xp = int(game_session.reward_state.get("base_xp", 0)) + amount
+
+func _on_formation_bonus(amount: int) -> void:
+	var tracker := runtime_context.get("score_tracker") as MissionScoreTracker
+	if tracker != null: tracker.record_bonus(amount)

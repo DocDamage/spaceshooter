@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CodexEntryDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/codex_entry_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"codex.enemy.raider_screen"
+display_name = "Raider Screen"
+category = "enemies"
+body = "Raider scouts probe in green crescents, purple interceptors close lanes, and heavy orange gunships anchor the formation. Breaking the command order quickly is safer than trading fire with the whole screen."
+unlock_rule = {"event": &"stage_complete", "stage": 1}

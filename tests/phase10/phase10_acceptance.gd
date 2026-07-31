@@ -23,8 +23,18 @@ func _run() -> void:
 	_test_objectives_and_secrets()
 	await _test_segment_and_checkpoint_runtime()
 	_test_tools()
-	if failures.is_empty(): print("PHASE 10 ACCEPTANCE: all %d checks passed" % passed_count); quit(0)
-	else: print("PHASE 10 ACCEPTANCE: %d check(s) failed" % failures.size()); quit(1)
+	if failures.is_empty(): print("PHASE 10 ACCEPTANCE: all %d checks passed" % passed_count); _finish(0)
+	else: print("PHASE 10 ACCEPTANCE: %d check(s) failed" % failures.size()); _finish(1)
+
+func _finish(exit_code: int) -> void:
+	database = null
+	mission = null
+	TestSupport.free_root_nodes(self)
+	call_deferred("_quit_after_cleanup", exit_code)
+
+func _quit_after_cleanup(exit_code: int) -> void:
+	await process_frame
+	quit(exit_code)
 
 func _test_content_library() -> void:
 	var categories := {}
@@ -99,11 +109,12 @@ func _test_segment_and_checkpoint_runtime() -> void:
 	_assert(reached == [&"midpoint", &"pre_boss"], "authored midpoint and pre-boss events automatically create checkpoints")
 	var checkpoint := session.checkpoint_snapshot
 	_assert(checkpoint.has("stage_plan") and checkpoint.has("cleared_segment_ids") and checkpoint.has("next_segment_id") and checkpoint.has("route_choices") and checkpoint.has("safe_spawn"), "checkpoint captures graph, clearance, next segment, route, and safe spawn")
-	var restored_session := GameSession.new(); _assert(restored_session.configure(config, services) and restored_session.restore_checkpoint(checkpoint), "exact generated route and objective state restore through GameSession")
+	var restored_session := GameSession.new(); var restore_ok := restored_session.configure(config, services) and restored_session.restore_checkpoint(checkpoint); root.add_child(restored_session)
+	_assert(restore_ok, "exact generated route and objective state restore through GameSession")
 	_assert(restored_session.stage_plan_snapshot.get("seed") == config.stage_seed and restored_session.current_route == checkpoint.route, "seed replay and local participant route survive restore")
 
 func _test_tools() -> void:
-	var preview := StagePreview.new(); preview.configure(mission)
+	var preview := StagePreview.new(); root.add_child(preview); preview.configure(mission)
 	_assert(preview.generate_previews(3).size() == 3, "stage preview generates multiple seeds with graph diagnostics")
 	var editor := MissionEditor.new(); var authored := editor.create_mission(&"mission.tool_test", "Tool Test", &"campaign.main", 2); authored.player_ship_id = &"ship.vanguard"; editor.recipe.required_sequence = mission.recipe.required_sequence; editor.recipe.minimum_segment_count = mission.recipe.required_sequence.size(); editor.recipe.maximum_segment_count = 12
 	editor.assign_environment([&"space"]); editor.assign_factions([&"faction.raiders"]); editor.assign_bosses(&"enemy.guardian", &"enemy.commander"); editor.define_rewards({"credits": 100}); editor.define_dialogue_hooks({"briefing": &"dialogue.tool_test"})

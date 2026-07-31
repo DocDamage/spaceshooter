@@ -74,6 +74,16 @@ func set_trigger(pressed: bool, direction := Vector2.UP) -> void:
 	if direction.length_squared() > 0.0:
 		aim_direction = direction.normalized()
 
+func fire_slot(index: int, direction := Vector2.UP, charge_ratio := 1.0) -> bool:
+	if index < 0 or index >= inventory.size(): return false
+	var weapon := inventory[index]
+	if weapon == null: return false
+	if direction.length_squared() > 0.0: aim_direction = direction.normalized()
+	var state: Dictionary = _states[weapon.stable_id]
+	var fired_now := _fire(weapon, state, clampf(charge_ratio, 0.1, 1.0))
+	_states[weapon.stable_id] = state
+	return fired_now
+
 func tick(delta: float) -> void:
 	energy = minf(maximum_energy, energy + energy_recharge * delta)
 	for weapon_id in _states:
@@ -187,7 +197,7 @@ func _spawn_volley(weapon: WeaponDefinition, state: Dictionary, charge_ratio: fl
 func _fire_direct_weapon(weapon: WeaponDefinition, charge_ratio: float) -> int:
 	var targets: Array[Node] = [locked_target]
 	if weapon.family == WeaponDefinition.WeaponFamily.CHAIN_LIGHTNING and registry != null:
-		for candidate in registry.get_actors(&"enemy") + registry.get_actors(&"boss"):
+		for candidate in registry.get_actors(&"enemy") + registry.get_actors(&"miniboss") + registry.get_actors(&"boss"):
 			if candidate not in targets and candidate is BaseActor2D and is_instance_valid(candidate):
 				targets.append(candidate)
 		targets.sort_custom(func(a: Node, b: Node): return locked_target.global_position.distance_squared_to(a.global_position) < locked_target.global_position.distance_squared_to(b.global_position))

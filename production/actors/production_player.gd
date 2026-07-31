@@ -12,12 +12,18 @@ var lock_on_controller: LockOnController
 var melee_runtime: MeleeRuntime
 var spell_runtime: SpellRuntime
 var super_runtime: SuperModeRuntime
+var equipped_spells: Array[SpellDefinition] = []
+var projectile_pool: ProjectilePoolManager
 var progression_profile: ProgressionProfile
 var presentation: PresentationActor
 var ship_visual: ShipPresentation
 var coop_manager: LocalCoopSessionManager
 var coop_slot_id: StringName
 var player_color := Color.WHITE
+var shield_guard_active := false
+var _focus_toggled := false
+var _base_weapon_damage_multiplier := 1.0
+var _wingman_mode_index := 0
 
 func configure(id: StringName, index: int, ship: ShipDefinition, weapon: WeaponDefinition, session_registry: ActorRegistry, session_events: TypedEventBus, game_input: GameInputService) -> void:
 	configure_actor(id, &"player", &"players", session_registry, session_events)
@@ -40,7 +46,9 @@ func configure(id: StringName, index: int, ship: ShipDefinition, weapon: WeaponD
 	add_child(movement_controller)
 	movement_controller.configure(self, profile)
 
-func configure_combat(pool_manager: ProjectilePoolManager, weapons: Array[WeaponDefinition]) -> void:
+func configure_combat(pool_manager: ProjectilePoolManager, weapons: Array[WeaponDefinition], spells: Array[SpellDefinition] = [], melee_definition: MeleeDefinition = null, super_definition: SuperModeDefinition = null) -> void:
+	projectile_pool = pool_manager
+	equipped_spells.assign(spells)
 	weapon_runtime = WeaponRuntime.new()
 	weapon_runtime.name = "WeaponRuntime"
 	add_child(weapon_runtime)
@@ -54,6 +62,16 @@ func configure_combat(pool_manager: ProjectilePoolManager, weapons: Array[Weapon
 	spell_runtime.name = "SpellRuntime"
 	add_child(spell_runtime)
 	spell_runtime.configure(self, pool_manager, event_bus)
+	if melee_definition != null:
+		melee_runtime = MeleeRuntime.new()
+		melee_runtime.name = "MeleeRuntime"
+		add_child(melee_runtime)
+		melee_runtime.configure(self, melee_definition, event_bus)
+	if super_definition != null:
+		super_runtime = SuperModeRuntime.new()
+		super_runtime.name = "SuperModeRuntime"
+		add_child(super_runtime)
+		super_runtime.configure(self, weapon_runtime, super_definition)
 
 func apply_progression(profile: ProgressionProfile, equipment_modifiers: Array[Dictionary] = [], skill_modifiers: Array[Dictionary] = [], temporary_modifiers: Array[Dictionary] = [], status_modifiers: Array[Dictionary] = [], difficulty_modifiers: Dictionary = {}) -> Dictionary:
 	if profile == null or ship_definition == null: return {}
@@ -70,7 +88,8 @@ func apply_progression(profile: ProgressionProfile, equipment_modifiers: Array[D
 		movement_controller.profile.boost_speed = float(effective.move_speed) * 1.5
 	if weapon_runtime != null:
 		weapon_runtime.upgrade_levels = profile.weapon_levels.duplicate(true)
-		weapon_runtime.global_damage_multiplier = float(effective.damage)
+		_base_weapon_damage_multiplier = float(effective.damage)
+		weapon_runtime.global_damage_multiplier = _base_weapon_damage_multiplier
 		weapon_runtime.global_fire_rate_multiplier = maxf(0.01, float(effective.fire_rate))
 	if spell_runtime != null:
 		spell_runtime.upgrade_levels = profile.spell_levels.duplicate(true)
@@ -89,6 +108,7 @@ func _ready() -> void:
 	ship_visual = ShipPresentation.new()
 	ship_visual.name = "ShipPresentation"
 	add_child(ship_visual)
+	ship_visual.configure_visual(ship_definition.visual_asset_path, ship_definition.visual_scale, player_color)
 	presentation = PresentationActor.new()
 	presentation.name = "PresentationActor"
 	add_child(presentation)
@@ -102,19 +122,27 @@ func _physics_process(delta: float) -> void:
 	presentation.banking_amount = move_toward(presentation.banking_amount, move_input.x, delta * 5.0)
 	presentation.pitch_amount = move_toward(presentation.pitch_amount, move_input.y, delta * 5.0)
 	presentation.apply_presentation()
+	var focus_toggle := bool(input_service.get_gameplay_setting(&"focus_toggle", false))
+	if focus_toggle and input_service.is_action_just_pressed_for_player(&"focus", player_index): _focus_toggled = not _focus_toggled
+	var focus_active := _focus_toggled if focus_toggle else input_service.is_action_pressed_for_player(&"focus", player_index)
 	if input_service.is_action_pressed_for_player(&"boost", player_index):
 		movement_controller.set_boost(true)
-	elif input_service.is_action_pressed_for_player(&"focus", player_index):
+	elif focus_active:
 		movement_controller.set_focus(true)
 	else:
 		movement_controller.state_machine.request(MovementStateMachine.NORMAL)
 	movement_controller.simulate(move_input, delta)
-	if input_service.is_action_pressed_for_player(&"dash", player_index):
+	if input_service.is_action_just_pressed_for_player(&"dash", player_index):
 		movement_controller.dash(move_input)
-	if input_service.is_action_pressed_for_player(&"barrel_roll", player_index):
+	if input_service.is_action_just_pressed_for_player(&"barrel_roll", player_index):
 		movement_controller.roll()
-	if input_service.is_action_pressed_for_player(&"teleport", player_index):
+	if input_service.is_action_just_pressed_for_player(&"teleport", player_index):
 		movement_controller.teleport(move_input)
+	var shield_toggle := bool(input_service.get_gameplay_setting(&"shield_toggle", false))
+	if shield_toggle:
+		if input_service.is_action_just_pressed_for_player(&"shield", player_index): shield_guard_active = not shield_guard_active
+	else:
+		shield_guard_active = input_service.is_action_pressed_for_player(&"shield", player_index)
 	if weapon_runtime != null:
 		lock_on_controller.update_lock(delta, input_service.get_aim_vector(player_index))
 		weapon_runtime.locked_target = lock_on_controller.primary_target()
@@ -122,7 +150,25 @@ func _physics_process(delta: float) -> void:
 		weapon_runtime.set_trigger(input_service.is_fire_pressed(player_index) and movement_controller.state_machine.allows_firing(), Vector2.UP if aim.length_squared() == 0.0 else aim)
 		weapon_runtime.tick(delta)
 		spell_runtime.tick(delta)
+		if melee_runtime != null: melee_runtime.tick(delta)
+		if super_runtime != null:
+			super_runtime.tick(delta)
+			weapon_runtime.global_damage_multiplier = _base_weapon_damage_multiplier * super_runtime.damage_multiplier()
 		ship_visual.update_state(move_input, shield_component.current / maxf(shield_component.capacity, 1.0), health_component.current / maxf(health_component.maximum, 1.0), input_service.is_fire_pressed(player_index), super_runtime != null and super_runtime.active, delta)
+		var fire_direction := Vector2.UP if aim.length_squared() == 0.0 else aim
+		if input_service.is_action_just_pressed_for_player(&"secondary_fire", player_index): weapon_runtime.fire_slot(1, fire_direction)
+		if input_service.is_action_just_pressed_for_player(&"heavy_weapon", player_index): weapon_runtime.fire_slot(2, fire_direction)
+		if input_service.is_action_just_pressed_for_player(&"spell", player_index) and not equipped_spells.is_empty(): spell_runtime.cast(equipped_spells[0], _combat_targets(), _hostile_projectiles())
+		if melee_runtime != null and input_service.is_action_just_pressed_for_player(&"melee", player_index): melee_runtime.attack(_combat_targets(), fire_direction)
+		if melee_runtime != null and input_service.is_action_just_pressed_for_player(&"parry", player_index): melee_runtime.begin_parry()
+		if melee_runtime != null and melee_runtime.parry_remaining > 0.0:
+			for projectile in _hostile_projectiles():
+				if melee_runtime.try_parry(projectile): break
+		if super_runtime != null and input_service.is_action_just_pressed_for_player(&"super_mode", player_index):
+			if super_runtime.active: super_runtime.cancel()
+			else: super_runtime.activate()
+		if input_service.is_action_just_pressed_for_player(&"wingman_command", player_index): _issue_wingman_command(false)
+		if input_service.is_action_just_pressed_for_player(&"wingman_command_wheel", player_index): _issue_wingman_command(true)
 		if input_service.is_action_just_pressed_for_player(&"next_weapon", player_index):
 			weapon_runtime.cycle(1)
 		if input_service.is_action_just_pressed_for_player(&"previous_weapon", player_index):
@@ -138,7 +184,58 @@ func receive_damage(packet: DamagePacket) -> DamageResult:
 		var blocked := DamageResult.new()
 		blocked.blocked_reason = &"accessibility_assist"
 		return blocked
+	if shield_guard_active and shield_component.current > 0.0:
+		var guarded := packet.duplicate_packet()
+		guarded.base_damage *= 0.55
+		return super(guarded)
 	return super(packet)
+
+func grant_super_charge(amount: float) -> void:
+	if super_runtime != null: super_runtime.add_charge(amount)
+
+func grant_temporary_drop(category: StringName, amount: int) -> void:
+	match category:
+		&"healing": health_component.heal(maxi(1, amount) * 20.0)
+		&"temporary_weapon_power":
+			_base_weapon_damage_multiplier *= 1.0 + 0.05 * float(maxi(1, amount))
+			if weapon_runtime != null: weapon_runtime.global_damage_multiplier = _base_weapon_damage_multiplier
+
+func combat_loadout_snapshot() -> Dictionary:
+	var weapon_ids: Array[StringName] = []
+	if weapon_runtime != null:
+		for weapon in weapon_runtime.inventory:
+			if weapon != null: weapon_ids.append(weapon.stable_id)
+	var spell_ids: Array[StringName] = []
+	for spell in equipped_spells:
+		if spell != null: spell_ids.append(spell.stable_id)
+	return {"weapons": weapon_ids, "spells": spell_ids, "melee": melee_runtime.definition.stable_id if melee_runtime != null else &"", "super": super_runtime.definition.stable_id if super_runtime != null else &""}
+
+func _combat_targets() -> Array[Node]:
+	var targets: Array[Node] = []
+	if registry == null: return targets
+	targets.append_array(registry.get_actors(&"enemy"))
+	targets.append_array(registry.get_actors(&"miniboss"))
+	targets.append_array(registry.get_actors(&"boss"))
+	for objective in registry.get_actors(&"objective"):
+		if objective is BaseActor2D and objective.faction == &"enemies": targets.append(objective)
+	return targets
+
+func _hostile_projectiles() -> Array[ProductionProjectile]:
+	var result: Array[ProductionProjectile] = []
+	if projectile_pool == null: return result
+	for category in [&"enemy_bullet", &"missile", &"mine"]:
+		for object in projectile_pool.get_active_objects(category):
+			if object is ProductionProjectile and object.team != faction: result.append(object)
+	return result
+
+func _issue_wingman_command(use_special: bool) -> void:
+	if registry == null: return
+	var modes := [&"attack", &"defend", &"focus", &"intercept"]
+	for actor in registry.get_actors(&"wingman"):
+		if actor is WingmanRuntime:
+			if use_special: actor.use_special()
+			else: actor.issue_command(modes[_wingman_mode_index % modes.size()])
+	if not use_special: _wingman_mode_index = (_wingman_mode_index + 1) % modes.size()
 
 func destroy_actor(source_actor_id: StringName) -> void:
 	if movement_controller != null:

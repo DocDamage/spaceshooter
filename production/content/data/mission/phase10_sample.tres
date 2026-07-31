@@ -15,5 +15,5 @@ stage_number = 1
 environment_tags = Array[StringName]([&"space", &"asteroid_belt"])
 enemy_factions = Array[StringName]([&"faction.raiders"])
 recipe = ExtResource("2")
-boss_id = &"enemy.commander"
+boss_id = &"boss.corsair_dreadnought"
 mission_rewards = {"credits": 1000, "xp": 750}

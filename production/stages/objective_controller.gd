@@ -63,6 +63,12 @@ func restore(data: Dictionary) -> void:
 	for objective_id in data:
 		_states[StringName(objective_id)] = data[objective_id].duplicate(true)
 
+func definition_for(objective_id: StringName) -> ObjectiveDefinition:
+	return _definitions.get(objective_id) as ObjectiveDefinition
+
+func state_for(objective_id: StringName) -> Dictionary:
+	return _states.get(objective_id, {}).duplicate(true)
+
 func _resolve(objective_id: StringName, succeeded: bool) -> void:
 	var definition: ObjectiveDefinition = _definitions[objective_id]
 	_states[objective_id].status = &"succeeded" if succeeded else &"failed"

@@ -14,12 +14,18 @@ func spawn_effect(category: StringName, importance: StringName = &"decorative", 
 		if IMPORTANCE.get(importance, 1) <= 1: return null
 		_reclaim_lowest()
 	var effect: Node2D = free.pop_back() if not free.is_empty() else Node2D.new()
-	effect.position = at; effect.visible = true; effect.set_meta(&"category", category); effect.set_meta(&"importance", IMPORTANCE.get(importance, 1)); add_child(effect); active.append(effect)
+	effect.position = at; effect.visible = true; effect.set_meta(&"category", category); effect.set_meta(&"importance", IMPORTANCE.get(importance, 1))
+	if effect.get_parent() == null: add_child(effect)
+	active.append(effect)
 	return effect
 
 func release_effect(effect: Node2D) -> void:
 	if not active.has(effect): return
-	active.erase(effect); remove_child(effect); effect.visible = false; free.append(effect)
+	active.erase(effect)
+	for child in effect.get_children(): child.queue_free()
+	# Keep inactive pooled effects parented. Detached Nodes are not owned by the
+	# scene tree and leaked at shutdown even though the pool still referenced them.
+	effect.visible = false; effect.modulate = Color.WHITE; effect.scale = Vector2.ONE; free.append(effect)
 
 func _prune() -> void: active = active.filter(func(node): return is_instance_valid(node))
 

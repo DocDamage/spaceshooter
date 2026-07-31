@@ -11,6 +11,7 @@ var energy := 100.0
 var cooldowns: Dictionary = {}
 var upgrade_levels: Dictionary = {}
 var global_power_multiplier := 1.0
+var energy_recharge := 8.0
 
 func configure(actor: BaseActor2D, manager: ProjectilePoolManager, session_events: TypedEventBus) -> void:
 	owner_actor = actor
@@ -18,6 +19,7 @@ func configure(actor: BaseActor2D, manager: ProjectilePoolManager, session_event
 	event_bus = session_events
 
 func tick(delta: float) -> void:
+	energy = minf(100.0, energy + energy_recharge * delta)
 	for spell_id in cooldowns:
 		cooldowns[spell_id] = maxf(0.0, float(cooldowns[spell_id]) - delta)
 

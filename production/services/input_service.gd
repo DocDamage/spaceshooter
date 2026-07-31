@@ -232,7 +232,7 @@ func _build_default_map() -> void:
 		&"primary_fire": [_key(KEY_SPACE), _joy_button(JOY_BUTTON_A)], &"secondary_fire": [_key(KEY_J), _joy_button(JOY_BUTTON_X)],
 		&"heavy_weapon": [_key(KEY_K), _joy_button(JOY_BUTTON_Y)], &"spell": [_key(KEY_F), _joy_button(JOY_BUTTON_RIGHT_SHOULDER)],
 		&"melee": [_key(KEY_V)], &"shield": [_key(KEY_C), _joy_button(JOY_BUTTON_LEFT_SHOULDER)], &"parry": [_key(KEY_R)],
-		&"dash": [_key(KEY_SHIFT), _joy_button(JOY_BUTTON_LEFT_STICK)], &"barrel_roll": [_key(KEY_B)], &"boost": [_key(KEY_CTRL)],
+		&"dash": [_key(KEY_ALT), _joy_axis(JOY_AXIS_TRIGGER_RIGHT, 1.0)], &"barrel_roll": [_key(KEY_B)], &"boost": [_key(KEY_CTRL)],
 		&"teleport": [_key(KEY_T)], &"super_mode": [_key(KEY_G)], &"next_weapon": [_key(KEY_BRACKETRIGHT)],
 		&"previous_weapon": [_key(KEY_BRACKETLEFT)], &"wingman_command": [_key(KEY_X)], &"wingman_command_wheel": [_key(KEY_Z)],
 	}

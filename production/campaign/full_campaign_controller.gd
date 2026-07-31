@@ -182,6 +182,13 @@ func complete_stage(global_stage: int, result: Dictionary) -> Dictionary:
 			profile.unlock(&"campaign.postgame")
 			profile.unlock(&"mode.new_game_plus")
 			campaign.set_story_flag(&"campaign_resolved", true)
+	var codex_definitions: Array[CodexEntryDefinition] = []
+	for content in database.get_definitions_by_type(&"codex_entry"):
+		if content is CodexEntryDefinition: codex_definitions.append(content)
+	var codex := CodexManager.new(); codex.configure(codex_definitions, profile.codex_unlocks)
+	codex.evaluate_unlocks({"event": &"stage_complete", "stage": global_stage})
+	if not mission.boss_id.is_empty(): codex.evaluate_unlocks({"event": &"boss_defeated", "boss_id": mission.boss_id})
+	profile.codex_unlocks = codex.unlocked_ids.duplicate()
 	profile.campaign_progress = campaign.snapshot()
 	profile.last_played_stage = mission.stable_id
 	var save_error := services.profiles.persist_profile(profile.profile_id)

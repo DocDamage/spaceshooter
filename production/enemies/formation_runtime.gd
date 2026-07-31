@@ -22,6 +22,7 @@ func add_member(member: ProductionEnemy, slot_index: int) -> bool:
 	member.formation = self
 	member.formation_slot = slot_index
 	member.defeated.connect(_on_member_defeated.bind(slot_index), CONNECT_ONE_SHOT)
+	member.escaped.connect(_on_member_escaped.bind(slot_index), CONNECT_ONE_SHOT)
 	return true
 
 func _physics_process(delta: float) -> void:
@@ -39,6 +40,9 @@ func _physics_process(delta: float) -> void:
 	_check_completion()
 
 func _on_member_defeated(_actor_id: StringName, _credits: int, slot_index: int) -> void:
+	var finished_member: ProductionEnemy = members[slot_index] if slot_index >= 0 and slot_index < members.size() else null
+	var escape_callback := _on_member_escaped.bind(slot_index)
+	if is_instance_valid(finished_member) and finished_member.escaped.is_connected(escape_callback): finished_member.escaped.disconnect(escape_callback)
 	if _next_order_index < definition.ordered_kill_slots.size() and definition.ordered_kill_slots[_next_order_index] == slot_index:
 		_next_order_index += 1
 		if _next_order_index == definition.ordered_kill_slots.size(): ordered_kill_bonus.emit(definition.ordered_kill_reward)
@@ -51,6 +55,12 @@ func _on_member_defeated(_actor_id: StringName, _credits: int, slot_index: int) 
 				for member in members:
 					if is_instance_valid(member): member.leave_formation()
 			&"collapse": global_position.y += 80.0
+	_check_completion()
+
+func _on_member_escaped(_actor_id: StringName, _slot_index: int) -> void:
+	var finished_member: ProductionEnemy = members[_slot_index] if _slot_index >= 0 and _slot_index < members.size() else null
+	var defeat_callback := _on_member_defeated.bind(_slot_index)
+	if is_instance_valid(finished_member) and finished_member.defeated.is_connected(defeat_callback): finished_member.defeated.disconnect(defeat_callback)
 	_check_completion()
 
 func _first_active_slot() -> int:

@@ -5,4 +5,4 @@ script = ExtResource("1")
 stable_id = &"dialogue.stage1_results"
 display_name = "First Contact Debrief"
 context = "results"
-lines = Array[Dictionary]([{"speaker": "Command", "text": "The frontier holds. Recover the dreadnought data and prepare for the next sortie."}])
+lines = Array[Dictionary]([{"speaker": "Command", "text": "The frontier holds and the escape-pod beacons are accounted for. The dreadnought core confirms this was reconnaissance, not a raid."}, {"speaker": "Nova", "text": "Then next time they bring a fleet. We'll be ready before they are."}])

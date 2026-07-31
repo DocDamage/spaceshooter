@@ -78,6 +78,14 @@ func get_active_count(category: StringName = &"") -> int:
 func get_total_count(category: StringName) -> int:
 	return _active.get(category, []).size() + _available.get(category, []).size()
 
+func get_active_objects(category: StringName = &"") -> Array[PooledCombatObject]:
+	var result: Array[PooledCombatObject] = []
+	var categories: Array = CATEGORIES if category.is_empty() else [category]
+	for selected in categories:
+		for object in _active.get(selected, []):
+			if is_instance_valid(object): result.append(object)
+	return result
+
 func validate_inactive_objects() -> PackedStringArray:
 	var errors := PackedStringArray()
 	for category in CATEGORIES:

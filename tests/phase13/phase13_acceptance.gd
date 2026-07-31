@@ -15,8 +15,16 @@ func _run() -> void:
 	_test_phase_machine_and_summons()
 	_test_parts_challenges_arena_and_practice()
 	await _test_boss_actor_hud_snapshot_and_rewards()
-	if failures.is_empty(): print("PHASE 13 ACCEPTANCE: all %d checks passed" % passed_count); quit(0)
-	else: print("PHASE 13 ACCEPTANCE: %d check(s) failed" % failures.size()); quit(1)
+	if failures.is_empty(): print("PHASE 13 ACCEPTANCE: all %d checks passed" % passed_count); _finish(0)
+	else: print("PHASE 13 ACCEPTANCE: %d check(s) failed" % failures.size()); _finish(1)
+
+func _finish(exit_code: int) -> void:
+	TestSupport.free_root_nodes(self)
+	call_deferred("_quit_after_cleanup", exit_code)
+
+func _quit_after_cleanup(exit_code: int) -> void:
+	await process_frame
+	quit(exit_code)
 
 func _definition() -> BossDefinition:
 	return load("res://production/content/data/boss/corsair_dreadnought.tres") as BossDefinition
@@ -26,7 +34,7 @@ func _test_content_and_variants() -> void:
 	_assert(definition != null and definition.validate_definition().is_empty(), "authored bosses validate phases, parts, challenges, rewards, and presentation hooks")
 	_assert(definition.phases.size() == 2 and definition.phases[1].arena_behavior.has("hazards"), "phase resources carry health gates, decks, summons, arena, music, dialogue, transitions, and enrage")
 	_assert(definition.variants[0].validate_definition().is_empty() and not definition.variants[0].additional_summon_ids.is_empty(), "New Game Plus variants alter behavior rather than only multiplying health")
-	var database := ContentDatabase.new()
+	var database := ContentDatabase.new(); root.add_child(database)
 	_assert(database.initialize() and database.get_definition(definition.stable_id, &"boss") != null, "boss resources participate in the production content database")
 	var miniboss := database.get_definition(&"boss.corsair_ace_miniboss", &"boss") as BossDefinition
 	_assert(miniboss != null and miniboss.is_miniboss and miniboss.phases.size() == 1 and not miniboss.guaranteed_rewards.is_empty(), "miniboss profiles reuse the boss stack with compact phases and guaranteed rewards")
@@ -50,7 +58,7 @@ func _test_parts_challenges_arena_and_practice() -> void:
 	tracker.record(&"parts_progress", 1.0); tracker.record(&"player_damaged")
 	var results := tracker.complete_results()
 	_assert(results[&"boss_challenge.corsair_parts"].passed and not results[&"boss_challenge.corsair_no_damage"].passed, "challenge tracker handles positive-progress and fail-on-event conditions")
-	var arena := BossArenaController.new(); arena.configure(definition.arena_profile, 2)
+	var arena := BossArenaController.new(); root.add_child(arena); arena.configure(definition.arena_profile, 2)
 	_assert(arena.enter_player(&"player.1") and not arena.locked and arena.enter_player(&"player.2") and arena.locked, "arena lock waits for multiplayer clearance")
 	_assert(arena.respawn_player(&"player.1") == definition.arena_profile.safe_entry and arena.clamp_position(Vector2(-50, 2000)) == Vector2(20, 920), "arena provides safe respawn and authoritative boundaries")
 	var practice := BossPracticeSession.new()

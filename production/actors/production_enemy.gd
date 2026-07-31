@@ -4,6 +4,7 @@ extends BaseActor2D
 signal defeated(actor_id: StringName, credits: int)
 signal rewards_attributed(source_player_id: StringName, score: int, experience: int, drops: Array[Dictionary])
 signal destruction_started(actor_id: StringName, effect_id: StringName)
+signal escaped(actor_id: StringName)
 
 var definition: EnemyDefinition
 var movement_controller: EnemyMovementController
@@ -16,6 +17,7 @@ var stage_seed := 0
 var _last_damage_source: StringName
 var _visual: Sprite2D
 var _escaping := false
+var _life_elapsed := 0.0
 var presentation: PresentationActor
 
 func _init() -> void:
@@ -58,6 +60,7 @@ func configure(id: StringName, enemy_definition: EnemyDefinition, session_regist
 		attack_controller.difficulty = difficulty
 		attack_controller.elite = definition.elite_profile != null
 	_escaping = false
+	_life_elapsed = 0.0
 
 func _ready() -> void:
 	super()
@@ -75,11 +78,14 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	super(delta)
 	if not active or definition == null: return
+	_life_elapsed += delta
 	if _escaping:
 		position.y -= definition.move_speed * 1.5 * delta
 	else:
 		movement_controller.tick(delta, difficulty.speed_multiplier if difficulty != null else 1.0)
 		attack_controller.tick(delta)
+	if position.y < -180.0 or position.y > 1140.0 or position.x < -180.0 or position.x > 720.0 or _life_elapsed >= 90.0:
+		_finish_escape()
 
 func receive_damage(packet: DamagePacket) -> DamageResult:
 	_last_damage_source = packet.source_player_id if not packet.source_player_id.is_empty() else packet.source_actor_id
@@ -109,14 +115,24 @@ func leave_formation() -> void:
 func request_escape() -> void:
 	_escaping = true
 
+func retarget(target: Node2D) -> void:
+	movement_controller.target = target
+	attack_controller.target = target
+
 func reset_for_pool() -> void:
 	_last_damage_source = &""
 	formation = null
 	formation_slot = -1
 	_escaping = false
+	_life_elapsed = 0.0
 	position = Vector2.ZERO
 	rotation = 0.0
 	modulate = Color.WHITE
+
+func _finish_escape() -> void:
+	if not active: return
+	escaped.emit(actor_id)
+	despawn_actor()
 
 func _initialize_visual() -> void:
 	_visual.texture = null

@@ -23,4 +23,5 @@ guaranteed_rewards = {"credits": 600, "xp": 350, "equipment_id": &"equipment.rea
 arena_profile = {"bounds": Rect2(20, 120, 500, 800), "safe_entry": Vector2(270, 860), "scroll_mode": &"controlled"}
 intro_dialogue_id = &"dialogue.boss_corsair_intro"
 defeat_dialogue_id = &"dialogue.boss_corsair_defeat"
-visual_asset_path = "res://assets_runtime/enemies/ship_pirate_boss.png"
+visual_asset_path = "res://assets_runtime/enemies/boss_raider_command_final.png"
+visual_scale = 0.92

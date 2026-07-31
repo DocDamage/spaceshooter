@@ -25,8 +25,19 @@ func _run() -> void:
 	await _test_runtime_checkpoints_and_failures()
 	_test_progression_results_replay_and_persistence()
 	_test_performance_report()
-	if failures.is_empty(): print("PHASE 14 ACCEPTANCE: all %d checks passed" % passed_count); quit(0)
-	else: print("PHASE 14 ACCEPTANCE: %d check(s) failed" % failures.size()); quit(1)
+	if failures.is_empty(): print("PHASE 14 ACCEPTANCE: all %d checks passed" % passed_count); _finish(0)
+	else: print("PHASE 14 ACCEPTANCE: %d check(s) failed" % failures.size()); _finish(1)
+
+func _finish(exit_code: int) -> void:
+	slice = null
+	profile = null
+	hub = null
+	TestSupport.free_root_nodes(self)
+	call_deferred("_quit_after_cleanup", exit_code)
+
+func _quit_after_cleanup(exit_code: int) -> void:
+	await process_frame
+	quit(exit_code)
 
 func _test_authored_content_and_generation() -> void:
 	_assert(slice.select_configuration(&"pilot.nova", &"ship.vanguard", {&"primary": &"weapon.pulse_cannon", &"spell": &"spell.aegis"}, 50, 140014), "pilot, ship, loadout, difficulty, and seed selection are production-data driven")
@@ -61,7 +72,8 @@ func _test_runtime_checkpoints_and_failures() -> void:
 				if String(next_id).begins_with("branch."): runtime.choose_branch(next_id)
 		runtime.current_segment.complete(); await process_frame
 	_assert(checkpoints.size() == 2 and checkpoints[0].checkpoint_id == &"midpoint" and checkpoints[1].checkpoint_id == &"pre_boss", "midpoint and pre-boss checkpoints are captured in order")
-	var restored := GameSession.new(); _assert(restored.configure(config, hub) and restored.restore_checkpoint(checkpoints[0]) and restored.stage_seed == 140014, "checkpoint resume restores the exact seed, route, objectives, upgrades, and pending rewards")
+	var restored := GameSession.new(); var restore_ok := restored.configure(config, hub) and restored.restore_checkpoint(checkpoints[0]) and restored.stage_seed == 140014; root.add_child(restored)
+	_assert(restore_ok, "checkpoint resume restores the exact seed, route, objectives, upgrades, and pending rewards")
 	_assert(&"continue" in slice.failure_options({}, 1) and &"resume_checkpoint" in slice.failure_options(checkpoints[0], 1) and &"game_over" in slice.failure_options(checkpoints[1], 0), "death before checkpoint, after midpoint, at boss, continue, out-of-lives, game-over, restart, and abandon flows expose valid choices")
 	_assert(not slice.record_temporary_upgrade(&"upgrade.overcharged_rounds").persistent, "combat upgrades are explicitly temporary across mission boundaries")
 

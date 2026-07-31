@@ -5,6 +5,7 @@ signal wave_started(wave_id: StringName)
 signal enemy_spawn_requested(enemy_id: StringName, position: Vector2, formation: FormationRuntime, slot: int)
 signal wave_completed(wave_id: StringName, reward_hooks: Array[Dictionary])
 signal schedule_completed
+signal formation_bonus(amount: int)
 
 var waves: Array[WaveDefinition] = []
 var current_index := -1
@@ -80,6 +81,9 @@ func _start_next() -> void:
 		current_formation = FormationRuntime.new()
 		current_formation.name = "Formation_%s" % current_wave.stable_id
 		current_formation.configure(current_wave.formation)
+		current_formation.ordered_kill_bonus.connect(func(amount: int): formation_bonus.emit(amount))
+		current_formation.formation_completed.connect(func(amount: int): formation_bonus.emit(amount))
+		current_formation.position = Vector2(270, 190)
 		add_child(current_formation)
 	elapsed = 0.0
 	spawn_elapsed = current_wave.spawn_delay
@@ -90,7 +94,8 @@ func _start_next() -> void:
 
 func _spawn_point(index: int) -> Vector2:
 	if not current_wave.spawn_points.is_empty(): return current_wave.spawn_points[index % current_wave.spawn_points.size()]
-	if current_wave.formation != null and index < current_wave.formation.slots.size(): return current_wave.formation.slots[index]
+	if current_wave.formation != null and index < current_wave.formation.slots.size():
+		return (current_formation.position if current_formation != null else Vector2(270, 190)) + current_wave.formation.slots[index]
 	return Vector2(270, -40)
 
 func _spawn_ids() -> Array[StringName]:

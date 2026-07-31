@@ -5,8 +5,8 @@ config_version=5
 config/name="Galax Hero"
 run/main_scene="res://production/boot/production_boot.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/version="0.19.0"
-config/content_revision="campaign-60-phase19"
+config/version="0.20.0"
+config/content_revision="gold-stage1-phase20"
 
 [development]
 enabled=true
@@ -25,7 +25,7 @@ GameServer="*res://legacy/autoload/game_server.gd"
 [display]
 window/size/viewport_width=540
 window/size/viewport_height=960
-window/size/window_width_override=540
+window/size/window_width_override=960
 window/size/window_height_override=960
 window/stretch/mode="canvas_items"
 window/stretch/aspect="keep"
