@@ -4,7 +4,7 @@
 
 Use Windows PowerShell, Git, Python 3.10+, Godot 4.7.1 stable with matching Windows export templates, and Inno Setup 6.7 or newer. The repository is the `project` directory. The licensed source library remains external at `../assets`; only approved derivatives under `assets_runtime` may ship.
 
-Run `pwsh -File tools/run_project.ps1 import` after resource changes, `verify` for source gates, and `all` for the full local release pipeline. `all` performs import, metadata/artifact and asset validation, all acceptance suites, boot, accelerated soak, Development/Release exports, executable smokes, release packaging, installer construction, clean install smoke, and uninstall smoke.
+Run `pwsh -File tools/run_project.ps1 import` after resource changes, `verify` for source gates, and `all` for the full local release pipeline. `all` performs import, metadata/artifact and asset validation, all acceptance suites, boot, the four-hour simulated soak, Development/Release exports, executable smokes, release packaging, installer construction, clean/repair/reinstall smoke, and final uninstall verification. Run `rc-repro` separately to create and smoke three byte-identical Release Candidate exports.
 
 ## Runtime dependency flow
 
@@ -27,4 +27,3 @@ Run the catalog inventory before choosing assets. Add an explicit override in `t
 Acceptance suites layer data/unit checks with live SceneTree integration. Phase 20 exercises executable Stage 1 gameplay and the shipping menu. Phase 21 directly tests authored narrative, decision consequences, runtime art breadth, parser limits, cloud abstraction, achievement persistence, and audio state. Export smokes run the actual packed executable.
 
 Automated timings and headless soaks detect regressions but do not certify GPU frame time. Minimum-spec profiling must record startup, stage transition, 99th-percentile frame time, worst hitch, checkpoint/result save duration, peak memory, projectile/enemy/effect ceilings, and a four-hour visible soak before Gold.
-

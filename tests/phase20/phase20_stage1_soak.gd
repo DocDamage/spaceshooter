@@ -1,7 +1,8 @@
 extends SceneTree
 
-const TARGET_SIMULATED_SECONDS := 1800.0
+const TARGET_SIMULATED_SECONDS := 4.0 * 60.0 * 60.0
 const TIME_SCALE := 120.0
+const MIN_COMPLETED_RUNS := 30
 
 var failures := PackedStringArray()
 var hub: ServiceHub
@@ -34,7 +35,7 @@ func _run() -> void:
 		await _run_stage_one()
 	Engine.time_scale = 1.0
 	var final_memory := int(Performance.get_monitor(Performance.MEMORY_STATIC))
-	if completed_runs < 5: failures.append("fewer than five complete Stage 1 loops finished")
+	if completed_runs < MIN_COMPLETED_RUNS: failures.append("fewer than %d complete Stage 1 loops finished" % MIN_COMPLETED_RUNS)
 	if peak_enemies <= 0: failures.append("soak never observed a live authored enemy wave")
 	if peak_pickups <= 0: failures.append("soak never observed a live pooled pickup")
 	if peak_enemies > 48: failures.append("enemy prewarm capacity grew unexpectedly")

@@ -16,8 +16,8 @@ Status terms are intentionally strict:
 | Operations 1–6 | Integrated; Operations 2–6 have 50 explicit authored narrative records, distinct decision echoes, backdrops, specialist hull art, and expanded enemy silhouettes | Every stage still needs individual balance, art, audio, accessibility, and fun sign-off |
 | Local co-op | Reachable with distinct-device, guest/profile, distinct-ship, and ready gating | Two-physical-device campaign/mode matrix remains before shipping-ready |
 | Online co-op | Lab validated only | Post-launch beta until two-machine/network gates pass; do not market for 1.0 |
-| Test lifecycle | 20 acceptance suites, isolated legacy smoke, boot, Stage 1 soak, and Development/Release executable smokes pass leak-free | Representative-hardware and human endurance passes remain |
-| Platform/store | Standalone fallback, provider-injected cloud/achievement paths, five build profiles, ZIP/installer packaging, clean install smoke, SBOM, checksums, icon, and key art are implemented | Store provider certification, code-signing certificate, screenshots/trailer, and clean-machine owner sign-off remain |
+| Test lifecycle | 21 acceptance suites, 1,344 deterministic resilience cases, isolated legacy smoke, boot, four-hour simulated Stage 1 soak, and five exported-profile smokes pass leak-free | Representative-hardware and human visible-endurance passes remain |
+| Platform/store | Standalone fallback, provider-injected cloud/achievement paths, five build profiles, reproducible RC gate, ZIP/installer packaging, clean/repair/reinstall smoke, SBOM, checksums, icon, and key art are implemented | Store provider certification, code-signing certificate, screenshots/trailer, and clean-machine owner sign-off remain |
 | Legal/attribution | All 50 runtime assets resolve to reviewed CC0/commercial/project-owned records | Proof archival and final release-owner legal review remain required |
 
 Update this file whenever an item crosses a readiness boundary. Passing a data-contract test alone may not advance it past **Implemented**.

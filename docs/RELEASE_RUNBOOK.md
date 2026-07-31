@@ -20,6 +20,7 @@ $env:GALAX_HERO_SIGNTOOL = "C:\Program Files (x86)\Windows Kits\10\bin\<version>
 pwsh -File tools/run_project.ps1 export-rc -RequireSignature
 pwsh -File tools/run_project.ps1 export-release -RequireSignature
 pwsh -File tools/run_project.ps1 export-smoke
+pwsh -File tools/run_project.ps1 rc-repro -RequireSignature
 pwsh -File tools/run_project.ps1 package-release
 ```
 
@@ -29,7 +30,7 @@ Confirm `Get-AuthenticodeSignature builds/release/galax-hero-release.exe` report
 
 Copy only the versioned release ZIP and its `.sha256` to a clean minimum-spec PC and a mid-tier PC. Verify the ZIP hash before extraction. Complete every applicable row in `MANUAL_QA_MATRIX.md`, including first run, profile creation, Stage 1, controller navigation, save/restart, diagnostics export, offline startup, repair/re-extract, upgrade from each supported save schema, uninstall/reinstall with preserved saves, and rollback to the retained known-good build.
 
-Test both the portable ZIP and the versioned installer. The installer defaults to the current user's local Programs directory, supports silent clean-machine testing, and preserves Godot's per-user save directory during uninstall. Run `pwsh -File tools/run_project.ps1 installer-smoke` after building it; this installs to a validated temporary directory, runs the packed Stage 1 smoke, uninstalls, and confirms the executable was removed.
+Test both the portable ZIP and the versioned installer. The installer defaults to the current user's local Programs directory, supports silent clean-machine testing, and preserves Godot's per-user save directory during uninstall. Run `pwsh -File tools/run_project.ps1 installer-smoke` after building it; this installs to a validated temporary directory, verifies the installed executable hash, exercises same-version repair, runs the packed Stage 1 smoke, uninstalls, reinstalls, performs a final uninstall, and confirms the executable was removed.
 
 ## 4. Retain and publish
 

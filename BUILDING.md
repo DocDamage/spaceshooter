@@ -25,7 +25,10 @@ pwsh -File tools/run_project.ps1 export-demo
 pwsh -File tools/run_project.ps1 export-rc
 pwsh -File tools/run_project.ps1 export-release
 pwsh -File tools/run_project.ps1 export-smoke
+pwsh -File tools/run_project.ps1 rc-repro
 pwsh -File tools/run_project.ps1 package-release
+pwsh -File tools/run_project.ps1 installer
+pwsh -File tools/run_project.ps1 installer-smoke
 pwsh -File tools/run_project.ps1 verify
 pwsh -File tools/run_project.ps1 all
 ```

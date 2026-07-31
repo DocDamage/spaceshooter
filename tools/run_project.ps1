@@ -1,5 +1,5 @@
 param(
-    [ValidateSet("import", "test", "boot", "soak", "assets", "assets-source", "artifacts", "metadata", "verify", "export-debug", "export-development", "export-qa", "export-demo", "export-rc", "export-release", "export-smoke", "package-release", "installer", "installer-smoke", "all")]
+    [ValidateSet("import", "test", "boot", "soak", "assets", "assets-source", "artifacts", "metadata", "verify", "export-debug", "export-development", "export-qa", "export-demo", "export-rc", "export-release", "export-smoke", "rc-repro", "package-release", "installer", "installer-smoke", "all")]
     [string]$Task = "verify",
     [string]$GodotPath = "",
     [switch]$RequireSignature
@@ -145,7 +145,7 @@ function Invoke-BootSmoke {
 
 function Invoke-StageOneSoak {
 	Assert-GodotVersion
-	Invoke-Checked -Label "30-minute simulated Stage 1 replay soak" -Command $Godot -Arguments @("--headless", "--path", $ProjectRoot, "--script", "res://tests/phase20/phase20_stage1_soak.gd")
+	Invoke-Checked -Label "4-hour simulated Stage 1 replay soak" -Command $Godot -Arguments @("--headless", "--path", $ProjectRoot, "--script", "res://tests/phase20/phase20_stage1_soak.gd")
 }
 
 function Get-BuildDefinition {
@@ -221,6 +221,34 @@ function Invoke-ExportSmoke {
 	$bad = @($output | Where-Object { $_ -match $FailurePattern })
 	if ($bad.Count -gt 0) { throw "$Kind exported smoke emitted release-blocking diagnostics: $($bad -join ' | ')" }
 	if (-not ($output | Where-Object { $_ -match '^EXPORT_SMOKE: PASS' })) { throw "$Kind exported smoke did not emit its explicit pass marker." }
+}
+
+function Test-ReleaseCandidateReproducibility {
+	$hashes = @()
+	$commit = (git -C $ProjectRoot rev-parse HEAD).Trim()
+	$dirtyBefore = -not [string]::IsNullOrWhiteSpace((git -C $ProjectRoot status --porcelain | Out-String).Trim())
+	for ($candidate = 1; $candidate -le 3; $candidate++) {
+		Export-Project -Kind "rc"
+		Invoke-ExportSmoke -Kind "rc"
+		$definition = Get-BuildDefinition -Kind "rc"
+		$executable = Join-Path $ProjectRoot ("builds/$($definition.Directory)/$($definition.File)")
+		$hashes += (Get-FileHash -LiteralPath $executable -Algorithm SHA256).Hash.ToLowerInvariant()
+	}
+	if (@($hashes | Select-Object -Unique).Count -ne 1) {
+		throw "Three consecutive RC exports were not byte-for-byte reproducible: $($hashes -join ', ')"
+	}
+	$report = [ordered]@{
+		schema_version = 1
+		git_commit = $commit
+		git_worktree_dirty = $dirtyBefore
+		candidate_count = $hashes.Count
+		sha256 = $hashes[0]
+		exported_smoke = "pass"
+		byte_reproducible = $true
+	}
+	$reportPath = Join-Path $ProjectRoot "builds/rc/reproducibility-report.json"
+	[System.IO.File]::WriteAllText($reportPath, ($report | ConvertTo-Json -Depth 5) + "`n", [System.Text.UTF8Encoding]::new($false))
+	Write-Host "Three consecutive RC exports and exported-build smokes passed with identical SHA-256 $($hashes[0])." -ForegroundColor Green
 }
 
 function Get-GDScriptConstant {
@@ -333,11 +361,19 @@ function Test-WindowsInstaller {
     }
     $installLog = Join-Path $ProjectRoot "builds/installer/install-smoke.log"
     $gameLog = Join-Path $ProjectRoot "builds/installer/installed-game-smoke.log"
+    $repairLog = Join-Path $ProjectRoot "builds/installer/repair-smoke.log"
     $uninstallLog = Join-Path $ProjectRoot "builds/installer/uninstall-smoke.log"
+    $reinstallLog = Join-Path $ProjectRoot "builds/installer/reinstall-smoke.log"
+    $secondUninstallLog = Join-Path $ProjectRoot "builds/installer/reinstall-uninstall-smoke.log"
     $installProcess = Start-Process -FilePath $installer -ArgumentList @("/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/DIR=`"$installDirectory`"", "/LOG=`"$installLog`"") -WindowStyle Hidden -Wait -PassThru
     if ($installProcess.ExitCode -ne 0) { throw "Silent installer exited with code $($installProcess.ExitCode)." }
     $installedExecutable = Join-Path $installDirectory "galax-hero-release.exe"
     if (-not (Test-Path -LiteralPath $installedExecutable)) { throw "Installed executable is missing: $installedExecutable" }
+    $expectedHash = (Get-FileHash -LiteralPath (Join-Path $ProjectRoot "builds/release/galax-hero-release.exe") -Algorithm SHA256).Hash
+    if ((Get-FileHash -LiteralPath $installedExecutable -Algorithm SHA256).Hash -ne $expectedHash) { throw "Clean install executable hash does not match the packaged release." }
+    $repairProcess = Start-Process -FilePath $installer -ArgumentList @("/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/DIR=`"$installDirectory`"", "/LOG=`"$repairLog`"") -WindowStyle Hidden -Wait -PassThru
+    if ($repairProcess.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $installedExecutable)) { throw "Same-version repair install failed." }
+    if ((Get-FileHash -LiteralPath $installedExecutable -Algorithm SHA256).Hash -ne $expectedHash) { throw "Repair install executable hash does not match the packaged release." }
     $gameProcess = Start-Process -FilePath $installedExecutable -ArgumentList @("--headless", "--log-file", "`"$gameLog`"", "--", "--export-smoke") -WindowStyle Hidden -Wait -PassThru
     $gameOutput = if (Test-Path -LiteralPath $gameLog) { @(Get-Content -LiteralPath $gameLog) } else { @() }
     if ($gameProcess.ExitCode -ne 0 -or -not ($gameOutput | Where-Object { $_ -match '^EXPORT_SMOKE: PASS' })) { throw "Installed game smoke did not pass." }
@@ -346,8 +382,15 @@ function Test-WindowsInstaller {
     $uninstallProcess = Start-Process -FilePath $uninstaller -ArgumentList @("/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LOG=`"$uninstallLog`"") -WindowStyle Hidden -Wait -PassThru
     if ($uninstallProcess.ExitCode -ne 0) { throw "Silent uninstaller exited with code $($uninstallProcess.ExitCode)." }
     if (Test-Path -LiteralPath $installedExecutable) { throw "Uninstall left the game executable behind." }
+    $reinstallProcess = Start-Process -FilePath $installer -ArgumentList @("/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/DIR=`"$installDirectory`"", "/LOG=`"$reinstallLog`"") -WindowStyle Hidden -Wait -PassThru
+    if ($reinstallProcess.ExitCode -ne 0 -or -not (Test-Path -LiteralPath $installedExecutable)) { throw "Uninstall/reinstall cycle failed." }
+    if ((Get-FileHash -LiteralPath $installedExecutable -Algorithm SHA256).Hash -ne $expectedHash) { throw "Reinstalled executable hash does not match the packaged release." }
+    $secondUninstaller = Join-Path $installDirectory "unins000.exe"
+    $secondUninstallProcess = Start-Process -FilePath $secondUninstaller -ArgumentList @("/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LOG=`"$secondUninstallLog`"") -WindowStyle Hidden -Wait -PassThru
+    if ($secondUninstallProcess.ExitCode -ne 0) { throw "Reinstall cleanup uninstaller exited with code $($secondUninstallProcess.ExitCode)." }
+    if (Test-Path -LiteralPath $installedExecutable) { throw "Reinstall cleanup left the game executable behind." }
     if (Test-Path -LiteralPath $installDirectory) { Remove-Item -LiteralPath $installDirectory -Recurse -Force }
-    Write-Host "Installer clean install, exported-game smoke, and uninstall passed." -ForegroundColor Green
+    Write-Host "Installer clean install, hash verification, same-version repair, exported-game smoke, uninstall, reinstall, and final uninstall passed." -ForegroundColor Green
 }
 
 Push-Location $ProjectRoot
@@ -378,6 +421,7 @@ try {
             }
             Invoke-ExportSmoke -Kind "release"
         }
+        "rc-repro" { Test-ReleaseCandidateReproducibility }
         "package-release" { New-ReleasePackage }
         "installer" { New-WindowsInstaller }
         "installer-smoke" { Test-WindowsInstaller }

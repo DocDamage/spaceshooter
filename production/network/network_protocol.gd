@@ -34,15 +34,33 @@ static func validate_message(message: Dictionary) -> PackedStringArray:
 	for key in [&"protocol", &"type", &"sequence", &"sender_peer_id", &"tick", &"payload"]:
 		if not message.has(key): errors.append("Missing network message field: %s" % key)
 	if not errors.is_empty(): return errors
-	if int(message.protocol) != PROTOCOL_VERSION: errors.append("Protocol version mismatch")
-	if StringName(message.type) not in MESSAGE_TYPES: errors.append("Unknown message type: %s" % message.type)
-	if int(message.sequence) < 1: errors.append("Network sequence must be positive")
-	if int(message.sequence) > 2147483647: errors.append("Network sequence exceeds the supported range")
-	if int(message.sender_peer_id) < 1: errors.append("Sender peer ID must be positive")
-	if int(message.sender_peer_id) > 2: errors.append("Sender peer ID exceeds the two-player protocol")
-	if int(message.tick) < 0 or int(message.tick) > 2147483647: errors.append("Network tick is outside the supported range")
-	if not message.payload is Dictionary: errors.append("Message payload must be a Dictionary")
-	if errors.is_empty():
+	if not message.protocol is int:
+		errors.append("Network protocol version must be an integer")
+	elif message.protocol != PROTOCOL_VERSION:
+		errors.append("Protocol version mismatch")
+	if not (message.type is String or message.type is StringName):
+		errors.append("Network message type must be text")
+	elif StringName(message.type) not in MESSAGE_TYPES:
+		errors.append("Unknown message type: %s" % message.type)
+	if not message.sequence is int:
+		errors.append("Network sequence must be an integer")
+	elif message.sequence < 1:
+		errors.append("Network sequence must be positive")
+	elif message.sequence > 2147483647:
+		errors.append("Network sequence exceeds the supported range")
+	if not message.sender_peer_id is int:
+		errors.append("Sender peer ID must be an integer")
+	elif message.sender_peer_id < 1:
+		errors.append("Sender peer ID must be positive")
+	elif message.sender_peer_id > 2:
+		errors.append("Sender peer ID exceeds the two-player protocol")
+	if not message.tick is int:
+		errors.append("Network tick must be an integer")
+	elif message.tick < 0 or message.tick > 2147483647:
+		errors.append("Network tick is outside the supported range")
+	if not message.payload is Dictionary:
+		errors.append("Message payload must be a Dictionary")
+	else:
 		var payload_error := _validate_bounded_variant(message.payload)
 		if not payload_error.is_empty(): errors.append(payload_error)
 		elif var_to_bytes(message.payload).size() > MAX_PAYLOAD_BYTES: errors.append("Network payload exceeds the byte limit")
@@ -58,7 +76,15 @@ static func compare_compatibility(host_manifest: Dictionary, client_manifest: Di
 	for key in [&"protocol", &"build_version", &"content_revision", &"compatibility_hash"]:
 		if not host_manifest.has(key) or not client_manifest.has(key):
 			return {"compatible": false, "reason": &"invalid_manifest", "message": "Compatibility data is incomplete."}
-	if int(host_manifest.protocol) != int(client_manifest.protocol):
+	if not host_manifest.protocol is int or not client_manifest.protocol is int:
+		return {"compatible": false, "reason": &"invalid_manifest", "message": "Compatibility protocol data is invalid."}
+	if not (host_manifest.build_version is String or host_manifest.build_version is StringName) or not (client_manifest.build_version is String or client_manifest.build_version is StringName):
+		return {"compatible": false, "reason": &"invalid_manifest", "message": "Compatibility build data is invalid."}
+	if not (host_manifest.content_revision is String or host_manifest.content_revision is StringName) or not (client_manifest.content_revision is String or client_manifest.content_revision is StringName):
+		return {"compatible": false, "reason": &"invalid_manifest", "message": "Compatibility content data is invalid."}
+	if not (host_manifest.compatibility_hash is String or host_manifest.compatibility_hash is StringName) or not (client_manifest.compatibility_hash is String or client_manifest.compatibility_hash is StringName):
+		return {"compatible": false, "reason": &"invalid_manifest", "message": "Compatibility hash data is invalid."}
+	if host_manifest.protocol != client_manifest.protocol:
 		return {"compatible": false, "reason": &"protocol_mismatch", "message": "Online protocol versions do not match."}
 	if str(host_manifest.build_version) != str(client_manifest.build_version):
 		return {"compatible": false, "reason": &"version_mismatch", "message": "Game versions do not match."}

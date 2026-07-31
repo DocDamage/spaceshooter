@@ -14,13 +14,16 @@ All notable player-visible and release-engineering changes are recorded here. Ve
 - Development, QA, Demo, Release Candidate, and Release profiles; exported profile/load/Stage 1 smokes; Authenticode hook; release manifest; SPDX SBOM; versioned ZIP and checksums.
 - Fifty explicit Operation 2–6 narrative records with later decision echoes; five specialist hull visuals; distinct operation backdrops; expanded enemy, objective, hazard, pickup, projectile, and UI art; and a shared production theme.
 - Bounded save/network parsers, sanitized profile/platform/transport text, provider-backed cloud document I/O, persistent achievement reconciliation, and restorable crossfaded music states.
-- Player/recovery manuals, developer/content guide, network/platform runbook, rollback/hotfix/launch plan, strict completion audit, and a versioned Inno Setup installer with clean install/game/uninstall smoke.
+- Deterministic Phase 22 resilience coverage for 1,024 network messages and 320 save documents, including type confusion, malformed input, checksum failure, and corrupt-file preservation.
+- A four-hour simulated Stage 1 endurance gate plus three-candidate RC reproducibility reporting.
+- Player/recovery manuals, developer/content guide, network/platform runbook, rollback/hotfix/launch plan, strict completion audit, and a versioned Inno Setup installer with clean install, repair, game, uninstall, reinstall, and final-uninstall smoke.
 
 ### Fixed
 
 - Exported builds now resolve Godot `.tres.remap` entries during content discovery; previously the editor passed while disk-authored ships and enemies were absent after export.
 - Legacy compatibility facades are isolated to the smoke harness and excluded from shipping exports.
 - Phase 2 now tears down through one deterministic coroutine, eliminating an intermittent Godot native access violation after all assertions had passed.
+- Network protocol and compatibility validation now rejects attacker-controlled type confusion before performing conversions.
 
 ## [0.20.0] - 2026-07-31
 

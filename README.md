@@ -10,7 +10,7 @@ Phase implementation notes live in `docs/`, including `PHASE_5_ACTOR_COMBAT_FOUN
 - Fire: Space, K, or controller A
 - Diagnostics overlay in Development builds: F3
 
-Run `pwsh -File tools/run_project.ps1 verify` for the full source-tree gate, or `pwsh -File tools/run_project.ps1 all` for verification, soak, Development/Release exports, executable smokes, checksums, manifest, SPDX SBOM, release archive, versioned Windows installer, clean install smoke, and uninstall smoke. See `BUILDING.md`, `docs/PLAYER_MANUAL.md`, `docs/DEVELOPER_SETUP_ARCHITECTURE_AND_CONTENT.md`, and `docs/RELEASE_RUNBOOK.md`.
+Run `pwsh -File tools/run_project.ps1 verify` for the full source-tree gate, or `pwsh -File tools/run_project.ps1 all` for verification, the four-hour simulated soak, Development/Release exports, executable smokes, checksums, manifest, SPDX SBOM, release archive, versioned Windows installer, repair/reinstall smoke, and uninstall verification. Use `rc-repro` for the three-candidate reproducibility gate. See `BUILDING.md`, `docs/PLAYER_MANUAL.md`, `docs/DEVELOPER_SETUP_ARCHITECTURE_AND_CONTENT.md`, and `docs/RELEASE_RUNBOOK.md`.
 
 The Phase 1 compatibility implementation is isolated under `res://legacy` as a behavioral reference. New runtime work belongs under `res://production` and must use the production services and session boundaries.
 
