@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AttackPatternDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/attack_pattern_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"attack.aimed_burst"
+display_name = "Aimed Burst"
+burst_count = 3
+burst_interval = 0.12
+projectile_speed = 240.0
+damage = 7.0
+cooldown = 1.4

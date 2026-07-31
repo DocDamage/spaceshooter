@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.operation1_finale"
+display_name = "Frontier Shield Finale"
+content_version = "1.0.0"
+context = "stage_entry"
+pause_gameplay = true
+lines = Array[Dictionary]([{"speaker": "Kael", "text": "The command carrier is opening its wings. Destroy the gatekeeper, then breach the reactor before it jumps."}, {"speaker": "Nova", "text": "Frontier Shield, all ships forward."}, {"speaker": "Command", "text": "Carrier destroyed. The frontier is secure, but its route points beyond our charts."}])

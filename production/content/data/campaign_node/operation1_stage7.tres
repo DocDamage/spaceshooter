@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampaignNodeDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/campaign_node_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"campaign_node.operation1_stage7"
+display_name = "1-7 Mirror Fire"
+operation_index = 1
+stage_index = 7
+mission_id = &"mission.operation1_stage7"
+prerequisite_node_ids = Array[StringName]([&"campaign_node.operation1_stage6"])
+practice_boss_ids = Array[StringName]([&"boss.prism_sentinel"])
+reward_preview = {"credits": 1000, "xp": 750, "equipment_id": &"equipment.reactor_matrix"}
+map_position = Vector2(170, 360)

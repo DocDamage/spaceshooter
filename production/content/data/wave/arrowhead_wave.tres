@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="WaveDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/wave_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/formation/arrowhead.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"wave.arrowhead"
+display_name = "Arrowhead Assault"
+formation = ExtResource("2")
+spawn_points = Array[Vector2]([Vector2(270, -40)])
+spawn_delay = 0.15
+completion_rule = &"defeat_all"
+timeout = 30.0
+objective_ids = Array[StringName]([&"objective.clear_wave"])
+reward_hooks = [{"amount": 250, "category": &"score"}]

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/mission_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"mission.architecture_test"
+display_name = "Architecture Test Sortie"
+dependency_ids = Array[StringName]([&"ship.vanguard", &"weapon.pulse_cannon", &"enemy.scout"])
+content_version = "1.0.0"
+player_ship_id = &"ship.vanguard"
+enemy_ids = Array[StringName]([&"enemy.scout", &"enemy.scout", &"enemy.scout"])
+default_seed = 20260731
+segment_count = 1

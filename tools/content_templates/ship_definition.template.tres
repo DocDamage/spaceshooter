@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ShipDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/ship_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"ship.replace_me"
+display_name = "Replace Me"
+content_version = "1.0.0"
+visual_asset_path = "res://assets_runtime/ships/replace_me.png"
+visual_scale = 1.0
+collision_scale = 0.7
+max_health = 100
+move_speed = 320.0
+default_weapon_id = &"weapon.replace_me"

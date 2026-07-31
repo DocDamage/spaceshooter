@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/mission_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/mission_recipe/operation1_stage8.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"mission.operation1_stage8"
+display_name = "Ghost Relay"
+dependency_ids = Array[StringName]([&"ship.vanguard", &"recipe.operation1_stage8", &"boss.relay_specter"])
+content_version = "1.0.0"
+player_ship_id = &"ship.vanguard"
+enemy_ids = Array[StringName]([&"enemy.phantom_phase7", &"enemy.stalker_phase7", &"enemy.viper_phase7", &"enemy.commander_phase7"])
+default_seed = 150801
+segment_count = 10
+stage_number = 8
+environment_tags = Array[StringName]([&"alien_ruins", &"relay"])
+enemy_factions = Array[StringName]([&"faction.alien_vanguard"])
+recipe = ExtResource("2")
+miniboss_id = &"boss.relay_specter"
+mission_rewards = {"credits": 1125, "xp": 840, "equipment_id": &"equipment.vector_thrusters"}
+dialogue_hooks = {"briefing": &"dialogue.operation1_campaign_briefing", "results": &"dialogue.operation1_campaign_results"}

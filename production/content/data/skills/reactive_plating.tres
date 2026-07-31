@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillNodeDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/skill_node_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"skill.defense.reactive_plating"
+display_name = "Reactive Plating"
+content_version = "1.0.0"
+tree = &"defense"
+description = "Reinforces hull integrity."
+effects = {&"max_health": 20.0}
+maximum_rank = 3

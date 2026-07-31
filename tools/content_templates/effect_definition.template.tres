@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EffectDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/effect_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"effect.replace_me"
+display_name = "Replace Me"
+content_version = "1.0.0"
+visual_asset_path = "res://assets_runtime/effects/replace_me_sheet.png"
+frame_size = Vector2i(128, 128)
+frame_count = 12
+columns = 4
+playback_fps = 18.0
+event_frames = {"impact_peak": 4}
+destruction_sequence = true

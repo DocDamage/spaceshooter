@@ -1,0 +1,27 @@
+class_name MissionDefinition
+extends ContentDefinition
+
+@export var player_ship_id: StringName
+@export var enemy_ids: Array[StringName] = []
+@export var default_seed := 20260731
+@export var segment_count := 1
+@export var campaign_id: StringName = &"campaign.main"
+@export_range(1, 60, 1) var stage_number := 1
+@export var environment_tags: Array[StringName] = []
+@export var enemy_factions: Array[StringName] = []
+@export var recipe: MissionRecipeDefinition
+@export var miniboss_id: StringName
+@export var boss_id: StringName
+@export var mission_rewards: Dictionary = {}
+@export var dialogue_hooks: Dictionary = {}
+
+func get_content_type() -> StringName:
+	return &"mission"
+
+func validate_definition() -> PackedStringArray:
+	var errors := super.validate_definition()
+	if player_ship_id.is_empty():
+		errors.append("player_ship_id is required for %s" % stable_id)
+	if recipe != null:
+		errors.append_array(recipe.validate_definition())
+	return errors

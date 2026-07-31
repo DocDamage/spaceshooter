@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BackgroundLayerDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/background_layer_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"background.replace_me"
+display_name = "Replace Me"
+content_version = "1.0.0"
+visual_asset_path = "res://assets_runtime/backgrounds/replace_me.png"
+scroll_ratio = Vector2(0, 0.25)
+screen_layer = &"background_far"
+pseudo_altitude = &"far"

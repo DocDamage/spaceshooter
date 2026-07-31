@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ShipDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/ship_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"ship.bastion"
+display_name = "Bastion"
+dependency_ids = Array[StringName]([&"weapon.spread_cannon"])
+content_version = "1.0.0"
+max_health = 145
+move_speed = 255.0
+armor = 9.0
+shield_capacity = 70.0
+shield_recharge_delay = 2.5
+shield_recharge_rate = 16.0
+default_weapon_id = &"weapon.spread_cannon"

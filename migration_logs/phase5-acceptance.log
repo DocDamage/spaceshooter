@@ -1,0 +1,35 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: shield resolves before armor
+PASS: armor applies after the shield
+PASS: resistance applies after armor
+PASS: fixed damage input resolves deterministically
+PASS: critical multiplier applies after armor and resistance
+PASS: invulnerability windows block damage
+PASS: typed status applications are applied after HP damage
+PASS: status resistance can fully reject a status
+PASS: shield absorption reduces capacity damage
+PASS: shield reflection reports deterministic feedback damage
+PASS: shields recharge after their delay
+PASS: partial shield penetration splits damage
+PASS: dash enters its movement state
+PASS: teleport cancels dash when available
+PASS: exclusive movement states do not overlap
+PASS: timed movement state returns to normal
+PASS: focus cannot cancel an active dash
+PASS: pause freezes offline movement
+PASS: movement resumes without becoming stuck
+PASS: destroyed state cancels and rejects abilities
+PASS: engine damage can be disabled independently
+PASS: other subsystem damage remains enabled
+PASS: master system-damage setting disables all subsystem damage
+PASS: two stable-ID player actors coexist
+PASS: pooled actor unregisters on despawn
+PASS: pooled actor can respawn without a leaked registry reference
+PASS: repeated pooled lifecycle 1 succeeds
+PASS: repeated pooled lifecycle 2 succeeds
+PASS: repeated pooled lifecycle 3 succeeds
+PASS: repeated pooled lifecycle 4 succeeds
+PASS: repeated pooled lifecycle 5 succeeds
+PASS: repeated lifecycle leaves no stale actor reference
+PHASE 5 ACCEPTANCE: all 32 checks passed

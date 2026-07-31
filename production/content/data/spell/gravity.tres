@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SpellDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/spell_definition.gd" id="1"]
+[ext_resource type="Script" path="res://production/content/definitions/projectile_interaction_policy.gd" id="2"]
+[sub_resource type="Resource" id="Policy"]
+script = ExtResource("2")
+interaction = 6
+magnitude = 0.25
+[resource]
+script = ExtResource("1")
+stable_id = &"spell.gravity"
+display_name = "Gravity Well"
+school = 2
+duration_seconds = 3.0
+interaction_policy = SubResource("Policy")

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="BossDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/boss_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/boss_phase/corsair_command.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"boss.corsair_ace_miniboss"
+display_name = "Corsair Ace"
+is_miniboss = true
+maximum_health = 700.0
+armor = 2.0
+shield_capacity = 100.0
+phases = Array[ExtResource("2")]([ExtResource("2")])
+guaranteed_rewards = {"credits": 180, "xp": 90}
+arena_profile = {"bounds": Rect2(20, 120, 500, 800), "safe_entry": Vector2(270, 860), "scroll_mode": &"stationary"}
+intro_dialogue_id = &"dialogue.miniboss_corsair_ace"
+visual_asset_path = "res://assets_runtime/enemies/ship_pirate_fighter.png"

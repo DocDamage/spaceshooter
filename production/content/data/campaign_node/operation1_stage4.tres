@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampaignNodeDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/campaign_node_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"campaign_node.operation1_stage4"
+display_name = "1-4 Lifeline"
+operation_index = 1
+stage_index = 4
+mission_id = &"mission.operation1_stage4"
+prerequisite_node_ids = Array[StringName]([&"campaign_node.operation1_stage3"])
+practice_boss_ids = Array[StringName]([&"boss.jailor_skiff"])
+reward_preview = {"credits": 725, "xp": 540, "equipment_id": &"equipment.vector_thrusters"}
+map_position = Vector2(420, 250)

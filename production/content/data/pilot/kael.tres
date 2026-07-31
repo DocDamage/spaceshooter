@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PilotDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/pilot_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"pilot.kael"
+display_name = "Kael Voss"
+content_version = "1.0.0"
+biography = "A captured alien-vanguard defector whose command codes expose the Xenarch carrier at the operation finale."
+voice_style = "precise"
+campaign_perspective = &"alien_defector"
+unlock_flags = {&"operation1_complete": true}

@@ -1,0 +1,56 @@
+; Godot 4.7.1 production project. Phase 1 is preserved under res://legacy.
+config_version=5
+
+[application]
+config/name="Galax Hero"
+run/main_scene="res://production/boot/production_boot.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+config/version="0.19.0"
+config/content_revision="campaign-60-phase19"
+
+[development]
+enabled=true
+diagnostics_visible=true
+
+[autoload]
+ProductionServices="*res://production/services/service_hub.gd"
+AudioCenter="*res://legacy/autoload/audio_center.gd"
+BattleServer="*res://legacy/autoload/battle_server.gd"
+EnemySpawnerData="*res://legacy/autoload/enemy_spawner_data.gd"
+LevelServer="*res://legacy/autoload/level_server.gd"
+LevelGUI="*res://legacy/autoload/level_gui.gd"
+Currency="*res://legacy/autoload/currency.gd"
+GameServer="*res://legacy/autoload/game_server.gd"
+
+[display]
+window/size/viewport_width=540
+window/size/viewport_height=960
+window/size/window_width_override=540
+window/size/window_height_override=960
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[input]
+game_left={"deadzone": 0.25, "events": [Object(InputEventKey,"physical_keycode":65), Object(InputEventKey,"physical_keycode":4194311), Object(InputEventJoypadMotion,"axis":0,"axis_value":-1.0)]}
+game_right={"deadzone": 0.25, "events": [Object(InputEventKey,"physical_keycode":68), Object(InputEventKey,"physical_keycode":4194313), Object(InputEventJoypadMotion,"axis":0,"axis_value":1.0)]}
+game_up={"deadzone": 0.25, "events": [Object(InputEventKey,"physical_keycode":87), Object(InputEventKey,"physical_keycode":4194320), Object(InputEventJoypadMotion,"axis":1,"axis_value":-1.0)]}
+game_down={"deadzone": 0.25, "events": [Object(InputEventKey,"physical_keycode":83), Object(InputEventKey,"physical_keycode":4194322), Object(InputEventJoypadMotion,"axis":1,"axis_value":1.0)]}
+game_a={"deadzone": 0.25, "events": [Object(InputEventKey,"physical_keycode":32), Object(InputEventKey,"physical_keycode":75), Object(InputEventJoypadButton,"button_index":0)]}
+game_b={"deadzone": 0.25, "events": [Object(InputEventKey,"physical_keycode":74), Object(InputEventJoypadButton,"button_index":1)]}
+game_start={"deadzone": 0.25, "events": [Object(InputEventKey,"physical_keycode":4194309), Object(InputEventJoypadButton,"button_index":6)]}
+game_select={"deadzone": 0.25, "events": [Object(InputEventKey,"physical_keycode":4194308), Object(InputEventJoypadButton,"button_index":4)]}
+toggle_diagnostics={"deadzone": 0.25, "events": [Object(InputEventKey,"physical_keycode":4194334)]}
+
+[layer_names]
+2d_physics/layer_1="Players"
+2d_physics/layer_2="Player Projectiles"
+2d_physics/layer_3="Enemies"
+2d_physics/layer_4="Enemy Projectiles"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+textures/canvas_textures/default_texture_filter=0
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true

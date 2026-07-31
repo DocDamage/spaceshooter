@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.operation1_campaign_results"
+display_name = "Frontier Shield Debriefs"
+content_version = "1.0.0"
+context = "results"
+pause_gameplay = true
+lines = Array[Dictionary]([{"speaker": "Command", "text": "Telemetry logged. The frontier line advances with every cleared route."}, {"speaker": "Nova", "text": "And the quiet patrol gets quieter in all the wrong ways."}])

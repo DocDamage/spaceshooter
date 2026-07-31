@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Galax Hero Asset Manifest",
+  "type": "object",
+  "required": ["schema_version", "source_root", "asset_count", "assets"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "source_root": {"type": "string"},
+    "asset_count": {"type": "integer", "minimum": 0},
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stable_id", "original_filename", "normalized_filename", "source_path", "runtime_path", "file_type", "dimensions", "frame_count", "animation_names", "faction", "category", "subcategory", "intended_role", "collision_recommendation", "scale_class", "visual_scale", "collision_scale", "anchor", "orientation", "screen_layer", "pseudo_altitude", "palette_family", "license_source", "license_status", "commercial_use", "attribution_required", "import_status", "validation_status", "import_profile", "content_definition_links", "duplicate_of", "sha256", "notes"]
+      }
+    }
+  }
+}

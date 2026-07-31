@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/mission_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/mission_recipe/operation1_stage7.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"mission.operation1_stage7"
+display_name = "Mirror Fire"
+dependency_ids = Array[StringName]([&"ship.vanguard", &"recipe.operation1_stage7", &"boss.prism_sentinel"])
+content_version = "1.0.0"
+player_ship_id = &"ship.vanguard"
+enemy_ids = Array[StringName]([&"enemy.phantom_phase7", &"enemy.sentinel_phase7", &"enemy.guardian_phase7", &"enemy.lancer_phase7"])
+default_seed = 150701
+segment_count = 10
+stage_number = 7
+environment_tags = Array[StringName]([&"space", &"ion_storm"])
+enemy_factions = Array[StringName]([&"faction.alien_vanguard"])
+recipe = ExtResource("2")
+miniboss_id = &"boss.prism_sentinel"
+mission_rewards = {"credits": 1000, "xp": 750, "equipment_id": &"equipment.reactor_matrix"}
+dialogue_hooks = {"briefing": &"dialogue.operation1_campaign_briefing", "results": &"dialogue.operation1_campaign_results"}

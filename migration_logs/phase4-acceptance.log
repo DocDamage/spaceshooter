@@ -1,0 +1,23 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: complete navigation, movement, aim, and combat action catalog exists
+PASS: every Phase 4 action has a default binding
+PASS: keyboard and mouse can be assigned to player one
+PASS: a device cannot control multiple players by default
+PASS: explicit shared-device configuration is supported
+PASS: keyboard prompts select keyboard glyph family
+PASS: keyboard binding can be captured and replaced
+PASS: binding conflicts are detected
+PASS: binding conflict can be cancelled safely
+PASS: binding conflict can be swapped
+PASS: confirm always retains emergency keyboard navigation
+PASS: confirm rebinding drives native Godot control activation
+PASS: cancel always retains emergency keyboard navigation
+PASS: settings survive a service restart
+PASS: accessibility settings persist
+PASS: shared UI component library exposes all reusable inline components
+PASS: shared confirmation and warning dialogs exist
+PASS: shared interactive components are controller-focusable
+PASS: active assists are recorded in neutral run metadata
+PASS: assists do not block campaign progress
+PHASE 4 ACCEPTANCE: all 20 checks passed

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TemporaryUpgradeDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/temporary_upgrade_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"upgrade.emergency_barrier"
+display_name = "Emergency Barrier"
+content_version = "1.0.0"
+rarity = &"uncommon"
+modifiers = {&"shield": 25.0}
+tags = Array[StringName]([&"defense"])
+synergy_hint = "Scales with shield recovery."

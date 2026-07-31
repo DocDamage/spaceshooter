@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.stage1_briefing"
+display_name = "First Contact Briefing"
+context = "briefing"
+pause_gameplay = true
+lines = Array[Dictionary]([{"speaker": "Command", "text": "Raider signatures crossed the frontier. Break their screen and identify the command ship."}, {"speaker": "Nova", "text": "Copy. Quiet patrol, they said."}])

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="FormationDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/formation_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/movement/formation_follow.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"formation.arrowhead"
+display_name = "Arrowhead"
+slots = Array[Vector2]([Vector2(0, 0), Vector2(-64, -48), Vector2(64, -48), Vector2(-128, -96), Vector2(128, -96)])
+leader_slot = 0
+member_enemy_ids = Array[StringName]([&"enemy.commander", &"enemy.dart", &"enemy.wasp", &"enemy.talon", &"enemy.viper"])
+movement_pattern = ExtResource("2")
+loss_behavior = &"promote"
+ordered_kill_slots = Array[int]([4, 3, 2, 1, 0])
+ordered_kill_reward = 500
+completion_bonus = 250
+escape_seconds = 15.0

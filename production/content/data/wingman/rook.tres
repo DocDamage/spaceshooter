@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="WingmanDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/wingman_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"wingman.rook"
+display_name = "Lieutenant Rook"
+dependency_ids = Array[StringName]([&"pilot.reyes", &"ship.lancer", &"weapon.rail"])
+content_version = "1.0.0"
+pilot_id = &"pilot.reyes"
+ship_id = &"ship.lancer"
+ai_profile = {"preferred_range": 260.0, "formation_offset": Vector2(90, 70), "intercept_radius": 180.0}
+basic_attack_id = &"weapon.rail"
+special_ability_id = &"spell.aegis"
+command_cooldown = 1.0
+special_cooldown = 18.0
+dialogue_profile = &"dialogue.operation1_campaign_briefing"
+unlock_flags = {&"campaign_node.operation1_stage6": true}

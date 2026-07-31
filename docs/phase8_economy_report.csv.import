@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bjyyiersdbela"
+
+[deps]
+
+files=["res://docs/phase8_economy_report.level.translation", "res://docs/phase8_economy_report.level.translation", "res://docs/phase8_economy_report.expected.translation", "res://docs/phase8_economy_report.expected.translation", "res://docs/phase8_economy_report.failure.translation", "res://docs/phase8_economy_report.replay.translation", "res://docs/phase8_economy_report.upgrade.translation", "res://docs/phase8_economy_report.equipment.translation", "res://docs/phase8_economy_report.boss.translation", "res://docs/phase8_economy_report.new.translation"]
+
+source_file="res://docs/phase8_economy_report.csv"
+dest_files=["res://docs/phase8_economy_report.level.translation", "res://docs/phase8_economy_report.level.translation", "res://docs/phase8_economy_report.expected.translation", "res://docs/phase8_economy_report.expected.translation", "res://docs/phase8_economy_report.failure.translation", "res://docs/phase8_economy_report.replay.translation", "res://docs/phase8_economy_report.upgrade.translation", "res://docs/phase8_economy_report.equipment.translation", "res://docs/phase8_economy_report.boss.translation", "res://docs/phase8_economy_report.new.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

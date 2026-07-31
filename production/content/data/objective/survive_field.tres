@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="ObjectiveDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/objective_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"objective.survive_field"
+display_name = "Hold the Line"
+objective_type = "survive"
+target_count = 1
+duration_seconds = 0.1
+reward = {"credits": 150}

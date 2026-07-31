@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BossVariantDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/boss_variant_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/attack_deck/scout_deck.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"boss_variant.corsair_ng_plus"
+display_name = "Corsair New Game Plus"
+minimum_new_game_plus_cycle = 1
+added_attack_decks = Array[ExtResource("2")]([ExtResource("2")])
+additional_summon_ids = Array[StringName]([&"enemy.commander_phase7"])
+arena_overrides = {"hazards": Array[StringName]([&"hazard.crossfire"])}
+reward_overrides = {"credits": 900, "xp": 500}
+cadence_multiplier = 1.15

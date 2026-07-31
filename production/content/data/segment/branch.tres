@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="StageSegmentDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/stage_segment_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/secret/hidden_route.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"segment.branch"
+display_name = "Tactical Fork"
+category = "branch"
+secrets = Array[ExtResource("2")]([ExtResource("2")])
+estimated_projectile_budget = 96

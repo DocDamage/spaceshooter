@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="EliteProfileDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/elite_profile_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/drop_table/scout_drops.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"elite.veteran"
+display_name = "Veteran"
+health_multiplier = 1.75
+armor_bonus = 4.0
+shield_bonus = 20.0
+speed_multiplier = 1.12
+attack_cadence_multiplier = 1.2
+drop_table = ExtResource("2")
+tint = Color(1, 0.72, 0.25, 1)

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillNodeDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/skill_node_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"skill.command.wing_command"
+display_name = "Wing Command"
+content_version = "1.0.0"
+tree = &"command"
+description = "Improves allied damage coordination."
+effects = {&"damage": 0.05}
+maximum_rank = 2

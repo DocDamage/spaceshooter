@@ -1,0 +1,29 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: authored bosses validate phases, parts, challenges, rewards, and presentation hooks
+PASS: phase resources carry health gates, decks, summons, arena, music, dialogue, transitions, and enrage
+PASS: New Game Plus variants alter behavior rather than only multiplying health
+PASS: boss resources participate in the production content database
+PASS: miniboss profiles reuse the boss stack with compact phases and guaranteed rewards
+PASS: boss phase state machine starts from an authored phase
+PASS: health thresholds deterministically transition to the next phase
+PASS: phase-local enrage timers produce an explicit state transition
+PASS: summon controller enforces phase cadence and tracks owned summons
+PASS: targetable parts resolve independent armor and durability
+PASS: challenge tracker handles positive-progress and fail-on-event conditions
+PASS: arena lock waits for multiplayer clearance
+PASS: arena provides safe respawn and authoritative boundaries
+PASS: boss practice selects phase, loadout, and difficulty without campaign rewards
+PASS: boss actor composes health, armor, shields, phases, parts, variants, arena, and challenge systems
+PASS: boss HUD exposes health, defenses, phase divisions, parts, enrage, status, and challenge state
+PASS: part destruction removes attacks and exposes the authored weakness
+PASS: phase entry coordinates arena behavior through explicit hooks
+PASS: boss checkpoint snapshots restore phase, defenses, parts, and challenge state by stable ID
+PASS: boss defeat emits guaranteed and variant reward hooks and cleans up the arena
+PHASE 13 ACCEPTANCE: all 20 checks passed
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 144 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 139 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

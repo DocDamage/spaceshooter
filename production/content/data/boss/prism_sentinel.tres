@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="BossDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/boss_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/boss_phase/corsair_breach.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"boss.prism_sentinel"
+display_name = "Prism Sentinel"
+is_miniboss = true
+maximum_health = 1550.0
+armor = 6.0
+shield_capacity = 400.0
+phases = Array[ExtResource("2")]([ExtResource("2")])
+guaranteed_rewards = {"credits": 390, "xp": 220}
+arena_profile = {"attack_identity": &"reflect_absorb_lattice", "bounds": Rect2(20, 120, 500, 800), "safe_entry": Vector2(270, 860)}
+visual_asset_path = "res://assets_runtime/enemies/ship_pirate_boss.png"

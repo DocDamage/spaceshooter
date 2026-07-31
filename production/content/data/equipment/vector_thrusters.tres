@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EquipmentDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/equipment_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"equipment.vector_thrusters"
+display_name = "Vector Thrusters"
+content_version = "1.0.0"
+slot = &"engine"
+rarity = 1
+modifiers = {&"move_speed": 45.0}
+sell_value = 320
+dismantle_value = 180
+duplicate_policy = &"convert"

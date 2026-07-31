@@ -1,0 +1,26 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: service hub initializes the story service behind the dialogue adapter
+PASS: full-screen briefings resolve variables and own their pause context
+PASS: dialogue completion during an active mission does not mutate combat state
+PASS: combat and objective radio messages enter the queue
+PASS: urgent objective radio is selected ahead of lower-priority queued messages
+PASS: important objective instructions cannot be discarded as obsolete
+PASS: checkpoint restore suppresses completed one-time dialogue triggers
+PASS: radio timing respects configurable text speed
+PASS: stage and operation prerequisites lock campaign nodes
+PASS: completion, ranks, and route decisions unlock dependent nodes
+PASS: boss victory unlocks boss practice
+PASS: mission replay cannot overwrite a story decision unless explicitly allowed
+PASS: secret and New Game Plus variants remain hidden or locked until earned
+PASS: story flags and New Game Plus state reveal their authored variants
+PASS: campaign map navigation exposes node state and reward preview through one keyboard/controller-neutral model
+PASS: pilot identity carries portrait-ready narrative data without combat-stat bonuses
+PASS: pilot selection is driven by unlock state and narrative perspective
+PASS: codex entries unlock from authored campaign events and category correctly
+PASS: dialogue, codex, and pilot selection persist in profile snapshots
+PASS: wingman definition configures a compatible actor slot
+PASS: wingmen obey targeted attack, defend, focus, intercept, hold, retreat, and special command modes
+PASS: wingmen survive and reposition through player respawn transitions
+PASS: a human player can replace a wingman in the same mission actor slot
+PHASE 12 ACCEPTANCE: all 23 checks passed

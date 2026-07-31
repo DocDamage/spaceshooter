@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.operation1_campaign_briefing"
+display_name = "Frontier Shield Briefings"
+content_version = "1.0.0"
+context = "briefing"
+pause_gameplay = true
+lines = Array[Dictionary]([{"stage": 2, "speaker": "Command", "text": "Break the formation in marked order; their stolen turrets share a targeting net."}, {"stage": 3, "speaker": "Nova", "text": "That armor is alien. Lock the mobile plates before they screen the core."}, {"stage": 4, "speaker": "Reyes", "text": "Civilian pods are still transmitting. Rescue first, glory later."}, {"stage": 5, "speaker": "Rook", "text": "The belt is moving faster than the charts. Match the scroll and mind the debris."}, {"stage": 6, "speaker": "Rook", "text": "Put me on your wing and call the targets. I can keep up."}, {"stage": 7, "speaker": "Kael", "text": "The prism lattice turns ordinary fire against you. Reflect or absorb it."}, {"stage": 8, "speaker": "Command", "text": "The relay has multiple approaches. One does not appear on any human chart."}, {"stage": 9, "speaker": "Nova", "text": "Last stop before the carrier. Check every system now."}])

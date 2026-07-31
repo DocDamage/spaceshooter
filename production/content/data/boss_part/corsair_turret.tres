@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="BossPartDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/boss_part_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"boss_part.corsair_turret"
+display_name = "Corsair Siege Turret"
+part_type = 0
+maximum_health = 180.0
+armor = 4.0
+target_offset = Vector2(0, 42)
+removed_attack_ids = Array[StringName]([&"attack.ring"])
+exposes_weakness_multiplier = 1.2
+retaliation_attack_id = &"attack.wall_gaps"
+reward_bonus = {"credits": 75}
+challenge_tag = &"turret"

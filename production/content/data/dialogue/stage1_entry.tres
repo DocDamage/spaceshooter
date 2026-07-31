@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.stage1_entry"
+display_name = "First Contact Entry"
+context = "stage_entry"
+one_shot = true
+lines = Array[Dictionary]([{"speaker": "Command", "text": "Weapons free. Keep the convoy lane clear."}])

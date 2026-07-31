@@ -1,0 +1,19 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://dwr3qacwxdgcw"
+
+[deps]
+
+files=["res://docs/phase8_level_curve.total.translation", "res://docs/phase8_level_curve.xp.translation", "res://docs/phase8_level_curve.expected.translation"]
+
+source_file="res://docs/phase8_level_curve.csv"
+dest_files=["res://docs/phase8_level_curve.total.translation", "res://docs/phase8_level_curve.xp.translation", "res://docs/phase8_level_curve.expected.translation"]
+
+[params]
+
+compress=1
+delimiter=0
+unescape_keys=false
+unescape_translations=true

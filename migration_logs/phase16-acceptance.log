@@ -1,0 +1,19 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: join flow assigns stable slots and rejects profile and ship conflicts
+PASS: players use stable slot and actor identity while the host owns branch choices
+PASS: controller disconnect enters a recoverable reassignment state
+PASS: participants cannot leave after mission lock
+PASS: two-player campaign config creates one cooperative manager over the existing actor/session framework
+PASS: individual damage transitions a defeated teammate into the downed state
+PASS: an active teammate can complete a limited revive
+PASS: checkpoint restore preserves exact participants, lives, and revive state
+PASS: shared camera warns at the edge and teleports an unrecoverably separated player
+PASS: co-op balance adds targets, boss behavior, arena pressure, and pickups instead of only multiplying health
+PASS: human players replace wingman slots and remaining slots stay available to scaled AI
+PASS: co-op rewards persist once for the host while guest progress is session-only and reload-safe
+PASS: Operation 1 exposes the local cooperative campaign entry point
+PASS: campaign preflight carries both profiles, ships, loadouts, and the co-op balance profile
+PASS: all ten Operation 1 stages validate their authored two-player clearance
+PASS: boss practice accepts the same two-player roster without granting campaign rewards
+PHASE 16 ACCEPTANCE: all 16 checks passed
