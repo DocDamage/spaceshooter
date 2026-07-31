@@ -18,9 +18,9 @@ var spawn_timer := 0.5
 var stage_finished := false
 
 func _ready() -> void:
-	BattleServer.reset_battle()
-	LevelServer.begin_stage(STAGE_ID)
-	spawn_points = EnemySpawnerData.get_legacy_wave()
+	LegacyServiceLocator.require(self, &"LegacyBattleServer").reset_battle()
+	LegacyServiceLocator.require(self, &"LegacyLevelServer").begin_stage(STAGE_ID)
+	spawn_points = LegacyServiceLocator.require(self, &"LegacyEnemySpawnerData").get_legacy_wave()
 	player = PLAYER.new()
 	add_child(player)
 	player.position = Vector2(270, 820)
@@ -47,8 +47,8 @@ func _spawn_enemy(spawn_position: Vector2) -> void:
 
 func _on_enemy_defeated(xp: int, credits: int) -> void:
 	defeated_count += 1
-	BattleServer.register_enemy_defeat(xp, credits)
-	Currency.add(credits)
+	LegacyServiceLocator.require(self, &"LegacyBattleServer").register_enemy_defeat(xp, credits)
+	LegacyServiceLocator.require(self, &"LegacyCurrency").add(credits)
 	if is_instance_valid(player):
 		player.add_experience(xp)
 	progress_changed.emit(defeated_count, spawn_points.size())
@@ -59,7 +59,7 @@ func complete_stage() -> void:
 	if stage_finished:
 		return
 	stage_finished = true
-	LevelServer.complete_stage(STAGE_ID)
+	LegacyServiceLocator.require(self, &"LegacyLevelServer").complete_stage(STAGE_ID)
 	completed.emit()
 
 func _on_player_died() -> void:

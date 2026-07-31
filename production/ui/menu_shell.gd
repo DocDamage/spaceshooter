@@ -27,6 +27,14 @@ var mode_stage := 1
 var mode_difficulty := 50
 var mode_seed := 0
 var mode_players := 1
+var mode_mutators: Array[StringName] = [&"aggressive_enemies"]
+var training_options := {&"invulnerability": true, &"infinite_resources": true, &"damage_numbers": true, &"hitbox_display": false}
+var training_speed := 1.0
+var boss_practice_phase := 0
+var local_devices: Array[int] = [GameInputService.DEVICE_KEYBOARD_MOUSE, GameInputService.UNASSIGNED_DEVICE]
+var local_companion_profile_id: StringName
+var local_companion_ship_id: StringName = &"ship.bastion"
+var local_companion_ready := false
 
 func configure(service_hub: ServiceHub, pause_shell := false, full_campaign: FullCampaignController = null) -> void:
 	services = service_hub
@@ -86,6 +94,7 @@ func show_page(page: StringName, push_history := true) -> void:
 		&"codex": content = _codex_page()
 		&"online": content = _online_page()
 		&"credits": content = _credits_page()
+		&"support": content = _support_page()
 		&"profiles": content = _profiles_page()
 		&"save_recovery": content = _save_recovery_page()
 		&"settings": content = _settings_page()
@@ -95,6 +104,8 @@ func show_page(page: StringName, push_history := true) -> void:
 		_: content = _message_page("Unavailable", "This page has not been registered.")
 	page_host.add_child(content)
 	breadcrumb.text = ("PAUSED / " if is_pause_shell else "COMMAND / ") + String(page).replace("_", " ").to_upper()
+	services.localization.localize_tree(content)
+	_apply_text_scale(content)
 	call_deferred("_focus_first", content)
 
 func _build_shell() -> void:
@@ -129,6 +140,7 @@ func _build_shell() -> void:
 
 func _main_page() -> Control:
 	var box := _page_box("Pilot systems online. Campaign progress, local profiles, and settings save automatically.")
+	var notice := Label.new(); notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; notice.text = "Photosensitivity: this game contains moving patterns and flashing combat effects. Flash, motion, particles, shake, speed, and simplified-pattern options are available under Accessibility."; notice.modulate = Color("ffcf70"); box.add_child(notice)
 	_add_nav_button(box, "Continue", _continue_campaign)
 	_add_nav_button(box, "Campaign Map — Operations 1–6", func(): show_page(&"campaign"))
 	_add_nav_button(box, "Modes", func(): show_page(&"modes"))
@@ -137,6 +149,7 @@ func _main_page() -> Control:
 	_add_nav_button(box, "Profiles", func(): show_page(&"profiles"))
 	_add_nav_button(box, "Online Co-op", func(): show_page(&"online"))
 	_add_nav_button(box, "Settings", func(): show_page(&"settings"))
+	_add_nav_button(box, "Support & Diagnostics", func(): show_page(&"support"))
 	_add_nav_button(box, "Credits", func(): show_page(&"credits"))
 	var quit := UIComponentLibrary.secondary_button("Quit")
 	quit.pressed.connect(_confirm_quit)
@@ -169,8 +182,9 @@ func _campaign_page() -> Control:
 	_add_labeled_control(box, "Ship", ship_picker)
 	var player_picker := UIComponentLibrary.drop_down(PackedStringArray(["Solo", "Local Co-op (2 Players)"]), campaign_local_players - 1)
 	player_picker.name = "CampaignPlayerCount"
-	player_picker.item_selected.connect(func(index): campaign_local_players = index + 1)
+	player_picker.item_selected.connect(func(index): campaign_local_players = index + 1; local_companion_ready = false; show_page(&"campaign", false))
 	_add_labeled_control(box, "Players", player_picker)
+	if campaign_local_players == 2: _add_local_coop_setup(box, &"campaign")
 	var map_view := CampaignMapView.new()
 	map_view.name = "FullCampaignMap"
 	map_view.custom_minimum_size = Vector2(460, 180)
@@ -182,6 +196,8 @@ func _campaign_page() -> Control:
 	previous.pressed.connect(func(): campaign_model.navigate(-1))
 	navigation.add_child(previous)
 	var launch := UIComponentLibrary.primary_button("Launch Selected Stage")
+	launch.disabled = campaign_local_players == 2 and not _local_coop_ready()
+	launch.tooltip_text = "Assign two distinct connected devices and mark Player 2 ready." if launch.disabled else ""
 	launch.pressed.connect(func():
 		var selected := campaign_model.selected_node()
 		if selected.get("state") in [&"available", &"completed"]: _request_campaign_node(StringName(selected.node_id)))
@@ -206,8 +222,17 @@ func selected_campaign_player_count() -> int:
 func selected_campaign_loadout() -> Dictionary:
 	return campaign_loadout.duplicate(true)
 
+func selected_local_coop_setup() -> Dictionary:
+	return {"player_devices": local_devices.duplicate(), "companion_profile_id": local_companion_profile_id, "companion_guest": local_companion_profile_id.is_empty(), "companion_ship_id": local_companion_ship_id, "ready": _local_coop_ready()}
+
+func selected_mode_options() -> Dictionary:
+	return {"mutators": mode_mutators.duplicate(), "training_options": training_options.duplicate(true), "training_speed": training_speed, "boss_practice_phase": boss_practice_phase}
+
 func _continue_campaign() -> void:
 	if campaign_controller == null: return
+	if OS.has_feature("demo"):
+		campaign_stage_requested.emit(1)
+		return
 	var target := 1
 	for stage in range(1, 61):
 		if campaign_controller.stage_state(stage) == &"available": target = stage; break
@@ -249,10 +274,35 @@ func _modes_page() -> Control:
 	var players := UIComponentLibrary.drop_down(PackedStringArray(["Solo", "Local Co-op"]), mode_players - 1)
 	players.disabled = not selected_mode.multiplayer_allowed
 	if players.disabled: mode_players = 1; players.select(0)
-	players.item_selected.connect(func(index): mode_players = index + 1)
+	players.item_selected.connect(func(index): mode_players = index + 1; local_companion_ready = false; show_page(&"modes", false))
 	_add_labeled_control(box, "Players", players)
+	if mode_players == 2: _add_local_coop_setup(box, &"modes")
 	var rules := Label.new(); rules.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; rules.text = _format_dictionary(selected_mode.rules); box.add_child(rules)
+	if selected_mode_id in [&"daily_challenge", &"weekly_challenge"]:
+		var challenge := ChallengeService.new().definition_for(&"weekly" if selected_mode_id == &"weekly_challenge" else &"daily", int(Time.get_unix_time_from_system()), String(ProjectSettings.get_setting("application/config/content_revision", "dev")))
+		mode_seed = int(challenge.seed)
+		var challenge_names := PackedStringArray()
+		for value in challenge.mutators: challenge_names.append(String(value).replace("_", " ").capitalize())
+		var challenge_label := Label.new(); challenge_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; challenge_label.text = "%s • Seed %d • Mutators: %s" % [String(challenge.challenge_id), mode_seed, ", ".join(challenge_names)]; box.add_child(challenge_label)
+	elif selected_mode_id == &"mutator":
+		var mutator_title := Label.new(); mutator_title.text = "MUTATORS"; mutator_title.add_theme_font_size_override("font_size", 19); box.add_child(mutator_title)
+		for mutator_id in selected_mode.rules.selectable_mutators:
+			var toggle := UIComponentLibrary.check_box(String(mutator_id).replace("_", " ").capitalize(), StringName(mutator_id) in mode_mutators)
+			toggle.toggled.connect(_set_mode_mutator.bind(StringName(mutator_id)))
+			box.add_child(toggle)
+	elif selected_mode_id == &"training":
+		var training_title := Label.new(); training_title.text = "TRAINING LAB"; training_title.add_theme_font_size_override("font_size", 19); box.add_child(training_title)
+		for option in TrainingController.OPTIONS:
+			var toggle := UIComponentLibrary.check_box(String(option).replace("_", " ").capitalize(), bool(training_options.get(option, false)))
+			toggle.toggled.connect(func(value): training_options[option] = value)
+			box.add_child(toggle)
+		var speed := UIComponentLibrary.slider(0.25, 2.0, training_speed, 0.25); speed.value_changed.connect(func(value): training_speed = value); _add_labeled_control(box, "Simulation speed", speed)
+	elif selected_mode_id == &"boss_practice":
+		var phases := PackedStringArray(["Opening phase", "Phase 2", "Final phase"])
+		var phase_picker := UIComponentLibrary.drop_down(phases, boss_practice_phase); phase_picker.item_selected.connect(func(index): boss_practice_phase = index); _add_labeled_control(box, "Starting phase", phase_picker)
 	var launch := UIComponentLibrary.primary_button("Launch %s" % selected_mode.display_name)
+	launch.disabled = mode_players == 2 and not _local_coop_ready()
+	launch.tooltip_text = "Assign two distinct connected devices and mark Player 2 ready." if launch.disabled else ""
 	launch.pressed.connect(func(): mode_requested.emit(selected_mode_id, mode_stage, mode_difficulty, mode_seed, mode_players, campaign_ship_id, campaign_loadout.duplicate(true)))
 	box.add_child(launch)
 	_add_back_button(box)
@@ -355,6 +405,36 @@ func _credits_page() -> Control:
 	_add_back_button(box)
 	return box
 
+func _support_page() -> Control:
+	var box := _page_box("Diagnostics are created only when you request them and are never uploaded automatically.")
+	var privacy := Label.new()
+	privacy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	privacy.text = "The report includes build/content/protocol versions, non-identifying OS/render information, frame and actor counts, save status, warnings with local paths redacted, and network quality counters when active. It excludes pilot names, save contents, account tokens, IP addresses, and personal files."
+	box.add_child(privacy)
+	var locations := Label.new()
+	locations.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	locations.text = "Saves: user://profiles\nLogs: user://logs\nDiagnostic exports: user://diagnostics"
+	box.add_child(locations)
+	var status := Label.new()
+	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status.text = "No diagnostics exported this session."
+	box.add_child(status)
+	var export := UIComponentLibrary.primary_button("Export Privacy-Safe Diagnostics")
+	export.pressed.connect(func():
+		var path := services.diagnostics.export_privacy_safe_report(services.saves.status)
+		if path.is_empty():
+			status.text = "Export failed. Check the current log for details."
+		else:
+			status.text = "Exported: %s" % path
+			OS.shell_show_in_file_manager(ProjectSettings.globalize_path(path)))
+	box.add_child(export)
+	var known := Label.new()
+	known.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	known.text = "Known release gates: online co-op remains disabled for 1.0; public builds require a verified signature and clean-machine certification."
+	box.add_child(known)
+	_add_back_button(box)
+	return box
+
 func _pause_page() -> Control:
 	var box := _page_box("Mission paused")
 	_add_nav_button(box, "Resume", func(): resume_requested.emit())
@@ -411,6 +491,12 @@ func _confirm_profile_delete(profile_id: StringName) -> void:
 
 func _settings_page() -> Control:
 	var box := _page_box("Settings save automatically.")
+	var locale_values := ["en", "qps_ploc", "qps_rtl"]
+	var locale_names := PackedStringArray(["English", "Pseudolocale (Expanded)", "Pseudolocale (RTL Mirror)"])
+	var locale_index := maxi(0, locale_values.find(String(services.settings.get_setting(&"locale", "en"))))
+	var locale_picker := UIComponentLibrary.drop_down(locale_names, locale_index)
+	locale_picker.item_selected.connect(func(index): services.settings.set_setting(&"locale", locale_values[index]); show_page(&"settings", false))
+	_add_labeled_control(box, "Language / layout test", locale_picker)
 	_add_nav_button(box, "Accessibility", func(): show_page(&"accessibility"))
 	_add_nav_button(box, "Controls & Rebinding", func(): show_page(&"bindings"))
 	_add_nav_button(box, "Input Test", func(): show_page(&"input_test"))
@@ -483,6 +569,9 @@ func _accessibility_page() -> Control:
 	_add_slider_setting(box, "Background motion reduction", &"background_motion_reduction", 0, 1, 0.1)
 	_add_slider_setting(box, "UI scale", &"ui_scale", 0.75, 1.5, 0.05)
 	_add_slider_setting(box, "Text scale", &"text_scale", 0.75, 1.75, 0.05)
+	_add_toggle_setting(box, "Subtitles", &"subtitles_enabled")
+	_add_toggle_setting(box, "Subtitle background", &"subtitle_background")
+	_add_slider_setting(box, "Subtitle background opacity", &"subtitle_background_opacity", 0.25, 1.0, 0.05)
 	_add_slider_setting(box, "Aim assistance", &"aim_assistance", 0, 1, 0.1)
 	_add_slider_setting(box, "Game speed assistance", &"game_speed_assistance", 0.5, 1, 0.05)
 	for pair in [["Auto-fire", &"auto_fire"], ["Toggle focus", &"focus_toggle"], ["Toggle shield", &"shield_toggle"], ["System damage", &"system_damage_enabled"], ["Simplified patterns", &"simplified_patterns"], ["Invulnerability assist", &"invulnerability_assist"]]:
@@ -626,6 +715,77 @@ func _format_dictionary(values: Dictionary) -> String:
 		parts.append("%s: %s" % [String(key).replace("_", " ").capitalize(), str(value).replace("_", " ")])
 	return " • ".join(parts)
 
+func _set_mode_mutator(enabled: bool, mutator_id: StringName) -> void:
+	if enabled and mutator_id not in mode_mutators: mode_mutators.append(mutator_id)
+	elif not enabled: mode_mutators.erase(mutator_id)
+
+func _add_local_coop_setup(box: VBoxContainer, return_page: StringName) -> void:
+	_validate_local_devices()
+	var heading := Label.new(); heading.text = "LOCAL CO-OP ROSTER"; heading.add_theme_font_size_override("font_size", 19); box.add_child(heading)
+	var device_values: Array[int] = [GameInputService.UNASSIGNED_DEVICE, GameInputService.DEVICE_KEYBOARD_MOUSE]
+	var device_names := PackedStringArray(["Not assigned", "Keyboard & Mouse"])
+	for device_id in Input.get_connected_joypads():
+		device_values.append(device_id)
+		var device_name := Input.get_joy_name(device_id)
+		device_names.append("Controller %d — %s" % [device_id + 1, device_name if not device_name.is_empty() else "Gamepad"])
+	for slot in 2:
+		var selected_index := maxi(0, device_values.find(local_devices[slot]))
+		var picker := UIComponentLibrary.drop_down(device_names, selected_index)
+		picker.item_selected.connect(func(index):
+			local_devices[slot] = device_values[index]
+			if local_devices[slot] != GameInputService.UNASSIGNED_DEVICE and local_devices[slot] == local_devices[1 - slot]: local_devices[1 - slot] = GameInputService.UNASSIGNED_DEVICE
+			local_companion_ready = false
+			show_page(return_page, false))
+		_add_labeled_control(box, "Player %d device" % (slot + 1), picker)
+
+	var profile_values: Array[StringName] = [&""]
+	var profile_names := PackedStringArray(["Guest — session progress only"])
+	var host_profile := services.profiles.get_progression_profile()
+	for summary in services.profiles.profile_summaries():
+		var profile_id := StringName(summary.profile_id)
+		if host_profile != null and profile_id == host_profile.profile_id: continue
+		profile_values.append(profile_id); profile_names.append("Local profile — %s" % summary.display_name)
+	var profile_index := maxi(0, profile_values.find(local_companion_profile_id))
+	local_companion_profile_id = profile_values[profile_index]
+	var profile_picker := UIComponentLibrary.drop_down(profile_names, profile_index)
+	profile_picker.item_selected.connect(func(index): local_companion_profile_id = profile_values[index]; local_companion_ready = false; show_page(return_page, false))
+	_add_labeled_control(box, "Player 2 progress", profile_picker)
+
+	if host_profile != null:
+		var ships := _available_definitions(&"ship", host_profile)
+		if not ships.is_empty():
+			if local_companion_ship_id == campaign_ship_id or not ships.any(func(ship): return ship.stable_id == local_companion_ship_id):
+				for ship in ships:
+					if ship.stable_id != campaign_ship_id: local_companion_ship_id = ship.stable_id; break
+			_add_definition_picker(box, "Player 2 ship", ships.filter(func(ship): return ship.stable_id != campaign_ship_id), local_companion_ship_id, func(id: StringName): local_companion_ship_id = id; local_companion_ready = false; show_page(return_page, false))
+
+	var can_ready := _local_devices_valid() and local_companion_ship_id != campaign_ship_id
+	var ready := UIComponentLibrary.check_box("Player 2 ready", local_companion_ready)
+	ready.disabled = not can_ready
+	ready.toggled.connect(func(value): local_companion_ready = value)
+	box.add_child(ready)
+	var status := Label.new(); status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status.text = "READY — host owns pause and route choices; shared rewards are claimed once." if _local_coop_ready() else "Connect and assign two distinct devices, select Player 2 progress/ship, then mark ready."
+	status.modulate = Color("71ff9a") if _local_coop_ready() else Color("ffcf70")
+	box.add_child(status)
+
+func _validate_local_devices() -> void:
+	for slot in 2:
+		var device := local_devices[slot]
+		if device >= 0 and device not in Input.get_connected_joypads(): local_devices[slot] = GameInputService.UNASSIGNED_DEVICE; local_companion_ready = false
+	if local_devices[1] == GameInputService.UNASSIGNED_DEVICE:
+		for device in Input.get_connected_joypads():
+			if device != local_devices[0]: local_devices[1] = device; break
+
+func _local_devices_valid() -> bool:
+	if local_devices.size() != 2 or GameInputService.UNASSIGNED_DEVICE in local_devices or local_devices[0] == local_devices[1]: return false
+	for device in local_devices:
+		if device >= 0 and device not in Input.get_connected_joypads(): return false
+	return true
+
+func _local_coop_ready() -> bool:
+	return local_companion_ready and _local_devices_valid() and not local_companion_ship_id.is_empty() and local_companion_ship_id != campaign_ship_id
+
 func _confirm_respec(manager: SkillTreeManager, profile: ProgressionProfile) -> void:
 	var dialog := UIComponentLibrary.confirmation_dialog("Respec all skills?", "Refund all spent skill points for 250 credits. Equipment and permanent weapon/spell levels are unchanged.")
 	root.add_child(dialog)
@@ -652,6 +812,13 @@ func _collect_focusable(node: Node, result: Array[Control]) -> void:
 		result.append(node)
 	for child in node.get_children():
 		_collect_focusable(child, result)
+
+func _apply_text_scale(node: Node) -> void:
+	if node is Control:
+		var control := node as Control
+		if not control.has_meta(&"base_font_size"): control.set_meta(&"base_font_size", control.get_theme_font_size("font_size"))
+		control.add_theme_font_size_override("font_size", maxi(10, int(round(float(control.get_meta(&"base_font_size")) * float(services.settings.get_setting(&"text_scale", 1.0))))))
+	for child in node.get_children(): _apply_text_scale(child)
 
 func _begin_capture(action: StringName, button: Button) -> void:
 	_capture_action = action
@@ -683,6 +850,8 @@ func _on_active_device_changed(_kind: StringName, _device: int, _glyph: StringNa
 
 func _on_controller_connection_changed(_device: int, _connected: bool) -> void:
 	prompt_label.text = _prompt_text()
+	_validate_local_devices()
+	if current_page in [&"campaign", &"modes"]: show_page(current_page, false)
 
 func _prompt_text() -> String:
 	return "%s Confirm    %s Back" % [services.input.get_prompt(&"ui_confirm") if services else "Enter", services.input.get_prompt(&"ui_cancel") if services else "Esc"]

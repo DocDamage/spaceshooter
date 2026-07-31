@@ -43,14 +43,14 @@ func fire() -> void:
 	var shot := PROJECTILE.new()
 	get_parent().add_child(shot)
 	shot.setup(position + Vector2(0, -24), Vector2.UP, 660.0, true, 25)
-	AudioCenter.play(&"pulse_beam")
+	LegacyServiceLocator.require(self, &"LegacyAudioCenter").play(&"pulse_beam")
 
 func take_damage(amount: int) -> void:
 	var absorbed := mini(shield, amount)
 	shield -= absorbed
 	var remainder := amount - absorbed
 	health = maxi(0, health - remainder)
-	BattleServer.register_player_damage(amount, absorbed)
+	LegacyServiceLocator.require(self, &"LegacyBattleServer").register_player_damage(amount, absorbed)
 	_emit_stats()
 	queue_redraw()
 	if health == 0:

@@ -71,19 +71,76 @@ func _run() -> void:
 	_test_objective_and_hazard_actors(player)
 	await _test_branch_panel()
 	await _test_failure_checkpoint(config)
+	_test_mode_lifecycles(config)
+	hub.localization.set_locale("qps_ploc")
+	var pseudo := hub.localization.render("Continue")
+	_assert(pseudo.begins_with("⟦") and pseudo.length() > "Continue".length() * 1.25, "pseudolocalization expands and marks player-facing text for layout audits")
+	hub.localization.set_locale("en")
+	var diagnostic_path := hub.diagnostics.export_privacy_safe_report(hub.saves.status, storage_path + "/diagnostics")
+	var diagnostic_file := FileAccess.open(diagnostic_path, FileAccess.READ)
+	var diagnostic_text := diagnostic_file.get_as_text() if diagnostic_file != null else ""
+	var diagnostic_report = JSON.parse_string(diagnostic_text)
+	_assert(diagnostic_report is Dictionary and diagnostic_report.has("privacy") and diagnostic_report.has("build") and diagnostic_report.has("runtime") and "profile.phase20" not in diagnostic_text, "opt-in diagnostics export is versioned and excludes profile identity")
 	await _test_shipping_menu(campaign)
 	if failures.is_empty(): print("PHASE 20 ACCEPTANCE: all %d checks passed" % passed_count); _finish(0)
 	else: print("PHASE 20 ACCEPTANCE: %d check(s) failed" % failures.size()); _finish(1)
 
 func _test_objective_and_hazard_actors(player: ProductionPlayer) -> void:
-	var controller := ObjectiveController.new(); root.add_child(controller)
-	var objective := hub.content_database.get_definition(&"objective.rescue_pilots", &"objective") as ObjectiveDefinition
-	controller.register([objective]); controller.start()
-	var actor := ObjectiveActor.new(); actor.configure_objective(objective, 0, controller, {"players": [player], "registry": session.actor_registry, "event_bus": session.event_bus}); actor.position = player.position; root.add_child(actor); actor._physics_process(0.1)
-	_assert(controller.state_for(objective.stable_id).get("status") == &"succeeded" and session.actor_registry.get_count(&"objective") >= 1, "rescue objectives use registered, positioned, durable actors with a real success path")
-	var hazard := HazardFactory.create(&"hazard.ion_storm", 99, {"players": [player], "registry": session.actor_registry, "event_bus": session.event_bus, "projectile_pool": mission.projectile_pool, "difficulty": mission.difficulty_definition, "stage_seed": session.stage_seed}); root.add_child(hazard)
-	var before := player.health_component.current + player.shield_component.current; hazard._physics_process(1.8)
-	_assert(hazard is StageHazard and player.health_component.current + player.shield_component.current < before and not hazard.snapshot().is_empty(), "hazards are executable actors with damage and checkpoint state")
+	var objective_ids := [&"objective.rescue_pilots", &"objective.escort_convoy", &"objective.survive_field", &"objective.destroy_marked_target", &"objective.protect_relay", &"objective.collect_salvage", &"objective.sabotage_reactor", &"objective.chain_strike", &"objective.avoid_neutral_damage", &"objective.time_route"]
+	var all_succeeded := true
+	var all_failed := true
+	var actor_index := 100
+	for objective_id in objective_ids:
+		var objective := hub.content_database.get_definition(objective_id, &"objective") as ObjectiveDefinition
+		if objective == null: all_succeeded = false; all_failed = false; continue
+		var success := ObjectiveController.new(); root.add_child(success); success.register([objective]); success.start()
+		match objective.objective_type:
+			"rescue", "collect":
+				for ignored in objective.target_count:
+					var actor := _spawn_objective_actor(objective, success, player, actor_index); actor_index += 1; actor.position = player.position; actor._physics_process(0.1)
+			"escort", "protect":
+				for ignored in objective.target_count:
+					var actor := _spawn_objective_actor(objective, success, player, actor_index); actor_index += 1; actor._physics_process(maxf(10.0, objective.duration_seconds) + 0.1)
+			"sabotage", "destroy_marked":
+				for ignored in objective.target_count:
+					var actor := _spawn_objective_actor(objective, success, player, actor_index); actor_index += 1
+					var packet := DamagePacket.new(99999.0, player.actor_id); packet.source_player_id = player.actor_id; actor.receive_damage(packet)
+			"survive", "time_route", "avoid_neutral_damage": success.tick(objective.duration_seconds + 0.1)
+			"chain": success.set_progress(objective.stable_id, objective.target_count)
+		all_succeeded = all_succeeded and success.state_for(objective.stable_id).get("status") == &"succeeded"
+
+		var failure := ObjectiveController.new(); root.add_child(failure); failure.register([objective]); failure.start()
+		match objective.objective_type:
+			"rescue", "collect":
+				var actor := _spawn_objective_actor(objective, failure, player, actor_index); actor_index += 1; actor.position.y = 1015.0; actor._physics_process(0.1)
+			"escort", "protect":
+				var actor := _spawn_objective_actor(objective, failure, player, actor_index); actor_index += 1; actor.receive_damage(DamagePacket.new(99999.0, &"enemy.test"))
+			"avoid_neutral_damage": failure.notify_neutral_damage()
+			_: failure.fail(objective.stable_id)
+		all_failed = all_failed and failure.state_for(objective.stable_id).get("status") == &"failed"
+	_assert(all_succeeded, "all ten objective types succeed through their authored gameplay event path")
+	_assert(all_failed, "all ten objective types expose deterministic failure paths")
+
+	var all_hazards_executed := true
+	var hazard_index := 200
+	for hazard_id in HazardFactory.SUPPORTED:
+		player.health_component.current = player.health_component.maximum; player.shield_component.current = player.shield_component.capacity
+		var hazard := HazardFactory.create(hazard_id, hazard_index, {"players": [player], "registry": session.actor_registry, "event_bus": session.event_bus, "projectile_pool": mission.projectile_pool, "difficulty": mission.difficulty_definition, "stage_seed": session.stage_seed}); hazard_index += 1; root.add_child(hazard)
+		var durability_before := player.health_component.current + player.shield_component.current
+		var projectile_before := mission.projectile_pool.get_active_count()
+		if hazard_id in [&"hazard.asteroids", &"hazard.debris"]: hazard.position = player.position; hazard.velocity = Vector2.ZERO; hazard._physics_process(0.5)
+		elif hazard_id == &"hazard.ion_storm": hazard._physics_process(1.8)
+		elif hazard_id == &"hazard.minefield": hazard._physics_process(2.5)
+		else: hazard._physics_process(2.0)
+		var affected := player.health_component.current + player.shield_component.current < durability_before or mission.projectile_pool.get_active_count() > projectile_before
+		all_hazards_executed = all_hazards_executed and hazard is StageHazard and affected and not hazard.snapshot().is_empty()
+	_assert(all_hazards_executed, "all eight hazard types damage or pressure actors and expose checkpoint state")
+
+func _spawn_objective_actor(definition: ObjectiveDefinition, controller: ObjectiveController, player: ProductionPlayer, index: int) -> ObjectiveActor:
+	var actor := ObjectiveActor.new()
+	actor.configure_objective(definition, index, controller, {"players": [player], "registry": session.actor_registry, "event_bus": session.event_bus})
+	root.add_child(actor)
+	return actor
 
 func _test_branch_panel() -> void:
 	for ignored in 3:
@@ -107,13 +164,25 @@ func _test_failure_checkpoint(config: GameSessionConfig) -> void:
 func _test_shipping_menu(campaign: FullCampaignController) -> void:
 	var menu := MenuShell.new(); menu.configure(hub, false, campaign); root.add_child(menu); await process_frame
 	var main_text := _control_text(menu)
-	_assert(["Continue", "Campaign Map — Operations 1–6", "Modes", "Hangar & Progression", "Codex", "Profiles", "Online Co-op", "Settings", "Credits", "Quit"].all(func(label): return label in main_text), "shipping menu exposes every supported front-end destination")
+	_assert(["Continue", "Campaign Map — Operations 1–6", "Modes", "Hangar & Progression", "Codex", "Profiles", "Online Co-op", "Settings", "Support & Diagnostics", "Credits", "Quit"].all(func(label): return label in main_text), "shipping menu exposes every supported front-end destination")
 	var registered := true
-	for page in [&"modes", &"hangar", &"inventory", &"skills", &"upgrades", &"codex", &"profiles", &"settings", &"online", &"credits"]:
+	for page in [&"modes", &"hangar", &"inventory", &"skills", &"upgrades", &"codex", &"profiles", &"settings", &"online", &"support", &"credits"]:
 		menu.show_page(page, false); await process_frame
 		if "This page has not been registered." in _control_text(menu): registered = false
-	_assert(registered and menu.current_page == &"credits", "mode, progression, codex, profile, settings, online-gate, and credits pages build through shipping UI")
+	_assert(registered and menu.current_page == &"credits", "mode, progression, codex, profile, settings, support, online-gate, and credits pages build through shipping UI")
 	menu.queue_free(); await process_frame
+
+func _test_mode_lifecycles(config: GameSessionConfig) -> void:
+	var required_modes := [&"arcade", &"score_attack", &"boss_rush", &"boss_practice", &"survival", &"endless", &"time_attack", &"daily_challenge", &"weekly_challenge", &"mutator", &"training"]
+	var catalog := ModeCatalog.all()
+	_assert(required_modes.all(func(mode_id): return catalog.has(mode_id)), "shipping mode catalog exposes every promised local mode lifecycle")
+	var source := StageGraphGenerator.new().generate(config.mission_definition, config.stage_seed, 50)
+	var boss_practice := ModeStagePlanAdapter.adapt(source, &"boss_practice")
+	var boss_rush := ModeStagePlanAdapter.adapt(source, &"boss_rush")
+	var survival := ModeStagePlanAdapter.adapt(source, &"survival")
+	var practice_categories := boss_practice.main_route.map(func(node_id): return StringName(boss_practice.node_for(node_id).category))
+	var rush_categories := boss_rush.main_route.map(func(node_id): return StringName(boss_rush.node_for(node_id).category))
+	_assert(practice_categories == [&"boss"] and &"miniboss" in rush_categories and &"boss" in rush_categories and not survival.main_route.is_empty(), "boss practice, boss rush, survival, endless, and training receive executable specialized stage plans")
 
 func _control_text(node: Node) -> PackedStringArray:
 	var result := PackedStringArray()

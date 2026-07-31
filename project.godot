@@ -7,6 +7,7 @@ run/main_scene="res://production/boot/production_boot.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/version="0.20.0"
 config/content_revision="gold-stage1-phase20"
+config/icon="res://assets_runtime/ui/galax_hero_app_icon.png"
 
 [development]
 enabled=true
@@ -14,13 +15,6 @@ diagnostics_visible=true
 
 [autoload]
 ProductionServices="*res://production/services/service_hub.gd"
-AudioCenter="*res://legacy/autoload/audio_center.gd"
-BattleServer="*res://legacy/autoload/battle_server.gd"
-EnemySpawnerData="*res://legacy/autoload/enemy_spawner_data.gd"
-LevelServer="*res://legacy/autoload/level_server.gd"
-LevelGUI="*res://legacy/autoload/level_gui.gd"
-Currency="*res://legacy/autoload/currency.gd"
-GameServer="*res://legacy/autoload/game_server.gd"
 
 [display]
 window/size/viewport_width=540

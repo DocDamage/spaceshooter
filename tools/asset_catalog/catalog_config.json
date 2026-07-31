@@ -11,6 +11,41 @@
     "audio": "short_sfx",
     "uncategorized": "pixel_art"
   },
+  "project_assets": [
+    {
+      "source_path": "art_source/generated/galax_hero_app_icon.png",
+      "stable_id": "asset.ui.galax_hero_app_icon",
+      "normalized_filename": "galax_hero_app_icon.png",
+      "runtime_path": "res://assets_runtime/ui/galax_hero_app_icon.png",
+      "category": "ui",
+      "subcategory": "application_icon",
+      "intended_role": "application_icon",
+      "scale_class": "ui",
+      "screen_layer": "ui",
+      "palette_family": "cool_blue_gold",
+      "import_profile": "ui",
+      "license_status": "owner_created",
+      "license_source": "art_source/generated/LICENSE.txt",
+      "notes": "Project-owner-approved original generated icon; final prompt and provenance are preserved beside the source."
+    },
+    {
+      "source_path": "art_source/marketing/galax_hero_key_art_16x9.png",
+      "stable_id": "asset.marketing.galax_hero_key_art_16x9",
+      "normalized_filename": "galax_hero_key_art_16x9.png",
+      "category": "ui",
+      "subcategory": "marketing_key_art",
+      "intended_role": "store_capsule_press_header",
+      "scale_class": "background",
+      "screen_layer": "marketing",
+      "palette_family": "cool_blue_gold",
+      "import_profile": "background",
+      "import_status": "marketing_only",
+      "triage_status": "candidate",
+      "license_status": "owner_created",
+      "license_source": "art_source/marketing/LICENSE.txt",
+      "notes": "Project-owner-approved original generated 16:9 key-art master; deliberately excluded from game exports."
+    }
+  ],
   "asset_overrides": [
     {
       "source_path": "SpaceShooter/Enemies/Pirate_Fighter.png",

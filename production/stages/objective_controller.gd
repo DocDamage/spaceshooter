@@ -32,6 +32,15 @@ func progress(objective_id: StringName, amount := 1.0) -> bool:
 	if state.current >= state.target: _resolve(objective_id, true)
 	return true
 
+func set_progress(objective_id: StringName, value: float) -> bool:
+	if not _states.has(objective_id): return false
+	var state: Dictionary = _states[objective_id]
+	if state.status != &"active": return false
+	state.current = clampf(value, 0.0, float(state.target))
+	objective_updated.emit(objective_id, state.current, state.target)
+	if state.current >= state.target: _resolve(objective_id, true)
+	return true
+
 func notify_neutral_damage() -> void:
 	for objective_id in _definitions:
 		var definition: ObjectiveDefinition = _definitions[objective_id]
@@ -45,7 +54,7 @@ func fail(objective_id: StringName) -> bool:
 func tick(delta: float) -> void:
 	for objective_id in _definitions:
 		var definition: ObjectiveDefinition = _definitions[objective_id]
-		if _states[objective_id].status == &"active" and definition.objective_type in ["survive", "time_route"]:
+		if _states[objective_id].status == &"active" and definition.objective_type in ["survive", "time_route", "avoid_neutral_damage"]:
 			progress(objective_id, delta)
 
 func required_complete(objective_ids: Array[StringName] = []) -> bool:
@@ -76,4 +85,4 @@ func _resolve(objective_id: StringName, succeeded: bool) -> void:
 	objective_resolved.emit(objective_id, succeeded, definition.reward.duplicate(true) if succeeded else {}, hook)
 
 func _target_for(definition: ObjectiveDefinition) -> float:
-	return definition.duration_seconds if definition.objective_type in ["survive", "time_route"] else float(definition.target_count)
+	return definition.duration_seconds if definition.objective_type in ["survive", "time_route", "avoid_neutral_damage"] else float(definition.target_count)

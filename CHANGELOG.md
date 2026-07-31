@@ -8,6 +8,15 @@ All notable player-visible and release-engineering changes are recorded here. Ve
 
 - End-to-end completion and release-hardening work based on the 2026-07-31 execution plan.
 - Reproducible verification/export runner, pinned CI, release preset, repository policy, and product ADRs.
+- Executable objective/hazard matrix, eleven specialized local modes, deterministic daily/weekly challenges, local co-op join/ready gating, and pseudolocalization/RTL layout audits.
+- Project-owned application icon and 16:9 key-art master with machine-readable provenance.
+- Player-triggered privacy-safe diagnostics export and Support & Diagnostics menu.
+- Development, QA, Demo, Release Candidate, and Release profiles; exported profile/load/Stage 1 smokes; Authenticode hook; release manifest; SPDX SBOM; versioned ZIP and checksums.
+
+### Fixed
+
+- Exported builds now resolve Godot `.tres.remap` entries during content discovery; previously the editor passed while disk-authored ships and enemies were absent after export.
+- Legacy compatibility facades are isolated to the smoke harness and excluded from shipping exports.
 
 ## [0.20.0] - 2026-07-31
 

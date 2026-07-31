@@ -42,6 +42,7 @@ SOURCE_EXTENSIONS = {
 SOURCE_ONLY_EXTENSIONS = {".psd", ".eps", ".scml", ".ai", ".ase", ".aseprite", ".flp"}
 RASTER_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".webp"}
 AUDIO_EXTENSIONS = {".wav", ".ogg", ".mp3", ".flac", ".mid"}
+TRIAGE_STATUSES = {"approved", "candidate", "duplicate", "source_only", "rejected_style", "rejected_quality", "license_hold"}
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -170,6 +171,12 @@ def load_overrides(config: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return {entry["source_path"]: entry for entry in config.get("asset_overrides", [])}
 
 
+def resolve_source_path(item: dict[str, Any], source_root: Path) -> Path:
+    if item.get("source_scope") == "project":
+        return PROJECT_ROOT / item["source_path"]
+    return source_root / item["source_path"]
+
+
 def build_manifest(source_root: Path, config: dict[str, Any]) -> dict[str, Any]:
     records: list[dict[str, Any]] = []
     by_hash: dict[str, str] = {}
@@ -215,6 +222,7 @@ def build_manifest(source_root: Path, config: dict[str, Any]) -> dict[str, Any]:
             "original_filename": path.name,
             "normalized_filename": slug(path.stem) + path.suffix.lower(),
             "source_path": relative,
+            "source_scope": "library",
             "runtime_path": "",
             "file_type": path.suffix.lower().lstrip("."),
             "dimensions": dimensions,
@@ -249,6 +257,68 @@ def build_manifest(source_root: Path, config: dict[str, Any]) -> dict[str, Any]:
         override = overrides.get(relative)
         if override:
             record.update({key: value for key, value in override.items() if key != "source_path"})
+        if record["import_status"] == "approved":
+            record["triage_status"] = "approved"
+        elif record["license_status"] in {"missing", "needs_review"} or not record["commercial_use"]:
+            record["triage_status"] = "license_hold"
+        elif record["duplicate_of"]:
+            record["triage_status"] = "duplicate"
+        elif path.suffix.lower() in SOURCE_ONLY_EXTENSIONS:
+            record["triage_status"] = "source_only"
+        else:
+            record["triage_status"] = "candidate"
+        records.append(record)
+    for project_entry in config.get("project_assets", []):
+        relative = Path(project_entry["source_path"]).as_posix()
+        path = PROJECT_ROOT / relative
+        if not path.is_file():
+            raise FileNotFoundError(f"configured project asset does not exist: {path}")
+        digest = sha256(path)
+        dimensions, embedded_frames = image_info(path)
+        category = project_entry.get("category", infer_category(path))
+        stable_id = project_entry["stable_id"]
+        import_status = project_entry.get("import_status", "approved")
+        if stable_id in used_ids:
+            raise ValueError(f"duplicate configured project asset ID: {stable_id}")
+        used_ids.add(stable_id)
+        record = {
+            "stable_id": stable_id,
+            "original_filename": path.name,
+            "normalized_filename": project_entry.get("normalized_filename", slug(path.stem) + path.suffix.lower()),
+            "source_path": relative,
+            "source_scope": "project",
+            "runtime_path": project_entry.get("runtime_path", ""),
+            "file_type": path.suffix.lower().lstrip("."),
+            "dimensions": dimensions,
+            "frame_count": embedded_frames,
+            "animation_names": [],
+            "animation": None,
+            "faction": project_entry.get("faction", "neutral"),
+            "category": category,
+            "subcategory": project_entry.get("subcategory", ""),
+            "intended_role": project_entry.get("intended_role", category),
+            "collision_recommendation": "none",
+            "scale_class": project_entry.get("scale_class", "ui"),
+            "visual_scale": 1.0,
+            "collision_scale": 1.0,
+            "anchor": [0.5, 0.5],
+            "orientation": "not_applicable",
+            "screen_layer": project_entry.get("screen_layer", "ui"),
+            "pseudo_altitude": "not_applicable",
+            "palette_family": project_entry.get("palette_family", "cool_blue_gold"),
+            "license_source": project_entry["license_source"],
+            "license_status": project_entry.get("license_status", "owner_created"),
+            "commercial_use": True,
+            "attribution_required": False,
+            "import_status": import_status,
+            "validation_status": "valid",
+            "import_profile": project_entry.get("import_profile", "ui"),
+            "content_definition_links": project_entry.get("content_definition_links", []),
+            "duplicate_of": "",
+            "sha256": digest,
+            "notes": project_entry.get("notes", ""),
+            "triage_status": "approved" if import_status == "approved" else project_entry.get("triage_status", "candidate"),
+        }
         records.append(record)
     return {
         "schema_version": SCHEMA_VERSION,
@@ -265,7 +335,7 @@ def write_thumbnails(manifest: dict[str, Any], source_root: Path, output: Path) 
     thumb_dir.mkdir(parents=True, exist_ok=True)
     count = 0
     for record in manifest["assets"]:
-        source = source_root / record["source_path"]
+        source = resolve_source_path(record, source_root)
         if source.suffix.lower() not in RASTER_EXTENSIONS:
             continue
         destination = thumb_dir / (slug(record["stable_id"]) + ".png")
@@ -321,6 +391,33 @@ def write_catalog_html(manifest: dict[str, Any], output: Path) -> None:
     (output / "catalog.html").write_text(page, encoding="utf-8")
 
 
+def write_runtime_reports(manifest: dict[str, Any], output: Path) -> None:
+    approved = [item for item in manifest["assets"] if item.get("import_status") == "approved"]
+    triage_counts: dict[str, int] = {}
+    license_groups: dict[str, dict[str, Any]] = {}
+    for item in manifest["assets"]:
+        status = item.get("triage_status", "")
+        triage_counts[status] = triage_counts.get(status, 0) + 1
+    for item in approved:
+        key = "%s | %s" % (item.get("license_status", ""), item.get("license_source", ""))
+        group = license_groups.setdefault(key, {"license_status": item.get("license_status", ""), "license_source": item.get("license_source", ""), "asset_ids": []})
+        group["asset_ids"].append(item["stable_id"])
+    report = {
+        "schema_version": 1,
+        "asset_count": len(manifest["assets"]),
+        "triage_counts": dict(sorted(triage_counts.items())),
+        "approved_count": len(approved),
+        "approved_runtime_bytes": sum((PROJECT_ROOT / item["runtime_path"].removeprefix("res://")).stat().st_size for item in approved if (PROJECT_ROOT / item["runtime_path"].removeprefix("res://")).is_file()),
+        "license_groups": list(license_groups.values()),
+        "approved_assets": [{key: item.get(key) for key in ("stable_id", "source_path", "runtime_path", "sha256", "license_status", "license_source", "attribution_required", "content_definition_links")} for item in approved],
+    }
+    write_json(output / "runtime_asset_report.json", report)
+    lines = ["# Runtime Asset Credits Report", "", "Generated from the approved asset manifest. Exact hashes and paths remain authoritative in `manifest.json`.", ""]
+    for group in report["license_groups"]:
+        lines.extend(["## %s" % group["license_status"], "", "License evidence: `%s`" % group["license_source"], "", *["- `%s`" % stable_id for stable_id in group["asset_ids"]], ""])
+    (output / "runtime_asset_credits.md").write_text("\n".join(lines), encoding="utf-8")
+
+
 def inventory(args: argparse.Namespace) -> int:
     config = load_json(CONFIG_PATH)
     source = Path(args.source).resolve()
@@ -334,6 +431,7 @@ def inventory(args: argparse.Namespace) -> int:
     write_json(output / "manifest.json", manifest)
     write_json(output / "atlas_candidates.json", {"schema_version": 1, "groups": atlas_candidates(manifest)})
     write_catalog_html(manifest, output)
+    write_runtime_reports(manifest, output)
     print(f"Inventoried {manifest['asset_count']} assets; generated {thumbnail_count} thumbnails in {output}")
     return 0
 
@@ -368,7 +466,7 @@ def approve(args: argparse.Namespace) -> int:
             continue
         relative_destination = destination_value.removeprefix("res://assets_runtime/")
         try:
-            safe_copy(source_root / item["source_path"], runtime_root / relative_destination)
+            safe_copy(resolve_source_path(item, source_root), runtime_root / relative_destination)
             approved += 1
         except (OSError, FileExistsError) as error:
             errors.append(f"{item['stable_id']}: {error}")
@@ -483,13 +581,21 @@ def validate(args: argparse.Namespace) -> int:
     errors: list[str] = []
     warnings: list[str] = []
     ids: set[str] = set()
+    runtime_names: set[str] = set()
     source_root = Path(manifest["source_root"])
+    content_ids: set[str] = set()
+    for path in (PROJECT_ROOT / "production" / "content").rglob("*.tres"):
+        content_ids.update(re.findall(r'stable_id\s*=\s*&"([^"]+)"', path.read_text(encoding="utf-8", errors="ignore")))
     for item in manifest["assets"]:
         stable_id = item.get("stable_id", "")
         if not stable_id or stable_id in ids:
             errors.append(f"invalid or duplicate stable ID: {stable_id}")
         ids.add(stable_id)
-        if not (source_root / item["source_path"]).is_file():
+        if item.get("triage_status") not in TRIAGE_STATUSES:
+            errors.append(f"asset has invalid or missing triage status: {stable_id}")
+        source_file = resolve_source_path(item, source_root)
+        source_required = bool(getattr(args, "require_source", False)) or item.get("source_scope") == "project"
+        if source_required and not source_file.is_file():
             errors.append(f"missing source file: {item['source_path']}")
         if item.get("license_status") == "missing":
             warnings.append(f"missing license: {item['source_path']}")
@@ -501,6 +607,23 @@ def validate(args: argparse.Namespace) -> int:
                 errors.append(f"approved asset has invalid runtime path: {stable_id}")
             elif not (PROJECT_ROOT / runtime_path.removeprefix("res://")).is_file():
                 errors.append(f"approved runtime file is missing: {runtime_path}")
+            else:
+                runtime_file = PROJECT_ROOT / runtime_path.removeprefix("res://")
+                if runtime_file.name.lower() in runtime_names: errors.append(f"duplicate approved runtime filename: {runtime_file.name}")
+                runtime_names.add(runtime_file.name.lower())
+                if sha256(runtime_file) != item.get("sha256"):
+                    errors.append(f"approved runtime hash mismatch: {stable_id}")
+                if source_file.is_file() and sha256(source_file) != item.get("sha256"):
+                    errors.append(f"approved source hash mismatch: {stable_id}")
+                if item.get("file_type") in {"png", "jpg", "jpeg", "gif", "webp"} and item.get("dimensions") and max(item["dimensions"]) > 4096:
+                    errors.append(f"approved texture exceeds 4096px limit: {stable_id}")
+                if item.get("file_type") in {"wav", "ogg", "mp3", "flac"} and runtime_file.stat().st_size > 25 * 1024 * 1024:
+                    errors.append(f"approved audio exceeds 25 MiB limit: {stable_id}")
+                import_sidecar = Path(str(runtime_file) + ".import")
+                if item.get("file_type") in {"png", "jpg", "jpeg", "gif", "webp", "wav", "ogg", "mp3"} and not import_sidecar.is_file():
+                    errors.append(f"approved runtime import sidecar is missing: {runtime_path}.import")
+            for content_id in item.get("content_definition_links", []):
+                if content_id not in content_ids: errors.append(f"approved asset links missing content definition {content_id}: {stable_id}")
     for path in PROJECT_ROOT.rglob("*"):
         if path.is_file() and path.suffix.lower() in SOURCE_ONLY_EXTENSIONS:
             errors.append(f"source-only format inside export project: {relative_posix(path, PROJECT_ROOT)}")
@@ -570,6 +693,7 @@ def parser() -> argparse.ArgumentParser:
     validate_parser = commands.add_parser("validate", help="validate catalog and runtime approvals")
     validate_parser.add_argument("--manifest", default=str(DEFAULT_OUTPUT / "manifest.json"))
     validate_parser.add_argument("--release", action="store_true")
+    validate_parser.add_argument("--require-source", action="store_true", help="require the external editable source library to be mounted")
     validate_parser.set_defaults(handler=validate)
     search_parser = commands.add_parser("search", help="search generated catalog fields")
     search_parser.add_argument("terms", nargs="+")

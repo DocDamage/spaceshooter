@@ -46,11 +46,14 @@ func _scan_directory(path: String, definitions: Array[ContentDefinition], source
 		if directory.current_is_dir():
 			if not entry.begins_with("."):
 				_scan_directory(child_path, definitions, source_paths)
-		elif entry.get_extension() in ["tres", "res"]:
-			var resource := ResourceLoader.load(child_path)
+		elif entry.get_extension() in ["tres", "res"] or entry.ends_with(".tres.remap") or entry.ends_with(".res.remap"):
+			# Exported packs expose remap sidecars during directory enumeration,
+			# while ResourceLoader still expects the original resource path.
+			var load_path := child_path.trim_suffix(".remap")
+			var resource := ResourceLoader.load(load_path)
 			if resource is ContentDefinition:
 				definitions.append(resource)
-				source_paths[resource] = child_path
+				source_paths[resource] = load_path
 		entry = directory.get_next()
 	directory.list_dir_end()
 

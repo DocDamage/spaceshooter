@@ -18,6 +18,10 @@ func _ready() -> void:
 	line_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; line_label.size_flags_vertical = Control.SIZE_EXPAND_FILL; box.add_child(line_label)
 	box.add_child(choice_box)
 	continue_button.text = "CONTINUE"; continue_button.custom_minimum_size.y = 52; continue_button.pressed.connect(_advance); box.add_child(continue_button)
+	var hub := get_node_or_null("/root/ProductionServices") as ServiceHub
+	if hub != null:
+		hub.localization.localize_tree(self)
+		var style := StyleBoxFlat.new(); style.bg_color = Color(0.01, 0.02, 0.06, float(hub.settings.get_setting(&"subtitle_background_opacity", 0.82))); add_theme_stylebox_override("panel", style)
 	hide()
 
 func bind(dialogue_adapter: DialogueManagerAdapter) -> void:
@@ -30,8 +34,10 @@ func bind(dialogue_adapter: DialogueManagerAdapter) -> void:
 	if DisplayServer.get_name() == "headless": adapter.dialogue_started.connect(func(_id, _context): call_deferred("_finish_headless"))
 
 func _on_line_presented(line: Dictionary) -> void:
-	speaker_label.text = String(line.get("speaker", "COMMAND")).to_upper()
-	line_label.text = String(line.get("text", ""))
+	var hub := get_node_or_null("/root/ProductionServices") as ServiceHub
+	var speaker := String(line.get("speaker", "COMMAND")).to_upper(); var body := String(line.get("text", ""))
+	speaker_label.text = hub.localization.render(speaker) if hub != null else speaker
+	line_label.text = hub.localization.render(body) if hub != null else body
 	continue_button.disabled = not line.get("choices", []).is_empty()
 	continue_button.call_deferred("grab_focus")
 

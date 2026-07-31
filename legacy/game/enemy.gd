@@ -33,7 +33,7 @@ func _physics_process(delta: float) -> void:
 
 func take_damage(amount: int) -> void:
 	health -= amount
-	BattleServer.damage_dealt += amount
+	LegacyServiceLocator.require(self, &"LegacyBattleServer").damage_dealt += amount
 	if health <= 0:
 		defeated.emit(35, 10)
 		queue_free()

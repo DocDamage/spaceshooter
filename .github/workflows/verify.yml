@@ -55,6 +55,12 @@ jobs:
           ./tools/run_project.ps1 export-debug -GodotPath $env:GODOT_EXE
           ./tools/run_project.ps1 export-release -GodotPath $env:GODOT_EXE
 
+      - name: Smoke exported executables and package release evidence
+        shell: pwsh
+        run: |
+          ./tools/run_project.ps1 export-smoke -GodotPath $env:GODOT_EXE
+          ./tools/run_project.ps1 package-release -GodotPath $env:GODOT_EXE
+
       - name: Retain versioned build artifacts
         uses: actions/upload-artifact@v4
         with:

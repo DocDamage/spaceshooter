@@ -10,6 +10,19 @@ func _check(condition: bool, message: String) -> void:
 		failures.append(message)
 
 func _run() -> void:
+	var legacy_services := {
+		&"LegacyAudioCenter": "res://legacy/autoload/audio_center.gd",
+		&"LegacyBattleServer": "res://legacy/autoload/battle_server.gd",
+		&"LegacyEnemySpawnerData": "res://legacy/autoload/enemy_spawner_data.gd",
+		&"LegacyLevelServer": "res://legacy/autoload/level_server.gd",
+		&"LegacyLevelGUI": "res://legacy/autoload/level_gui.gd",
+		&"LegacyCurrency": "res://legacy/autoload/currency.gd",
+		&"LegacyGameServer": "res://legacy/autoload/game_server.gd",
+	}
+	for service_name in legacy_services:
+		var service: Node = load(legacy_services[service_name]).new()
+		service.name = String(service_name)
+		get_tree().root.add_child(service)
 	var stage_script := load("res://legacy/game/stage.gd")
 	var stage: MigrationStage = stage_script.new()
 	add_child(stage)
@@ -22,13 +35,16 @@ func _run() -> void:
 	_check(stage.player.health == 90 and stage.player.shield == 0, "overflow damage reaches hull")
 	stage.player.add_experience(60)
 	_check(stage.player.level == 2, "experience produces a level-up")
-	Currency.reset()
-	Currency.add(10)
-	_check(Currency.get_main_currency() == 10, "currency increments")
+	var currency = get_node("/root/LegacyCurrency")
+	currency.reset()
+	currency.add(10)
+	_check(currency.get_main_currency() == 10, "currency increments")
 	stage.complete_stage()
-	_check(LevelServer.completed_stages.has(MigrationStage.STAGE_ID), "stage completion recorded")
-	_check(GameServer != null and AudioCenter != null and BattleServer != null and EnemySpawnerData != null and LevelGUI != null, "legacy autoload facades available")
+	_check(get_node("/root/LegacyLevelServer").completed_stages.has(MigrationStage.STAGE_ID), "stage completion recorded")
+	_check(legacy_services.keys().all(func(service_name): return get_tree().root.has_node(NodePath(String(service_name)))), "legacy facades are isolated to the smoke harness")
 	stage.queue_free()
+	for service_name in legacy_services:
+		get_node(NodePath("/root/%s" % service_name)).queue_free()
 	if failures.is_empty():
 		print("PHASE1_SMOKE_PASS")
 		get_tree().quit(0)

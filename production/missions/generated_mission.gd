@@ -33,6 +33,8 @@ var score_tracker: MissionScoreTracker
 var mission_hud: MissionHUD
 var _finished_enemy_ids: Dictionary = {}
 var _retarget_elapsed := 0.0
+var _mode_lives_remaining := 0
+var _mode_continues_used := 0
 
 func configure(game_session: GameSession, content_database: ContentDatabase) -> void:
 	session = game_session
@@ -42,6 +44,7 @@ func _ready() -> void:
 	if session == null or database == null or session.config.mission_definition.recipe == null:
 		push_error("GeneratedMission requires a configured Phase 10 mission")
 		return
+	_mode_lives_remaining = int(session.config.mode_rules.get("starting_lives", 0))
 	projectile_pool = ProjectilePoolManager.new()
 	projectile_pool.name = "ProjectilePoolManager"
 	add_child(projectile_pool)
@@ -64,12 +67,16 @@ func _ready() -> void:
 	enemy_pool.enemy_damaged.connect(_on_pooled_enemy_damaged)
 	difficulty_definition = database.get_definition(session.difficulty_profile, &"difficulty_profile") as DifficultyProfileDefinition
 	if difficulty_definition == null: difficulty_definition = database.get_definition(StringName("difficulty.%s" % session.difficulty_profile), &"difficulty_profile") as DifficultyProfileDefinition
+	if difficulty_definition != null and float(session.config.mode_rules.get("projectile_speed_multiplier", 1.0)) != 1.0:
+		difficulty_definition = difficulty_definition.duplicate(true) as DifficultyProfileDefinition
+		difficulty_definition.projectile_speed_multiplier *= float(session.config.mode_rules.projectile_speed_multiplier)
 	effects_pool = EffectsPoolManager.new(); effects_pool.name = "EffectsPoolManager"; add_child(effects_pool)
 	screen_effects = ScreenEffectsController.new(); screen_effects.name = "ScreenEffects"; screen_effects.configure(session.services.settings); add_child(screen_effects)
 	session.services.audio.play_music(STAGE_ONE_MUSIC, true)
 	_spawn_players()
 	_spawn_selected_wingman()
 	score_tracker = MissionScoreTracker.new(); score_tracker.name = "MissionScoreTracker"; add_child(score_tracker)
+	score_tracker.score_changed.connect(_on_score_changed)
 	if session.mission_state.has("score_snapshot"): score_tracker.restore(session.mission_state.score_snapshot)
 	if session.local_coop != null:
 		cooperative_hud = CooperativeHUD.new(); cooperative_hud.name = "CooperativeHUD"; cooperative_hud.configure(session.local_coop); add_child(cooperative_hud)
@@ -84,6 +91,7 @@ func _ready() -> void:
 	if not entry_id.is_empty(): session.services.story.start_dialogue(entry_id, {"stage": session.config.mission_definition.stage_number})
 	camera_rig = PresentationCameraRig.new(); camera_rig.name = "PresentationCameraRig"; camera_rig.configure(session.services.settings); camera_rig.set_targets(player_actors); camera_rig.enabled = true; add_child(camera_rig)
 	var plan := StageGraphGenerator.new().generate(session.config.mission_definition, session.stage_seed, int(session.config.mode_rules.get("difficulty_rating", difficulty_definition.rating if difficulty_definition != null else 50)))
+	if plan != null: plan = ModeStagePlanAdapter.adapt(plan, StringName(session.config.mode_rules.get("mode_id", "")))
 	stage_runtime = StageRuntime.new()
 	stage_runtime.name = "StageRuntime"
 	var runtime_context := {"projectile_pool": projectile_pool, "enemy_pool": enemy_pool, "players": player_actors, "difficulty": difficulty_definition, "registry": session.actor_registry, "event_bus": session.event_bus, "stage_seed": session.stage_seed, "score_tracker": score_tracker, "session": session}
@@ -112,12 +120,14 @@ func _spawn_players() -> void:
 		var secondary := _weapon_from_loadout(loadout, [&"secondary_id", &"secondary"], &"weapon.spread_cannon")
 		var heavy := _weapon_from_loadout(loadout, [&"heavy_id", &"heavy_weapon", &"heavy"], &"weapon.missile_launcher")
 		var spell := database.get_definition(_id_from_loadout(loadout, [&"spell_id", &"spell"], &"spell.aegis"), &"spell") as SpellDefinition
+		if bool(session.config.mode_rules.get("limited_spells", false)): spell = null
 		var melee := database.get_definition(_id_from_loadout(loadout, [&"melee_id", &"melee"], &"melee.energy_blade"), &"melee") as MeleeDefinition
 		var super_mode := database.get_definition(_id_from_loadout(loadout, [&"super_id", &"super"], &"super.overdrive"), &"super_mode") as SuperModeDefinition
 		var player := ProductionPlayer.new()
 		var actor_id := StringName("player.online_%d" % (player_index + 1)) if online else StringName("player.local_%d" % (player_index + 1))
 		var input_index := 0 if online else player_index
 		player.configure(actor_id, input_index, ship, primary, session.actor_registry, session.event_bus, session.services.input)
+		if not bool(session.config.mode_rules.get("campaign", true)): player.pooled = true
 		player.position = Vector2(270.0 + (float(player_index) - 0.5) * 60.0, 820.0)
 		if session.local_coop != null:
 			var participant: Dictionary = session.local_coop.roster.participants[player_index]
@@ -126,7 +136,7 @@ func _spawn_players() -> void:
 		add_child(player)
 		player_actors.append(player)
 		player.damage_resolved.connect(_on_player_damaged)
-		player.destroyed.connect(_on_player_destroyed)
+		player.destroyed.connect(_on_player_destroyed.bind(player))
 		if online:
 			session.online_coop.register_player(player_index + 1, player.position, ship.move_speed)
 			if player_index != local_online_index: player.set_physics_process(false)
@@ -149,6 +159,10 @@ func _spawn_players() -> void:
 			if profile != null: player.apply_progression(profile, _equipment_modifiers(profile), _skill_modifiers(profile), [], [], session.config.mode_rules.get("player_stat_modifiers", {}))
 		var restored_power_stacks := int(session.temporary_upgrade_state.get("weapon_power_stacks", 0))
 		if restored_power_stacks > 0: player.grant_temporary_drop(&"temporary_weapon_power", restored_power_stacks)
+		if StringName(session.config.mode_rules.get("mode_id", "")) == &"training":
+			var training: Dictionary = session.config.mode_rules.get("training_options", {})
+			if bool(training.get(&"invulnerability", false)): player.grant_invulnerability(INF)
+			if bool(training.get(&"infinite_resources", false)) and player.weapon_runtime != null: player.weapon_runtime.energy_recharge = 9999.0
 
 func _id_from_loadout(loadout: Dictionary, keys: Array, fallback: StringName) -> StringName:
 	for key in keys:
@@ -233,9 +247,6 @@ func _on_pooled_enemy_defeated(_enemy: ProductionEnemy, actor_id: StringName, cr
 	_spawn_explosion(_enemy.global_position, 0.72)
 	session.reward_state.credits = int(session.reward_state.get("credits", 0)) + credits
 	_notify_enemy_finished(actor_id)
-	if stage_runtime.current_segment != null:
-		for objective in stage_runtime.current_segment.definition.objectives:
-			if objective.objective_type == "destroy_marked": stage_runtime.objectives.progress(objective.stable_id)
 
 func _on_pooled_enemy_rewards(_enemy: ProductionEnemy, source_player_id: StringName, score: int, experience: int, drops: Array[Dictionary]) -> void:
 	if source_player_id in wingman_actors.map(func(wingman): return wingman.actor_id) and not player_actors.is_empty(): source_player_id = player_actors[0].actor_id
@@ -277,6 +288,11 @@ func _on_player_damaged(_packet: DamagePacket, result: DamageResult) -> void:
 	if score_tracker != null: score_tracker.break_chain(&"player_hit")
 	session.services.audio.play(SFX_HIT, &"Player", 3, 0.035)
 
+func _on_score_changed(_score: int, chain: int, _multiplier: float) -> void:
+	if stage_runtime == null or stage_runtime.current_segment == null: return
+	for objective in stage_runtime.current_segment.definition.objectives:
+		if objective.objective_type == "chain": stage_runtime.objectives.set_progress(objective.stable_id, chain)
+
 func _on_pooled_enemy_fired(enemy: ProductionEnemy, _pattern_id: StringName, projectile_count: int) -> void:
 	if projectile_count > 0: session.services.audio.play(SFX_ENEMY_SHOT, &"Enemies", 1, 0.055, enemy.global_position)
 
@@ -284,10 +300,41 @@ func _on_pooled_enemy_damaged(enemy: ProductionEnemy, _packet: DamagePacket, res
 	if result.health_damage + result.shield_damage <= 0.0: return
 	session.services.audio.play(SFX_HIT, &"Enemies", 1, 0.045, enemy.global_position)
 
-func _on_player_destroyed(_actor_id: StringName, _source_actor_id: StringName) -> void:
+func _on_player_destroyed(_actor_id: StringName, _source_actor_id: StringName, player_actor: ProductionPlayer = null) -> void:
 	if session.local_coop == null:
+		if not bool(session.config.mode_rules.get("campaign", true)) and is_instance_valid(player_actor):
+			_handle_mode_defeat(player_actor)
+			return
 		var any_active := player_actors.any(func(player): return is_instance_valid(player) and player.active)
 		if not any_active: session.complete_session(false, &"all_players_destroyed")
+
+func _handle_mode_defeat(player_actor: ProductionPlayer) -> void:
+	var starting_lives := int(session.config.mode_rules.get("starting_lives", 0))
+	var continue_limit := int(session.config.mode_rules.get("continue_limit", 0))
+	if not session.mission_state.has("deaths"): session.mission_state.deaths = 0
+	session.mission_state.deaths = int(session.mission_state.deaths) + 1
+	if float(session.config.mode_rules.get("death_penalty_seconds", 0.0)) > 0.0:
+		session.mission_state.time_penalty = float(session.mission_state.get("time_penalty", 0.0)) + float(session.config.mode_rules.death_penalty_seconds)
+	if starting_lives == 0:
+		call_deferred("_respawn_mode_player", player_actor)
+		return
+	_mode_lives_remaining -= 1
+	if _mode_lives_remaining > 0:
+		call_deferred("_respawn_mode_player", player_actor)
+		return
+	if continue_limit < 0 or _mode_continues_used < continue_limit:
+		_mode_continues_used += 1
+		_mode_lives_remaining = starting_lives
+		if score_tracker != null: score_tracker.break_chain(&"continue")
+		call_deferred("_respawn_mode_player", player_actor)
+		return
+	session.complete_session(false, &"out_of_lives")
+
+func _respawn_mode_player(player_actor: ProductionPlayer) -> void:
+	if not is_instance_valid(player_actor) or session.mission_state.get("status") != &"active": return
+	player_actor.position = session.safe_spawn
+	player_actor.spawn_actor()
+	player_actor.grant_invulnerability(2.0)
 
 func _on_objective_resolved(_objective_id: StringName, succeeded: bool, reward: Dictionary, _dialogue_hook: StringName) -> void:
 	if succeeded and score_tracker != null: score_tracker.record_objective(reward)
@@ -295,6 +342,9 @@ func _on_objective_resolved(_objective_id: StringName, succeeded: bool, reward: 
 func _on_stage_completed() -> void:
 	if score_tracker != null:
 		session.mission_state.metrics = score_tracker.result()
+		session.mission_state.metrics.deaths = int(session.mission_state.get("deaths", 0))
+		session.mission_state.metrics.penalty_seconds = float(session.mission_state.get("time_penalty", 0.0))
+		session.mission_state.metrics.elapsed_seconds = float(session.mission_state.metrics.get("elapsed_seconds", 0.0)) + float(session.mission_state.metrics.penalty_seconds)
 		session.reward_state.score = score_tracker.score
 	session.complete_session(true)
 
@@ -339,7 +389,10 @@ func _spawn_boss(boss_id: StringName, category: StringName) -> void:
 	var gate_id := StringName("encounter.%s" % category)
 	if not stage_runtime.current_segment.acquire_external_gate(gate_id): return
 	var arena := BossArenaController.new(); arena.name = "BossArena"; arena.configure(definition.arena_profile, player_actors.size()); add_child(arena); active_boss_arena = arena
-	var spawned_boss := BossActor.new(); spawned_boss.name = "Boss_%s" % definition.stable_id; spawned_boss.configure_boss(definition, session.actor_registry, session.event_bus, arena, null, session.services.profiles.get_progression_profile().new_game_plus_cycle); active_boss = spawned_boss
+	var practice: BossPracticeSession
+	if StringName(session.config.mode_rules.get("mode_id", "")) == &"boss_practice":
+		practice = BossPracticeSession.new(); practice.configure(definition.stable_id, int(session.config.mode_rules.get("boss_practice_phase", 0)), int(session.config.mode_rules.get("difficulty_rating", 50)), session.config.loadouts[0] if not session.config.loadouts.is_empty() else {}, definition.phases.size())
+	var spawned_boss := BossActor.new(); spawned_boss.name = "Boss_%s" % definition.stable_id; spawned_boss.configure_boss(definition, session.actor_registry, session.event_bus, arena, practice, session.services.profiles.get_progression_profile().new_game_plus_cycle); active_boss = spawned_boss
 	if session.local_coop != null: active_boss.health_component.maximum *= float(session.local_coop.difficulty_profile().boss_health_multiplier); active_boss.health_component.current = active_boss.health_component.maximum
 	elif session.online_coop != null: active_boss.health_component.maximum *= float(CoopDifficultyScaler.profile(2).boss_health_multiplier); active_boss.health_component.current = active_boss.health_component.maximum
 	active_boss.position = Vector2(270, 220); active_boss.configure_combat_context(_target_player(), projectile_pool, difficulty_definition)

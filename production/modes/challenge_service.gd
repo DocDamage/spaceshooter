@@ -3,6 +3,9 @@ extends RefCounted
 
 var completion_history: Dictionary = {}
 var saved_definitions: Dictionary = {}
+var storage_path := "user://challenge_history_v1.json"
+
+func configure_storage(path: String) -> void: storage_path = path
 
 func definition_for(period: StringName, unix_time: int, content_revision := "phase17") -> Dictionary:
 	var date: Dictionary = Time.get_datetime_dict_from_unix_time(unix_time)
@@ -36,3 +39,19 @@ func restore(data: Dictionary) -> bool:
 	saved_definitions = data.get("definitions", {}).duplicate(true)
 	completion_history = data.get("completion_history", {}).duplicate(true)
 	return true
+
+func save() -> Error:
+	var directory := ProjectSettings.globalize_path(storage_path).get_base_dir()
+	var error := DirAccess.make_dir_recursive_absolute(directory)
+	if error not in [OK, ERR_ALREADY_EXISTS]: return error
+	var file := FileAccess.open(storage_path, FileAccess.WRITE)
+	if file == null: return FileAccess.get_open_error()
+	file.store_string(JSON.stringify(snapshot(), "  "))
+	return OK
+
+func load() -> Error:
+	if not FileAccess.file_exists(storage_path): return OK
+	var file := FileAccess.open(storage_path, FileAccess.READ)
+	if file == null: return FileAccess.get_open_error()
+	var parsed = JSON.parse_string(file.get_as_text())
+	return OK if parsed is Dictionary and restore(parsed) else ERR_FILE_CORRUPT

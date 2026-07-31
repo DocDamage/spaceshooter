@@ -54,6 +54,8 @@ func _test_catalog() -> void:
 	var approved_files_exist := true
 	var searchable_pirate_enemy := false
 	var animated_record := false
+	var project_icon_cataloged := false
+	var marketing_key_art_cataloged := false
 	for asset in assets:
 		var stable_id: String = asset.get("stable_id", "")
 		if stable_id.is_empty() or ids.has(stable_id):
@@ -69,12 +71,18 @@ func _test_catalog() -> void:
 		if asset.get("animation") is Dictionary:
 			var animation: Dictionary = asset.get("animation", {})
 			animated_record = animation.has_all(["frame_width", "frame_height", "frame_count", "rows", "columns", "fps", "loop", "event_frames", "damage_flash_compatible", "destruction_sequence"])
+		if stable_id == "asset.ui.galax_hero_app_icon":
+			project_icon_cataloged = asset.get("source_scope") == "project" and asset.get("license_status") == "owner_created" and asset.get("import_status") == "approved"
+		if stable_id == "asset.marketing.galax_hero_key_art_16x9":
+			marketing_key_art_cataloged = asset.get("source_scope") == "project" and asset.get("import_status") == "marketing_only" and String(asset.get("runtime_path", "")).is_empty()
 	_assert(unique_ids, "catalog stable IDs are present and unique")
-	_assert(approved_count >= 7, "initial approved runtime asset set is cataloged")
+	_assert(approved_count >= 23, "approved runtime asset set is cataloged")
 	_assert(approved_are_licensed, "approved assets have verified commercial-use status")
 	_assert(approved_files_exist, "approved normalized runtime copies exist")
 	_assert(searchable_pirate_enemy, "assets can be found by faction and role")
 	_assert(animated_record, "animation metadata format covers layout, timing, events, flash, and destruction")
+	_assert(project_icon_cataloged, "project-owned application icon has source, license, approval, and runtime provenance")
+	_assert(marketing_key_art_cataloged, "project-owned key art is cataloged as marketing-only and cannot enter runtime approval")
 	_assert(FileAccess.file_exists("res://tools/asset_catalog/generated/catalog.html"), "searchable thumbnail catalog exists")
 	_assert(FileAccess.file_exists("res://tools/asset_catalog/generated/atlas_candidates.json"), "atlas candidates are generated")
 
@@ -95,3 +103,6 @@ func _test_export_exclusions() -> void:
 	var text := file.get_as_text() if file != null else ""
 	for extension in ["psd", "eps", "scml", "ai", "aseprite"]:
 		_assert("**/*.%s" % extension in text, "export excludes source format: %s" % extension)
+	for profile in ["Windows Desktop (Development)", "Windows Desktop (QA)", "Windows Desktop (Demo)", "Windows Desktop (Release Candidate)", "Windows Desktop (Release)"]:
+		_assert(profile in text, "export profile exists: %s" % profile)
+	_assert("application/icon=\"res://assets_runtime/ui/galax_hero_app_icon.png\"" in text, "shipping application icon is wired into export metadata")

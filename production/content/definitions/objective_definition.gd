@@ -20,5 +20,5 @@ func validate_definition() -> PackedStringArray:
 	var errors := super()
 	if StringName(objective_type) not in TYPES: errors.append("%s has an unsupported objective type" % stable_id)
 	if target_count < 1: errors.append("%s target_count must be positive" % stable_id)
-	if objective_type in ["survive", "time_route"] and duration_seconds <= 0.0: errors.append("%s requires a duration" % stable_id)
+	if objective_type in ["survive", "time_route", "avoid_neutral_damage"] and duration_seconds <= 0.0: errors.append("%s requires a duration" % stable_id)
 	return errors

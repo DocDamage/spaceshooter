@@ -21,6 +21,7 @@ var cleared_segment_ids: Array[StringName] = []
 var route_choices: Dictionary = {}
 var runtime_context: Dictionary = {}
 var _branch_gate_id: StringName
+var _mode_segments_cleared := 0
 
 func configure(game_session: GameSession, content_database: ContentDatabase, stage_plan: StagePlan, context: Dictionary = {}) -> bool:
 	if is_inside_tree() or game_session == null or content_database == null or stage_plan == null: return false
@@ -28,7 +29,8 @@ func configure(game_session: GameSession, content_database: ContentDatabase, sta
 	database = content_database
 	plan = stage_plan
 	runtime_context = context.duplicate()
-	return StageValidator.validate(plan, session.config.mission_definition, session.config.effective_player_count()).valid
+	if bool(session.config.mode_rules.get("campaign", true)): return StageValidator.validate(plan, session.config.mission_definition, session.config.effective_player_count()).valid
+	return _validate_mode_plan()
 
 func _ready() -> void:
 	objectives = ObjectiveController.new()
@@ -84,6 +86,8 @@ func _activate_node(node_id: StringName, runtime_snapshot: Dictionary = {}) -> v
 	var difficulty := database.get_definition(session.difficulty_profile, &"difficulty_profile") as DifficultyProfileDefinition
 	if difficulty == null: difficulty = database.get_definition(StringName("difficulty.%s" % session.difficulty_profile), &"difficulty_profile") as DifficultyProfileDefinition
 	var rating := int(session.config.mode_rules.get("difficulty_rating", difficulty.rating if difficulty != null else 50))
+	if StringName(session.config.mode_rules.get("mode_id", "")) in [&"survival", &"endless"]:
+		rating = mini(100, rating + _mode_segments_cleared * int(session.config.mode_rules.get("difficulty_per_segment", 3)))
 	var definition := EncounterPackageResolver.resolve(source_definition, session.config.mission_definition, node_id, plan.seed, rating, session.config.effective_player_count())
 	current_segment = StageSegmentRuntime.new()
 	current_segment.name = "Segment_%s" % definition.stable_id
@@ -124,6 +128,12 @@ func _on_segment_completed(segment_id: StringName) -> void:
 	finished.unload()
 	segment_cleared.emit(segment_id)
 	var next_id := _next_node_id()
+	_mode_segments_cleared += 1
+	var mode_id := StringName(session.config.mode_rules.get("mode_id", ""))
+	if next_id.is_empty() and mode_id in [&"survival", &"endless"]:
+		var target := maxi(1, int(session.config.mode_rules.get("survival_segments", 12)))
+		if mode_id == &"endless" or _mode_segments_cleared < target:
+			next_id = plan.main_route[0]
 	call_deferred("_activate_node", next_id)
 
 func _on_checkpoint_ready(kind: StringName, safe_spawn: Vector2, runtime_snapshot: Dictionary) -> void:
@@ -151,3 +161,17 @@ func _next_node_id() -> StringName:
 	if route_index >= 0 and route_index + 1 < plan.main_route.size() and plan.main_route[route_index + 1] in next_ids:
 		return plan.main_route[route_index + 1]
 	return StringName(next_ids[0])
+
+func _validate_mode_plan() -> bool:
+	if plan.nodes.is_empty() or plan.main_route.is_empty(): return false
+	var ids := {}
+	for node in plan.nodes:
+		var node_id := StringName(node.get("node_id", ""))
+		var definition := plan.definition_for(node_id)
+		if node_id.is_empty() or ids.has(node_id) or definition == null or not definition.validate_definition().is_empty(): return false
+		if session.config.effective_player_count() > 1 and not StageValidator._supports_local_players(definition, session.config.effective_player_count()): return false
+		ids[node_id] = true
+	for node in plan.nodes:
+		for next_id in node.get("next_ids", []):
+			if not ids.has(StringName(next_id)): return false
+	return true

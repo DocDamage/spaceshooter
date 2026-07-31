@@ -20,6 +20,8 @@ var services: ServiceHub
 var active_mode_id: StringName
 var active_mode_run: ModeRunController
 var mode_leaderboard := LocalLeaderboard.new()
+var challenge_service := ChallengeService.new()
+var active_challenge: Dictionary = {}
 
 func _ready() -> void:
 	_build_interface()
@@ -31,6 +33,7 @@ func _ready() -> void:
 		status_label.text = "Production services failed to initialize"
 		return
 	mode_leaderboard.load()
+	challenge_service.load()
 	services.settings.setting_changed.connect(_on_setting_changed)
 	for display_key in [&"window_mode", &"vsync_enabled", &"frame_rate_limit", &"game_speed_assistance"]:
 		_on_setting_changed(display_key, services.settings.get_setting(display_key))
@@ -39,6 +42,20 @@ func _ready() -> void:
 		status_label.text = "Full campaign failed to initialize"
 		return
 	_show_main_menu()
+	if OS.get_cmdline_user_args().has("--export-smoke") or OS.get_cmdline_args().has("--export-smoke"):
+		call_deferred("_run_export_smoke")
+
+func _run_export_smoke() -> void:
+	_launch_campaign_stage(1)
+	await get_tree().create_timer(4.0).timeout
+	var passed: bool = session != null and mission != null and session.mission_state.get("status") == &"active"
+	passed = passed and mission.player_actors.size() == 1 and mission.stage_runtime != null
+	if passed:
+		print("EXPORT_SMOKE: PASS profile/load/Stage 1 runtime")
+		get_tree().quit(0)
+	else:
+		push_error("EXPORT_SMOKE: FAIL profile/load/Stage 1 runtime")
+		get_tree().quit(1)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"pause") and session != null and is_instance_valid(session) and session.mission_state.get("status") == &"active" and (pause_menu == null or not pause_menu.visible):
@@ -74,6 +91,9 @@ func _configure_campaign() -> bool:
 	return campaign_controller.configure(services.content_database, services, profile)
 
 func _launch_campaign_stage(global_stage: int) -> void:
+	if OS.has_feature("demo") and global_stage != 1:
+		status_label.text = "The demo includes Stage 1; the full campaign is available in Galax Hero."
+		return
 	active_mode_id = &""; active_mode_run = null
 	if campaign_controller == null or not _configure_campaign():
 		status_label.text = "Campaign preflight failed"
@@ -85,12 +105,17 @@ func _launch_campaign_stage(global_stage: int) -> void:
 	var local_players := main_menu.selected_campaign_player_count() if main_menu != null else 1
 	var config: GameSessionConfig
 	if local_players == 2:
-		var companion_ship := &"ship.vanguard" if selected_ship != &"ship.vanguard" else &"ship.bastion"
-		var connected := Input.get_connected_joypads()
-		var companion_device := int(connected[0]) if not connected.is_empty() else GameInputService.UNASSIGNED_DEVICE
+		var coop_setup := main_menu.selected_local_coop_setup() if main_menu != null else {}
+		if not bool(coop_setup.get("ready", false)):
+			status_label.text = "Local co-op requires two assigned devices and Player 2 ready"
+			return
+		var devices: Array = coop_setup.get("player_devices", [])
+		var companion_ship := StringName(coop_setup.get("companion_ship_id", &"ship.bastion"))
+		var companion_profile := StringName(coop_setup.get("companion_profile_id", &""))
+		var companion_guest := bool(coop_setup.get("companion_guest", true))
 		var selections: Array[Dictionary] = [
-			{"device_id": GameInputService.DEVICE_KEYBOARD_MOUSE, "profile_id": profile.profile_id, "ship_id": selected_ship, "loadout": selected_loadout.duplicate(true)},
-			{"device_id": companion_device, "profile_id": &"guest.local_2", "ship_id": companion_ship, "loadout": selected_loadout.duplicate(true), "guest": true}
+			{"device_id": int(devices[0]), "profile_id": profile.profile_id, "ship_id": selected_ship, "loadout": selected_loadout.duplicate(true)},
+			{"device_id": int(devices[1]), "profile_id": &"guest.local_2" if companion_guest else companion_profile, "ship_id": companion_ship, "loadout": selected_loadout.duplicate(true), "guest": companion_guest}
 		]
 		config = campaign_controller.create_local_coop_config(global_stage, selections, 50)
 	else:
@@ -110,7 +135,8 @@ func _start_session(global_stage: int, config: GameSessionConfig, resume_snapsho
 		main_menu.queue_free()
 		main_menu = null
 	current_campaign_stage = global_stage
-	config.mode_rules.merge({"friendly_fire": false, "continues": 3}, true)
+	config.mode_rules.friendly_fire = false
+	config.mode_rules.continues = 3 if bool(config.mode_rules.get("campaign", true)) else int(config.mode_rules.get("continue_limit", 0))
 	if local_players == 1: config.multiplayer_configuration = {"local_players": 1, "online": false}
 	session = GameSession.new()
 	session.name = "GameSession"
@@ -146,20 +172,34 @@ func _show_main_menu(open_campaign := false) -> void:
 	if open_campaign: main_menu.call_deferred("show_page", &"campaign", false)
 
 func _launch_mode(mode_id: StringName, global_stage: int, difficulty: int, seed: int, player_count: int, ship_id: StringName, loadout: Dictionary) -> void:
+	if OS.has_feature("demo") and global_stage != 1:
+		status_label.text = "Demo modes use the Stage 1 encounter set."
+		return
 	if campaign_controller == null or not _configure_campaign(): return
 	var mode := ModeCatalog.get_mode(mode_id)
 	if mode == null:
 		status_label.text = "Mode configuration is unavailable"
 		return
 	var profile := services.profiles.get_progression_profile()
+	var mode_options := main_menu.selected_mode_options() if main_menu != null else {}
+	active_challenge.clear()
+	if mode_id in [&"daily_challenge", &"weekly_challenge"]:
+		active_challenge = challenge_service.definition_for(&"weekly" if mode_id == &"weekly_challenge" else &"daily", int(Time.get_unix_time_from_system()), String(ProjectSettings.get_setting("application/config/content_revision", "dev")))
+		seed = int(active_challenge.seed)
+		mode_options.mutators = active_challenge.mutators.duplicate()
 	var config: GameSessionConfig
 	if player_count == 2 and mode.multiplayer_allowed:
-		var connected := Input.get_connected_joypads()
-		var companion_device := int(connected[0]) if not connected.is_empty() else GameInputService.UNASSIGNED_DEVICE
-		var companion_ship := &"ship.bastion" if ship_id != &"ship.bastion" else &"ship.vanguard"
+		var coop_setup := main_menu.selected_local_coop_setup() if main_menu != null else {}
+		if not bool(coop_setup.get("ready", false)):
+			status_label.text = "Local co-op requires two assigned devices and Player 2 ready"
+			return
+		var devices: Array = coop_setup.get("player_devices", [])
+		var companion_ship := StringName(coop_setup.get("companion_ship_id", &"ship.bastion"))
+		var companion_profile := StringName(coop_setup.get("companion_profile_id", &""))
+		var companion_guest := bool(coop_setup.get("companion_guest", true))
 		config = campaign_controller.create_local_coop_config(global_stage, [
-			{"device_id": GameInputService.DEVICE_KEYBOARD_MOUSE, "profile_id": profile.profile_id, "ship_id": ship_id, "loadout": loadout.duplicate(true)},
-			{"device_id": companion_device, "profile_id": &"guest.mode_2", "ship_id": companion_ship, "loadout": loadout.duplicate(true), "guest": true}
+			{"device_id": int(devices[0]), "profile_id": profile.profile_id, "ship_id": ship_id, "loadout": loadout.duplicate(true)},
+			{"device_id": int(devices[1]), "profile_id": &"guest.mode_2" if companion_guest else companion_profile, "ship_id": companion_ship, "loadout": loadout.duplicate(true), "guest": companion_guest}
 		], difficulty, seed)
 	else:
 		config = campaign_controller.create_session_config(global_stage, ship_id, loadout, difficulty, seed)
@@ -169,13 +209,16 @@ func _launch_mode(mode_id: StringName, global_stage: int, difficulty: int, seed:
 	config.difficulty_profile = &"veteran" if difficulty >= 70 else &"normal"
 	config.mode_rules.merge(mode.snapshot(), true)
 	config.mode_rules.merge(mode.rules, true)
+	config.mode_rules.merge(mode_options, true)
 	config.mode_rules.campaign = false
 	config.mode_rules.mode_id = mode_id
 	config.mode_rules.difficulty_rating = difficulty
 	config.mode_rules.disable_campaign_rewards = true
+	_apply_mode_mutators(config)
 	active_mode_id = mode_id
 	active_mode_run = ModeRunController.new()
-	active_mode_run.start(mode, config.stage_seed, difficulty, [])
+	active_mode_run.start(mode, config.stage_seed, int(config.mode_rules.get("difficulty_rating", difficulty)), [])
+	if mode_id == &"training": Engine.time_scale = float(config.mode_rules.get("training_speed", 1.0))
 	_start_session(global_stage, config)
 
 func _show_pause_menu() -> void:
@@ -268,6 +311,7 @@ func _abandon_to_campaign() -> void:
 
 func _cleanup_current_session() -> void:
 	get_tree().paused = false
+	Engine.time_scale = float(services.settings.get_setting(&"game_speed_assistance", 1.0)) if services != null else 1.0
 	if pause_menu != null: pause_menu.queue_free(); pause_menu = null
 	if results_layer != null: results_layer.queue_free(); results_layer = null; results_screen = null
 	if diagnostics_overlay != null: diagnostics_overlay.queue_free(); diagnostics_overlay = null
@@ -311,13 +355,30 @@ func _on_profile_selected(_profile_ids: Array[StringName]) -> void:
 
 func _complete_mode_run(result: Dictionary) -> void:
 	if active_mode_run == null: return
-	active_mode_run.score = maxi(0, int(result.get("score", 0)))
-	active_mode_run.elapsed_seconds = maxf(0.0, float(result.get("elapsed_seconds", 0.0)))
+	active_mode_run.score += maxi(0, int(result.get("score", 0)))
+	active_mode_run.elapsed_seconds += maxf(0.0, float(result.get("elapsed_seconds", 0.0)))
 	active_mode_run.active_assists.assign(result.get("run_metadata", {}).get("active_assists", []))
+	if active_mode_id == &"arcade" and bool(result.get("success", false)) and _continue_arcade_sequence(): return
 	var mode_result := active_mode_run.finish(bool(result.get("success", false)), mode_leaderboard)
+	if not active_challenge.is_empty(): challenge_service.record_completion(active_challenge, mode_result); challenge_service.save()
 	mode_leaderboard.save()
 	if mission != null: mission.process_mode = Node.PROCESS_MODE_DISABLED
 	_show_mode_results(mode_result, StringName(result.get("failure_reason", "")))
+
+func _continue_arcade_sequence() -> bool:
+	var next_stage := current_campaign_stage + 1
+	if next_stage > 60 or campaign_controller.stage_state(next_stage) not in [&"available", &"completed"]: return false
+	var next_mission := campaign_controller.mission_for_stage(next_stage)
+	if next_mission == null or session == null: return false
+	var next_config := session.config.duplicate(true) as GameSessionConfig
+	next_config.mission_definition = next_mission
+	next_config.stage_seed = next_mission.default_seed
+	next_config.mode_rules.stage = next_stage
+	next_config.mode_rules.operation = ((next_stage - 1) / 10) + 1
+	_cleanup_current_session()
+	_start_session(next_stage, next_config)
+	status_label.text = "ARCADE STAGE %d  •  cumulative score %06d" % [next_stage, active_mode_run.score]
+	return true
 
 func _show_mode_results(result: Dictionary, failure_reason: StringName) -> void:
 	if results_layer != null: results_layer.queue_free()
@@ -338,3 +399,16 @@ func _return_to_modes() -> void:
 	current_campaign_stage = 0
 	active_mode_id = &""; active_mode_run = null
 	_configure_campaign(); _show_main_menu(); main_menu.call_deferred("show_page", &"modes", false)
+
+func _apply_mode_mutators(config: GameSessionConfig) -> void:
+	var mutators: Array = config.mode_rules.get("mutators", [])
+	var difficulty := int(config.mode_rules.get("difficulty_rating", 50))
+	if &"aggressive_enemies" in mutators: difficulty += 10
+	if &"dense_formations" in mutators: difficulty += 5
+	config.mode_rules.difficulty_rating = clampi(difficulty, 0, 100)
+	config.difficulty_profile = &"veteran" if difficulty >= 70 else &"normal"
+	var player_modifiers: Dictionary = config.mode_rules.get("player_stat_modifiers", {}).duplicate(true)
+	if &"fragile_shields" in mutators: player_modifiers.shield_multiplier = 0.5
+	config.mode_rules.player_stat_modifiers = player_modifiers
+	config.mode_rules.limited_spells = &"limited_spells" in mutators
+	config.mode_rules.projectile_speed_multiplier = 1.25 if &"accelerated_projectiles" in mutators else 1.0

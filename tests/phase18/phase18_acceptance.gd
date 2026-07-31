@@ -76,6 +76,12 @@ func _test_runtime_campaign_loop() -> void:
 	boot.main_menu.campaign_local_players = 2
 	boot._launch_campaign_stage(1)
 	await process_frame
+	_assert(boot.session == null and "requires two assigned devices" in boot.status_label.text, "production campaign blocks local co-op until two distinct devices are ready")
+	var coop_config := boot.campaign_controller.create_local_coop_config(1, [
+		{"device_id": GameInputService.DEVICE_KEYBOARD_MOUSE, "profile_id": runtime_profile.profile_id, "ship_id": &"ship.vanguard", "loadout": {&"primary": &"weapon.pulse_cannon"}},
+		{"device_id": 0, "profile_id": &"guest.phase18", "ship_id": &"ship.bastion", "loadout": {&"primary": &"weapon.pulse_cannon"}, "guest": true},
+	], 50)
+	boot._start_session(1, coop_config)
 	await process_frame
 	_assert(boot.session != null and boot.session.local_coop != null and boot.mission.player_actors.size() == 2, "campaign map launches the full campaign with two local players")
 	var decision_saved := boot.campaign_controller.record_campaign_decision(&"runtime_choice", &"alpha")

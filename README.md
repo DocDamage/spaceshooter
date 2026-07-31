@@ -1,12 +1,16 @@
-# Galax Hero — Phase 19 Online Cooperative Multiplayer
+# Galax Hero
 
-Open `project.godot` with Godot 4.7.1 and run the project. Phase 19 adds a host-authoritative two-player online layer, ENet transport, deterministic compatibility checks, prediction/reconciliation, event-driven projectile replication, lobbies, reconnect safety, and diagnostics over the complete 60-stage campaign. See `docs/PHASE_19_ONLINE_COOPERATIVE_MULTIPLAYER.md`.
+Galax Hero is a portrait-format arcade space shooter with a 60-stage campaign, solo and two-player local play, persistent ships/loadouts/progression, bosses, branching routes, accessibility assists, and eleven local challenge/training modes. Open `project.godot` with Godot 4.7.1 and run the project.
+
+The shipping entry point is `res://production/boot/production_boot.tscn`. Online co-op remains a deliberately closed post-launch gate and is not part of the 1.0 promise.
 
 Phase implementation notes live in `docs/`, including `PHASE_5_ACTOR_COMBAT_FOUNDATION.md` for actor lifecycle, movement states, deterministic damage, shields, armor, subsystem damage, and statuses.
 
 - Move: WASD, arrow keys, or left stick
 - Fire: Space, K, or controller A
-- Diagnostics: F3
+- Diagnostics overlay in Development builds: F3
+
+Run `pwsh -File tools/run_project.ps1 verify` for the full source-tree gate, or `pwsh -File tools/run_project.ps1 all` for verification, soak, Development/Release exports, executable smokes, checksums, manifest, SPDX SBOM, and a release archive. See `BUILDING.md` and `docs/RELEASE_RUNBOOK.md`.
 
 The Phase 1 compatibility implementation is isolated under `res://legacy` as a behavioral reference. New runtime work belongs under `res://production` and must use the production services and session boundaries.
 

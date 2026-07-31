@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ObjectiveDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/objective_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"objective.protect_relay"
+display_name = "Protect the Relay"
+objective_type = "protect"
+target_id = &"objective_actor.relay"
+target_count = 1
+duration_seconds = 12.0
+fail_on_neutral_damage = false
+reward = {"credits": 350, "score": 4000}

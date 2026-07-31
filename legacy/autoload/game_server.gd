@@ -12,7 +12,6 @@ func set_state(value: GameState) -> void:
 	state_changed.emit(state)
 
 func reset_session() -> void:
-	BattleServer.reset_battle()
-	Currency.reset()
+	LegacyServiceLocator.require(self, &"LegacyBattleServer").reset_battle()
+	LegacyServiceLocator.require(self, &"LegacyCurrency").reset()
 	set_state(GameState.MENU)
-
