@@ -22,7 +22,7 @@ func spawn_effect(category: StringName, importance: StringName = &"decorative", 
 func release_effect(effect: Node2D) -> void:
 	if not active.has(effect): return
 	active.erase(effect)
-	for child in effect.get_children(): child.queue_free()
+	for child in effect.get_children(): child.free()
 	# Keep inactive pooled effects parented. Detached Nodes are not owned by the
 	# scene tree and leaked at shutdown even though the pool still referenced them.
 	effect.visible = false; effect.modulate = Color.WHITE; effect.scale = Vector2.ONE; free.append(effect)

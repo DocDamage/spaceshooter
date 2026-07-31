@@ -29,6 +29,22 @@
       "notes": "Project-owner-approved original generated icon; final prompt and provenance are preserved beside the source."
     },
     {
+      "source_path": "art_source/generated/galax_hero_comms_portraits.png",
+      "stable_id": "asset.portrait.galax_hero_comms_atlas",
+      "normalized_filename": "comms_portrait_atlas.png",
+      "runtime_path": "res://assets_runtime/portraits/comms_portrait_atlas.png",
+      "category": "portrait",
+      "subcategory": "comms_atlas",
+      "intended_role": "dialogue_portraits",
+      "scale_class": "portrait",
+      "screen_layer": "ui",
+      "palette_family": "cool_blue_gold",
+      "import_profile": "portrait",
+      "license_status": "owner_created",
+      "license_source": "art_source/generated/LICENSE.txt",
+      "notes": "Project-owned eight-character comms atlas; original generation and transparent production master are preserved with prompt and provenance."
+    },
+    {
       "source_path": "art_source/marketing/galax_hero_key_art_16x9.png",
       "stable_id": "asset.marketing.galax_hero_key_art_16x9",
       "normalized_filename": "galax_hero_key_art_16x9.png",

@@ -24,6 +24,11 @@ var challenge_service := ChallengeService.new()
 var active_challenge: Dictionary = {}
 
 func _ready() -> void:
+	# Godot 4.7 changed new-project stretch defaults to EXPAND. Keep the authored
+	# 540x960 playfield authoritative even in the square desktop presentation.
+	get_tree().root.content_scale_size = Vector2i(540, 960)
+	get_tree().root.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
+	get_tree().root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
 	_build_interface()
 	services = get_node_or_null("/root/ProductionServices") as ServiceHub
 	if services == null:
@@ -38,12 +43,22 @@ func _ready() -> void:
 	for display_key in [&"window_mode", &"vsync_enabled", &"frame_rate_limit", &"game_speed_assistance"]:
 		_on_setting_changed(display_key, services.settings.get_setting(display_key))
 	services.profiles.profile_selected.connect(_on_profile_selected)
-	if not _configure_campaign():
-		status_label.text = "Full campaign failed to initialize"
-		return
+	_configure_campaign()
 	_show_main_menu()
 	if OS.get_cmdline_user_args().has("--export-smoke") or OS.get_cmdline_args().has("--export-smoke"):
 		call_deferred("_run_export_smoke")
+	elif OS.get_cmdline_user_args().has("--presentation-review") or OS.get_cmdline_args().has("--presentation-review"):
+		call_deferred("_run_presentation_review")
+
+func _run_presentation_review() -> void:
+	_launch_campaign_stage(1)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	if services != null and services.story != null and services.story.adapter != null: services.story.adapter.finish()
+	get_tree().paused = false
+	await get_tree().process_frame
+	if mission != null and mission.stage_runtime != null and mission.stage_runtime.current_segment != null and mission.stage_runtime.current_segment.definition.category == "opening":
+		mission.stage_runtime.current_segment.complete()
 
 func _run_export_smoke() -> void:
 	_launch_campaign_stage(1)
@@ -65,6 +80,7 @@ func _unhandled_input(event: InputEvent) -> void:
 func _build_interface() -> void:
 	var hud := CanvasLayer.new()
 	hud.layer = 50
+	hud.visible = false
 	add_child(hud)
 	title_label = Label.new()
 	title_label.position = Vector2(20, 18)
@@ -86,9 +102,14 @@ func _launch_test_mission() -> void:
 
 func _configure_campaign() -> bool:
 	var profile := services.profiles.get_progression_profile()
-	if profile == null: return false
-	if campaign_controller == null: campaign_controller = FullCampaignController.new()
-	if not campaign_controller.configure(services.content_database, services, profile): return false
+	if profile == null:
+		campaign_controller = null
+		return false
+	var configured_campaign := FullCampaignController.new()
+	if not configured_campaign.configure(services.content_database, services, profile):
+		campaign_controller = null
+		return false
+	campaign_controller = configured_campaign
 	services.story.story_flags = campaign_controller.campaign.story_flags.duplicate(true)
 	services.story.decisions = campaign_controller.campaign.decisions.duplicate(true)
 	return true
@@ -134,22 +155,24 @@ func _start_session(global_stage: int, config: GameSessionConfig, resume_snapsho
 	if mission_definition == null:
 		status_label.text = "Stage %d is unavailable" % global_stage
 		return
+	config.mode_rules.friendly_fire = false
+	config.mode_rules.continues = 3 if bool(config.mode_rules.get("campaign", true)) else int(config.mode_rules.get("continue_limit", 0))
+	if local_players == 1: config.multiplayer_configuration = {"local_players": 1, "online": false}
+	var next_session := GameSession.new()
+	next_session.name = "GameSession"
+	if not next_session.configure(config, services):
+		status_label.text = "Session configuration failed"
+		next_session.free()
+		return
+	if not resume_snapshot.is_empty() and not next_session.restore_checkpoint(resume_snapshot):
+		status_label.text = "Checkpoint recovery failed validation"
+		next_session.free()
+		return
 	if main_menu:
 		main_menu.queue_free()
 		main_menu = null
 	current_campaign_stage = global_stage
-	config.mode_rules.friendly_fire = false
-	config.mode_rules.continues = 3 if bool(config.mode_rules.get("campaign", true)) else int(config.mode_rules.get("continue_limit", 0))
-	if local_players == 1: config.multiplayer_configuration = {"local_players": 1, "online": false}
-	session = GameSession.new()
-	session.name = "GameSession"
-	if not session.configure(config, services):
-		status_label.text = "Session configuration failed"
-		return
-	if not resume_snapshot.is_empty() and not session.restore_checkpoint(resume_snapshot):
-		status_label.text = "Checkpoint recovery failed validation"
-		session = null
-		return
+	session = next_session
 	session.session_completed.connect(_on_session_completed)
 	add_child(session)
 	mission = MISSION_SCENE.instantiate()
@@ -171,7 +194,7 @@ func _show_main_menu(open_campaign := false) -> void:
 	main_menu.campaign_stage_requested.connect(_launch_campaign_stage)
 	main_menu.mode_requested.connect(_launch_mode)
 	add_child(main_menu)
-	status_label.text = "Full campaign ready  •  60 stages  •  six operations"
+	status_label.text = "Full campaign ready  •  60 stages  •  six operations" if campaign_controller != null else "No playable pilot is selected  •  open Profiles for recovery or create a pilot"
 	if open_campaign: main_menu.call_deferred("show_page", &"campaign", false)
 
 func _launch_mode(mode_id: StringName, global_stage: int, difficulty: int, seed: int, player_count: int, ship_id: StringName, loadout: Dictionary) -> void:
@@ -252,8 +275,8 @@ func _on_setting_changed(key: StringName, value: Variant) -> void:
 		&"vsync_enabled": DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if bool(value) else DisplayServer.VSYNC_DISABLED)
 		&"frame_rate_limit": Engine.max_fps = maxi(0, int(value))
 		&"ui_scale":
-			if main_menu: main_menu.root.scale = Vector2.ONE * float(value)
-			if pause_menu: pause_menu.root.scale = Vector2.ONE * float(value)
+			if main_menu: main_menu.apply_ui_scale(float(value))
+			if pause_menu: pause_menu.apply_ui_scale(float(value))
 
 func _on_session_completed(result: Dictionary) -> void:
 	if campaign_controller == null or current_campaign_stage <= 0: return

@@ -1,8 +1,10 @@
 Galax Hero Project-Owned Generated Art License Record
 
-The Galax Hero application icon in this directory was commissioned by the
-project owner and generated for this project with OpenAI image-generation
-assistance on 2026-07-31. The project owner approved the asset for commercial
-use and distribution in Galax Hero. No third-party attribution is required.
+The Galax Hero application icon and comms portrait atlas in this directory were
+commissioned by the project owner and generated for this project with OpenAI
+image-generation assistance on 2026-07-31. The project owner approved these
+assets for commercial use and distribution in Galax Hero. No third-party
+attribution is required.
 
-This record applies only to galax_hero_app_icon.png.
+This record applies to galax_hero_app_icon.png,
+galax_hero_comms_portraits_source.png, and galax_hero_comms_portraits.png.

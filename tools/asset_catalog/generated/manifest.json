@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "source_root": "C:\\Users\\dferr\\OneDrive\\Desktop\\space shooter\\assets",
-  "asset_count": 4788,
+  "asset_count": 4789,
   "assets": [
     {
       "stable_id": "asset.ship.1500_spaceships_asteroids_and_more_1500_spaceships_asteroids_and_more_280_space_ships_spaceship_1",
@@ -214704,6 +214704,51 @@
       "notes": "Project-owner-approved original generated icon; final prompt and provenance are preserved beside the source.",
       "triage_status": "approved",
       "thumbnail_path": "thumbnails/asset_ui_galax_hero_app_icon.png"
+    },
+    {
+      "stable_id": "asset.portrait.galax_hero_comms_atlas",
+      "original_filename": "galax_hero_comms_portraits.png",
+      "normalized_filename": "comms_portrait_atlas.png",
+      "source_path": "art_source/generated/galax_hero_comms_portraits.png",
+      "source_scope": "project",
+      "runtime_path": "res://assets_runtime/portraits/comms_portrait_atlas.png",
+      "file_type": "png",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "frame_count": 1,
+      "animation_names": [],
+      "animation": null,
+      "faction": "neutral",
+      "category": "portrait",
+      "subcategory": "comms_atlas",
+      "intended_role": "dialogue_portraits",
+      "collision_recommendation": "none",
+      "scale_class": "portrait",
+      "visual_scale": 1.0,
+      "collision_scale": 1.0,
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "orientation": "not_applicable",
+      "screen_layer": "ui",
+      "pseudo_altitude": "not_applicable",
+      "palette_family": "cool_blue_gold",
+      "license_source": "art_source/generated/LICENSE.txt",
+      "license_status": "owner_created",
+      "commercial_use": true,
+      "attribution_required": false,
+      "import_status": "approved",
+      "validation_status": "valid",
+      "import_profile": "portrait",
+      "content_definition_links": [],
+      "duplicate_of": "",
+      "sha256": "7d335b42a4983be9ef004fe9b31d7eaf3bac4ba09abf71fe00dee5df04cadb23",
+      "notes": "Project-owned eight-character comms atlas; original generation and transparent production master are preserved with prompt and provenance.",
+      "triage_status": "approved",
+      "thumbnail_path": "thumbnails/asset_portrait_galax_hero_comms_atlas.png"
     },
     {
       "stable_id": "asset.marketing.galax_hero_key_art_16x9",

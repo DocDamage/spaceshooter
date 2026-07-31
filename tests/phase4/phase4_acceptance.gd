@@ -86,6 +86,14 @@ func _test_persistence() -> void:
 	_assert(loaded.get_setting(&"colorblind_filter") == "tritanopia", "accessibility settings persist")
 	settings.free()
 	loaded.free()
+	var file := FileAccess.open(test_settings_path, FileAccess.WRITE)
+	file.store_string(JSON.stringify({"schema_version": 1, "values": {"ui_scale": 999.0, "game_speed_assistance": "fast", "vsync_enabled": "yes", "vibration_categories": {"primary_weapon": false, "boss_impact": "invalid"}}, "bindings": []}))
+	file.close()
+	var sanitized := SettingsService.new()
+	sanitized.storage_path = test_settings_path
+	sanitized.initialize()
+	_assert(is_equal_approx(float(sanitized.get_setting(&"ui_scale")), 1.5) and is_equal_approx(float(sanitized.get_setting(&"game_speed_assistance")), 1.0) and sanitized.get_setting(&"vsync_enabled") is bool and not bool(sanitized.get_setting(&"vibration_categories").get("primary_weapon", true)) and bool(sanitized.get_setting(&"vibration_categories").get("boss_impact", false)), "malformed known settings fall back or clamp without poisoning startup")
+	sanitized.free()
 
 func _test_component_library() -> void:
 	var components: Array[Control] = [

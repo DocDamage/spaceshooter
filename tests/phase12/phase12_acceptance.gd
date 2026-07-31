@@ -35,6 +35,9 @@ func _dialogue(id: StringName, context: String, one_shot := false, objective := 
 	return definition
 
 func _test_dialogue_and_radio(hub: ServiceHub) -> void:
+	var command_portrait := CommsPortraitLibrary.texture_for_speaker("Command") as AtlasTexture
+	var ace_portrait := CommsPortraitLibrary.texture_for_speaker("Corsair Ace") as AtlasTexture
+	_assert(command_portrait != null and ace_portrait != null and command_portrait.region.size == Vector2(448, 448) and ace_portrait.region.position == Vector2(896, 448), "briefing and radio speakers resolve distinct production portrait-atlas cells")
 	var briefing := _dialogue(&"dialogue.briefing", "briefing", true); briefing.pause_gameplay = true
 	var combat := _dialogue(&"dialogue.combat", "combat", true); combat.priority = 10
 	var objective := _dialogue(&"dialogue.objective", "objective", true, true); objective.priority = 100

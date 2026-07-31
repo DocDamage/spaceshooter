@@ -15,6 +15,7 @@ var current_music_state: StringName = &"silent"
 var current_music_asset_path := ""
 var music_crossfade_seconds := 0.75
 var _pitch_random := RandomNumberGenerator.new()
+var _ui_cues: Dictionary = {}
 
 func _init() -> void:
 	service_id = &"audio"
@@ -100,6 +101,13 @@ func transition_music(stream: AudioStream, state_id: StringName, duration := -1.
 func play_path(asset_path: String, bus: StringName, priority := 1, pitch_variation := 0.0, position_2d := Vector2.ZERO) -> AudioStreamPlayer:
 	if asset_path.is_empty() or not ResourceLoader.exists(asset_path): return null
 	return play(load(asset_path) as AudioStream, bus, priority, pitch_variation, position_2d)
+
+func play_ui_cue(cue_id: StringName) -> AudioStreamPlayer:
+	if not _ui_cues.has(cue_id):
+		match cue_id:
+			&"confirm": _ui_cues[cue_id] = _synthesize_ui_cue(0.085, 520.0, 780.0, 0.2)
+			_: _ui_cues[cue_id] = _synthesize_ui_cue(0.045, 660.0, 720.0, 0.11)
+	return play(_ui_cues[cue_id] as AudioStream, &"UI", 2, 0.015)
 
 func stop_bus(bus: StringName) -> void:
 	if bus not in BUS_NAMES: return
@@ -200,3 +208,23 @@ func _set_stream_loop(stream: AudioStream, looped: bool) -> void:
 		if StringName(property.get("name", &"")) == &"loop":
 			stream.set("loop", looped)
 			return
+
+func _synthesize_ui_cue(duration: float, start_frequency: float, end_frequency: float, amplitude: float) -> AudioStreamWAV:
+	const SAMPLE_RATE := 24000
+	var sample_count := maxi(1, int(duration * SAMPLE_RATE))
+	var bytes := PackedByteArray()
+	bytes.resize(sample_count * 2)
+	var phase := 0.0
+	for index in sample_count:
+		var progress := float(index) / float(sample_count)
+		var frequency := lerpf(start_frequency, end_frequency, progress)
+		phase += TAU * frequency / float(SAMPLE_RATE)
+		var envelope := sin(PI * progress) * (1.0 - progress * 0.35)
+		var signal_value := (sin(phase) * 0.78 + sin(phase * 2.0) * 0.22) * envelope * amplitude
+		bytes.encode_s16(index * 2, int(clampf(signal_value, -1.0, 1.0) * 32767.0))
+	var stream := AudioStreamWAV.new()
+	stream.format = AudioStreamWAV.FORMAT_16_BITS
+	stream.mix_rate = SAMPLE_RATE
+	stream.stereo = false
+	stream.data = bytes
+	return stream

@@ -41,10 +41,13 @@ func create_profile(display_name: String, requested_id: StringName = &"") -> Pro
 	profile.profile_id = profile_id
 	profile.display_name = _clean_name(display_name)
 	progression_profiles[profile_id] = profile
-	if selected_profile_ids.is_empty():
+	var selection_changed := selected_profile_ids.is_empty()
+	if selection_changed:
 		selected_profile_ids.append(profile_id)
 	persist_profile(profile_id)
 	profiles_changed.emit()
+	if selection_changed:
+		profile_selected.emit(selected_profile_ids)
 	return profile
 
 func rename_profile(profile_id: StringName, display_name: String) -> bool:
@@ -71,6 +74,7 @@ func duplicate_profile(profile_id: StringName, display_name := "") -> Progressio
 func delete_profile(profile_id: StringName) -> bool:
 	if not progression_profiles.has(profile_id):
 		return false
+	var selection_changed := profile_id in selected_profile_ids
 	progression_profiles.erase(profile_id)
 	selected_profile_ids.erase(profile_id)
 	if save_service != null:
@@ -82,6 +86,8 @@ func delete_profile(profile_id: StringName) -> bool:
 		selected_profile_ids.append(StringName(progression_profiles.keys()[0]))
 	_save_index()
 	profiles_changed.emit()
+	if selection_changed:
+		profile_selected.emit(selected_profile_ids)
 	return true
 
 func select_profiles(profile_ids: Array[StringName]) -> bool:

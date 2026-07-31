@@ -56,6 +56,12 @@ func _test_parallax_and_reduced_motion() -> void:
 	settings.set_setting(&"background_motion_reduction", 1.0, false); parallax.offsets[definition.stable_id] = Vector2.ZERO; parallax.tick(1.0)
 	var reduced_y := (parallax.offsets[definition.stable_id] as Vector2).y
 	_assert(normal_y > reduced_y and reduced_y > 0.0, "six-layer parallax definitions provide an understandable reduced-motion alternative")
+	settings.set_setting(&"background_motion_reduction", 0.0, false)
+	var backdrop := MissionBackdrop.new(); backdrop.configure("res://assets_runtime/backgrounds/background_space_blue_01_sheet.png", 2, settings); root.add_child(backdrop)
+	var before := backdrop.motion_offsets.duplicate(); backdrop._process(1.0); var normal_offset := float(backdrop.motion_offsets[0])
+	settings.set_setting(&"background_motion_reduction", 1.0, false); backdrop.motion_offsets = before.duplicate(); backdrop._process(1.0); var accessible_offset := float(backdrop.motion_offsets[0])
+	_assert(backdrop.motion_layers.size() >= 7 and backdrop.motion_layers.all(func(layer): return layer.get_child_count() >= 4), "shipping mission backdrops slice and tile authored sheets into full-height parallax layers")
+	_assert(normal_offset > accessible_offset and accessible_offset > 0.0, "shipping backdrop motion remains subtle but readable under reduced-motion settings")
 
 func _test_camera_and_effect_settings() -> void:
 	var camera := PresentationCameraRig.new(); root.add_child(camera); camera.configure(settings)
@@ -83,6 +89,8 @@ func _test_audio_and_vibration() -> void:
 	var silence := PackedByteArray(); silence.resize(11025); silence.fill(128); stream.data = silence
 	for index in 30: hub.audio.play(stream, &"Weapons", index % 3)
 	_assert(hub.audio.active_voice_count(&"Weapons") <= int(hub.audio.voice_limits[&"Weapons"]), "dense combat audio obeys per-bus voice limits")
+	var ui_voice := hub.audio.play_ui_cue(&"confirm")
+	_assert(ui_voice != null and ui_voice.stream is AudioStreamWAV and (ui_voice.stream as AudioStreamWAV).data.size() > 0, "menus have a dedicated bounded UI confirmation cue instead of silent navigation")
 	hub.settings.set_setting(&"vibration_enabled", false, false)
 	var vibration := VibrationRouter.new(); vibration.configure(hub.settings)
 	_assert(not vibration.emit(&"player_damage", -1, 1.0, 1.0, 0.2), "vibration events respect global accessibility settings")

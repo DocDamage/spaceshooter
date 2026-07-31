@@ -14,6 +14,7 @@ var soft_tether_start := 320.0
 var teleport_recovery_distance := 560.0
 var edge_warning_slots: Array[StringName] = []
 var player_target_count := 0
+var playfield_center := Vector2(270.0, 480.0)
 
 func configure(settings_service: SettingsService) -> void:
 	settings = settings_service
@@ -39,7 +40,9 @@ func _process(delta: float) -> void:
 		var bounds := Rect2(targets[0].global_position, Vector2.ZERO)
 		for target in targets:
 			if is_instance_valid(target): bounds = bounds.expand(target.global_position)
-		_base_position = bounds.get_center() + look_ahead
+		# Gameplay is authored in a fixed portrait arena. Following the player's
+		# spawn at y=820 centers the ship and hides all top-of-screen encounters.
+		_base_position = playfield_center + look_ahead
 		var viewport_size := get_viewport_rect().size
 		var required := maxf((bounds.size.x + framing_padding) / maxf(viewport_size.x, 1.0), (bounds.size.y + framing_padding) / maxf(viewport_size.y, 1.0))
 		zoom = Vector2.ONE / maxf(1.0, required)

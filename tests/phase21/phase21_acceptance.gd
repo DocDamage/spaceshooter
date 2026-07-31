@@ -98,7 +98,7 @@ func _test_visual_breadth() -> void:
 	var production_theme := GalaxHeroTheme.create()
 	var panel_style := production_theme.get_stylebox("panel", "PanelContainer")
 	var button_style := production_theme.get_stylebox("normal", "Button")
-	_assert(panel_style is StyleBoxTexture and button_style is StyleBoxTexture and (panel_style as StyleBoxTexture).texture.resource_path.ends_with("ui_panel_primary.png") and (button_style as StyleBoxTexture).texture.resource_path.ends_with("ui_button_frame.png"), "shipping menus and results use the approved production panel and button theme assets")
+	_assert(panel_style is StyleBoxFlat and button_style is StyleBoxFlat and (panel_style as StyleBoxFlat).bg_color.a > 0.9 and (button_style as StyleBoxFlat).border_width_left > 0, "shipping menus and results use readable translucent panels and bounded button frames without stretching tiny textures")
 
 func _test_untrusted_data_bounds() -> void:
 	var sanitized := InputSanitizer.sanitize_display_name("../Pilot\u202e\n<unsafe>|", 32)

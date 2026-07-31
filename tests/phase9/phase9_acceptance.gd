@@ -75,7 +75,10 @@ func _test_migration() -> void:
 func _test_profiles() -> void:
 	var saves := _service("profiles")
 	var profiles := ProfileService.new(); root.add_child(profiles); profiles.save_service = saves
+	var selection_events: Array[Array] = []
+	profiles.profile_selected.connect(func(ids): selection_events.append(ids.duplicate()))
 	var first := profiles.create_profile("Ace", &"profile.ace")
+	_assert(selection_events.size() == 1 and selection_events[0] == [&"profile.ace"] and profiles.selected_profile_ids == [&"profile.ace"], "automatic first-profile selection is observable by runtime consumers")
 	first.playtime_seconds = 3720; first.campaign_progress = {"percent": 25}; first.last_played_stage = &"mission.3"; first.new_game_plus_cycle = 2
 	profiles.persist_profile(first.profile_id)
 	var copy := profiles.duplicate_profile(first.profile_id)
@@ -83,7 +86,7 @@ func _test_profiles() -> void:
 	_assert(profiles.rename_profile(copy.profile_id, "Wing Ace") and profiles.select_profiles([copy.profile_id]), "profiles can be renamed and selected")
 	var summaries := profiles.profile_summaries()
 	_assert(summaries.size() == 2 and summaries[0].has("last_played_stage") and summaries[0].has("new_game_plus_cycle"), "slot summaries expose playtime, campaign, last stage, and New Game Plus")
-	_assert(profiles.delete_profile(first.profile_id) and profiles.get_progression_profile(first.profile_id, false) == null, "profiles can be explicitly deleted without silently replacing them")
+	_assert(profiles.delete_profile(copy.profile_id) and profiles.get_progression_profile(copy.profile_id, false) == null and profiles.selected_profile_ids == [first.profile_id] and selection_events.size() == 3 and selection_events[2] == [first.profile_id], "deleting the selected profile publishes its deterministic fallback selection")
 
 func _test_content_reconciliation() -> void:
 	var database := ContentDatabase.new(); root.add_child(database); _assert(database.initialize(), "content database is available for save reconciliation")

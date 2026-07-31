@@ -1,13 +1,12 @@
 class_name GeneratedMission
 extends Node2D
 
-const FRONTIER_BACKGROUND := preload("res://assets_runtime/backgrounds/background_frontier_planets_final.png")
 const STAGE_ONE_MUSIC := preload("res://assets_runtime/audio/music_stage1_frontier_theme.mp3")
 const SFX_PLAYER_SHOT := preload("res://assets_runtime/audio/sfx_shot_player.wav")
 const SFX_ENEMY_SHOT := preload("res://assets_runtime/audio/sfx_shot_enemy.wav")
 const SFX_HIT := preload("res://assets_runtime/audio/sfx_hit_primary.wav")
 const SFX_EXPLOSION := preload("res://assets_runtime/audio/sfx_explosion_primary.wav")
-const EXPLOSION_TEXTURE := preload("res://assets_runtime/effects/effect_explosion_raider_final.png")
+const EXPLOSION_SHEET := preload("res://assets_runtime/effects/effect_explosion_small_01_sheet.png")
 
 var session: GameSession
 var database: ContentDatabase
@@ -31,11 +30,11 @@ var radio_presenter: RadioPresenter
 var briefing_presenter: BriefingPresenter
 var score_tracker: MissionScoreTracker
 var mission_hud: MissionHUD
+var mission_backdrop: MissionBackdrop
 var _finished_enemy_ids: Dictionary = {}
 var _retarget_elapsed := 0.0
 var _mode_lives_remaining := 0
 var _mode_continues_used := 0
-var _mission_background: Texture2D
 var _stage_music: AudioStream
 
 func configure(game_session: GameSession, content_database: ContentDatabase) -> void:
@@ -75,12 +74,16 @@ func _ready() -> void:
 	effects_pool = EffectsPoolManager.new(); effects_pool.name = "EffectsPoolManager"; add_child(effects_pool)
 	screen_effects = ScreenEffectsController.new(); screen_effects.name = "ScreenEffects"; screen_effects.configure(session.services.settings); add_child(screen_effects)
 	var mission_definition := session.config.mission_definition
-	if not mission_definition.background_asset_path.is_empty() and ResourceLoader.exists(mission_definition.background_asset_path):
-		_mission_background = load(mission_definition.background_asset_path) as Texture2D
+	var operation_index := clampi(int(ceil(float(mission_definition.stage_number) / 10.0)), 1, 6)
+	var background_path := mission_definition.background_asset_path
+	if background_path.is_empty() and operation_index == 1: background_path = "res://assets_runtime/backgrounds/background_frontier_planets_final.png"
+	mission_backdrop = MissionBackdrop.new()
+	mission_backdrop.name = "MissionBackdrop"
+	mission_backdrop.configure(background_path, operation_index, session.services.settings)
+	add_child(mission_backdrop)
 	_stage_music = STAGE_ONE_MUSIC
 	if not mission_definition.music_asset_path.is_empty() and ResourceLoader.exists(mission_definition.music_asset_path):
 		_stage_music = load(mission_definition.music_asset_path) as AudioStream
-	var operation_index := clampi(int(ceil(float(mission_definition.stage_number) / 10.0)), 1, 6)
 	var music_state := mission_definition.music_state if not mission_definition.music_state.is_empty() else StringName("operation_%d_stage" % operation_index)
 	session.services.audio.transition_music(_stage_music, music_state, session.services.audio.music_crossfade_seconds, true)
 	_spawn_players()
@@ -96,9 +99,13 @@ func _ready() -> void:
 	briefing_presenter = BriefingPresenter.new(); briefing_presenter.name = "MissionBriefing"; briefing_presenter.bind(session.services.story.adapter); story_layer.add_child(briefing_presenter)
 	if not session.services.story.gameplay_pause_requested.is_connected(_on_story_pause_requested): session.services.story.gameplay_pause_requested.connect(_on_story_pause_requested)
 	var briefing_id := StringName(session.config.mission_definition.dialogue_hooks.get("briefing", ""))
-	if not briefing_id.is_empty(): session.services.story.start_dialogue(briefing_id, {"stage": session.config.mission_definition.stage_number})
 	var entry_id := StringName(session.config.mission_definition.dialogue_hooks.get("stage_entry", ""))
-	if not entry_id.is_empty(): session.services.story.start_dialogue(entry_id, {"stage": session.config.mission_definition.stage_number})
+	if not briefing_id.is_empty() and session.services.story.start_dialogue(briefing_id, {"stage": session.config.mission_definition.stage_number}):
+		if not entry_id.is_empty():
+			session.services.story.adapter.dialogue_finished.connect(func(finished_id: StringName):
+				if finished_id == briefing_id: session.services.story.start_dialogue(entry_id, {"stage": session.config.mission_definition.stage_number}), CONNECT_ONE_SHOT)
+	elif not entry_id.is_empty():
+		session.services.story.start_dialogue(entry_id, {"stage": session.config.mission_definition.stage_number})
 	camera_rig = PresentationCameraRig.new(); camera_rig.name = "PresentationCameraRig"; camera_rig.configure(session.services.settings); camera_rig.set_targets(player_actors); camera_rig.enabled = true; add_child(camera_rig)
 	var plan := StageGraphGenerator.new().generate(session.config.mission_definition, session.stage_seed, int(session.config.mode_rules.get("difficulty_rating", difficulty_definition.rating if difficulty_definition != null else 50)))
 	if plan != null: plan = ModeStagePlanAdapter.adapt(plan, StringName(session.config.mode_rules.get("mode_id", "")))
@@ -116,7 +123,6 @@ func _ready() -> void:
 	mission_hud = MissionHUD.new(); mission_hud.name = "MissionHUD"; mission_hud.configure(session, player_actors, score_tracker); add_child(mission_hud); mission_hud.bind_stage(stage_runtime)
 	add_child(stage_runtime)
 	if not session.checkpoint_snapshot.is_empty(): stage_runtime.call_deferred("restore_from_checkpoint", session.checkpoint_snapshot)
-	queue_redraw()
 
 func _spawn_players() -> void:
 	var online := session.online_coop != null
@@ -255,6 +261,7 @@ func _spawn_enemy(enemy_id: StringName, spawn_position: Vector2, formation: Form
 func _on_pooled_enemy_defeated(_enemy: ProductionEnemy, actor_id: StringName, credits: int) -> void:
 	session.services.audio.play(SFX_EXPLOSION, &"Explosions", 3, 0.08, _enemy.global_position)
 	_spawn_explosion(_enemy.global_position, 0.72)
+	if camera_rig != null: camera_rig.add_shake(&"enemy_destroyed", 1.8, 0.12, 29.0)
 	session.reward_state.credits = int(session.reward_state.get("credits", 0)) + credits
 	_notify_enemy_finished(actor_id)
 
@@ -297,6 +304,8 @@ func _on_player_damaged(_packet: DamagePacket, result: DamageResult) -> void:
 	if result.health_damage + result.shield_damage <= 0.0: return
 	if score_tracker != null: score_tracker.break_chain(&"player_hit")
 	session.services.audio.play(SFX_HIT, &"Player", 3, 0.035)
+	if camera_rig != null: camera_rig.add_shake(&"player_hit", 4.5, 0.2, 34.0)
+	_pulse_screen_effect(&"damage", clampf((result.health_damage + result.shield_damage) / 35.0, 0.16, 0.65), 0.14)
 
 func _on_score_changed(_score: int, chain: int, _multiplier: float) -> void:
 	if stage_runtime == null or stage_runtime.current_segment == null: return
@@ -424,37 +433,53 @@ func _spawn_boss(boss_id: StringName, category: StringName) -> void:
 		if is_instance_valid(arena): arena.queue_free()
 		if active_boss_arena == arena: active_boss_arena = null)
 	add_child(active_boss)
-	if camera_rig != null: camera_rig.frame_boss(active_boss, player_actors)
+	if camera_rig != null:
+		camera_rig.frame_boss(active_boss, player_actors)
+		camera_rig.add_shake(&"boss_arrival", 5.0, 0.45, 18.0)
+	_pulse_screen_effect(&"boss_warning", 0.58, 0.42)
 
 func _on_story_pause_requested(paused: bool) -> void:
 	session.services.audio.set_music_paused(paused)
 	if DisplayServer.get_name() != "headless": get_tree().paused = paused
 
-func _draw() -> void:
-	var operation := int(session.config.mode_rules.get("operation", 1)) if session != null and session.config != null else 1
-	var palette := [Color("071328"), Color("071328"), Color("071d36"), Color("1b0d32"), Color("33170c"), Color("300914"), Color("29240a")]
-	var background: Color = palette[clampi(operation, 0, palette.size() - 1)]
-	draw_rect(Rect2(0, 0, 540, 960), background)
-	if _mission_background != null:
-		draw_texture_rect(_mission_background, Rect2(0, 0, 540, 960), false, Color(0.78, 0.84, 1.0, 0.72))
-	for index in 90:
-		var star := Vector2(float((index * 97) % 532 + 4), float((index * 173) % 940 + 10))
-		var star_color: Color = [Color("9dd8ff"), Color("9dd8ff"), Color("8edcff"), Color("d4a6ff"), Color("ffc18c"), Color("ff8fa3"), Color("fff38a")][clampi(operation, 0, 6)]
-		draw_circle(star, 1.0 + float(index % 3) * 0.45, Color(star_color, 0.6))
-	if operation == 1 and _mission_background == null:
-		draw_texture_rect_region(FRONTIER_BACKGROUND, Rect2(0, 0, 540, 960), Rect2(224, 32, 576, 1024), Color(0.8, 0.86, 1.0, 0.7))
-	if operation >= 3:
-		for index in range(operation - 2):
-			draw_arc(Vector2(90 + index * 105, 250 + (index % 2) * 260), 70.0 + index * 12.0, 0.0, TAU, 48, Color(0.7, 0.45, 1.0, 0.16), 3.0)
-
 func _spawn_explosion(at: Vector2, scale_factor: float) -> void:
 	if effects_pool == null: return
 	var effect := effects_pool.spawn_effect(&"explosion", &"gameplay", at)
 	if effect == null: return
-	var sprite := Sprite2D.new(); sprite.texture = EXPLOSION_TEXTURE; effect.add_child(sprite)
-	effect.scale = Vector2.ONE * 0.2
+	var frames := SpriteFrames.new()
+	frames.set_animation_speed(&"default", 22.0)
+	frames.set_animation_loop(&"default", false)
+	for frame_index in 5:
+		var frame := AtlasTexture.new()
+		frame.atlas = EXPLOSION_SHEET
+		frame.region = Rect2(frame_index * 32, 0, 32, 32)
+		frames.add_frame(&"default", frame)
+	var sprite := AnimatedSprite2D.new()
+	sprite.sprite_frames = frames
+	sprite.scale = Vector2.ONE * 2.15
+	sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	effect.add_child(sprite)
+	sprite.play(&"default")
+	var ring := Line2D.new()
+	for point_index in 25:
+		ring.add_point(Vector2.RIGHT.rotated(TAU * float(point_index) / 24.0) * 18.0)
+	ring.width = 2.5
+	ring.default_color = Color(0.55, 0.9, 1.0, 0.85)
+	ring.antialiased = true
+	effect.add_child(ring)
+	effect.modulate = Color.WHITE
+	effect.scale = Vector2.ONE * 0.45
 	var tween := effect.create_tween()
 	tween.set_parallel(true)
-	tween.tween_property(effect, "scale", Vector2.ONE * scale_factor, 0.22).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(effect, "modulate:a", 0.0, 0.3).set_delay(0.08)
+	tween.tween_property(effect, "scale", Vector2.ONE * scale_factor, 0.24).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(ring, "scale", Vector2.ONE * 2.4, 0.3).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(ring, "modulate:a", 0.0, 0.28).set_delay(0.04)
+	tween.tween_property(effect, "modulate:a", 0.0, 0.34).set_delay(0.12)
 	tween.chain().tween_callback(func(): effects_pool.release_effect(effect))
+
+func _pulse_screen_effect(effect_id: StringName, intensity: float, duration: float) -> void:
+	if screen_effects == null: return
+	screen_effects.trigger(effect_id, intensity)
+	var timer := get_tree().create_timer(duration, false)
+	timer.timeout.connect(func():
+		if screen_effects != null: screen_effects.clear(effect_id))

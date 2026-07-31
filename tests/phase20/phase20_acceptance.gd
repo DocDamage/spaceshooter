@@ -26,6 +26,7 @@ func _run() -> void:
 	mission = GeneratedMission.new(); mission.configure(session, hub.content_database); session.add_child(mission)
 	for ignored in 8: await physics_frame
 	_assert(not mission.player_actors.is_empty() and mission.player_actors[0] is ProductionPlayer, "generated mission spawns the selected player actor")
+	_assert(mission.mission_backdrop != null and mission.mission_backdrop.motion_layers.size() >= 3 and mission.camera_rig.position.distance_to(Vector2(270, 480)) < 1.0, "live missions keep the layered background in screen space and the authored portrait arena centered")
 	var player := mission.player_actors[0] as ProductionPlayer
 	var loadout := player.combat_loadout_snapshot()
 	_assert(loadout.weapons == [&"weapon.pulse_cannon", &"weapon.spread_cannon", &"weapon.missile_launcher"] and loadout.spells == [&"spell.aegis"] and loadout.melee == &"melee.energy_blade" and loadout.super == &"super.overdrive", "primary, secondary, heavy, spell, melee, and super selections reach the live player")
@@ -162,15 +163,24 @@ func _test_failure_checkpoint(config: GameSessionConfig) -> void:
 	_assert(failed.completion_result.failure_reason == &"test_failure", "failure completion is idempotent")
 
 func _test_shipping_menu(campaign: FullCampaignController) -> void:
+	hub.settings.set_setting(&"ui_scale", 1.25, false)
 	var menu := MenuShell.new(); menu.configure(hub, false, campaign); root.add_child(menu); await process_frame
 	var main_text := _control_text(menu)
 	_assert(["Continue", "Campaign Map — Operations 1–6", "Modes", "Hangar & Progression", "Codex", "Profiles", "Online Co-op", "Settings", "Support & Diagnostics", "Credits", "Quit"].all(func(label): return label in main_text), "shipping menu exposes every supported front-end destination")
+	_assert(menu.root.scale == Vector2.ONE and menu.root.theme.default_font_size == 21 and menu.page_host.get_child(0) is ScrollContainer, "saved UI scale changes theme metrics without cropping the root, and the long main menu scrolls")
+	var alternate := ProgressionProfile.new(); alternate.profile_id = &"profile.phase20_alternate"; alternate.profile_settings = {"campaign_ship_id": &"ship.bastion", "campaign_loadout": {&"primary": &"weapon.rail"}}
+	hub.profiles.progression_profiles[alternate.profile_id] = alternate
+	hub.profiles.select_profiles([alternate.profile_id])
+	campaign.configure(hub.content_database, hub, alternate)
+	menu.set_campaign_controller(campaign)
+	_assert(menu.selected_campaign_ship_id() == &"ship.bastion" and menu.selected_campaign_loadout().get(&"primary") == &"weapon.rail" and menu.selected_campaign_loadout().get(&"spell") == &"spell.aegis", "profile changes reload that pilot's hangar preferences without leaking the previous loadout")
 	var registered := true
 	for page in [&"modes", &"hangar", &"inventory", &"skills", &"upgrades", &"codex", &"profiles", &"settings", &"online", &"support", &"credits"]:
 		menu.show_page(page, false); await process_frame
 		if "This page has not been registered." in _control_text(menu): registered = false
 	_assert(registered and menu.current_page == &"credits", "mode, progression, codex, profile, settings, support, online-gate, and credits pages build through shipping UI")
 	menu.queue_free(); await process_frame
+	hub.settings.set_setting(&"ui_scale", 1.0, false)
 
 func _test_mode_lifecycles(config: GameSessionConfig) -> void:
 	var required_modes := [&"arcade", &"score_attack", &"boss_rush", &"boss_practice", &"survival", &"endless", &"time_attack", &"daily_challenge", &"weekly_challenge", &"mutator", &"training"]

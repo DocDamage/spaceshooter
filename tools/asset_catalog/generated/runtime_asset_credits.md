@@ -76,3 +76,4 @@ License evidence: `SpaceShooter/license.txt`
 License evidence: `art_source/generated/LICENSE.txt`
 
 - `asset.ui.galax_hero_app_icon`
+- `asset.portrait.galax_hero_comms_atlas`

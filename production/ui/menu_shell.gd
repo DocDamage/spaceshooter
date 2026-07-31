@@ -6,6 +6,8 @@ signal resume_requested
 signal campaign_stage_requested(global_stage: int)
 signal mode_requested(mode_id: StringName, global_stage: int, difficulty: int, seed: int, player_count: int, ship_id: StringName, loadout: Dictionary)
 
+const DEFAULT_CAMPAIGN_LOADOUT := {&"primary": &"weapon.pulse_cannon", &"secondary": &"weapon.spread_cannon", &"heavy": &"weapon.missile_launcher", &"spell": &"spell.aegis", &"melee": &"melee.energy_blade", &"super": &"super.overdrive"}
+
 var services: ServiceHub
 var root: Control
 var page_host: MarginContainer
@@ -21,7 +23,7 @@ var campaign_controller: FullCampaignController
 var campaign_model: CampaignMapModel
 var campaign_ship_id: StringName = &"ship.vanguard"
 var campaign_local_players := 1
-var campaign_loadout := {&"primary": &"weapon.pulse_cannon", &"secondary": &"weapon.spread_cannon", &"heavy": &"weapon.missile_launcher", &"spell": &"spell.aegis", &"melee": &"melee.energy_blade", &"super": &"super.overdrive"}
+var campaign_loadout := DEFAULT_CAMPAIGN_LOADOUT.duplicate(true)
 var selected_mode_id: StringName = &"arcade"
 var mode_stage := 1
 var mode_difficulty := 50
@@ -44,14 +46,12 @@ func configure(service_hub: ServiceHub, pause_shell := false, full_campaign: Ful
 func set_campaign_controller(full_campaign: FullCampaignController) -> void:
 	campaign_controller = full_campaign
 	campaign_model = null
+	_load_selected_profile_preferences()
 	if is_inside_tree() and current_page == &"campaign": show_page(&"campaign", false)
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	var selected_profile := services.profiles.get_progression_profile() if services != null else null
-	if selected_profile != null:
-		campaign_ship_id = StringName(selected_profile.profile_settings.get("campaign_ship_id", campaign_ship_id))
-		campaign_loadout.merge(selected_profile.profile_settings.get("campaign_loadout", {}), true)
+	_load_selected_profile_preferences()
 	_build_shell()
 	services.input.active_device_changed.connect(_on_active_device_changed)
 	services.input.controller_connection_changed.connect(_on_controller_connection_changed)
@@ -106,32 +106,49 @@ func show_page(page: StringName, push_history := true) -> void:
 	breadcrumb.text = ("PAUSED / " if is_pause_shell else "COMMAND / ") + String(page).replace("_", " ").to_upper()
 	services.localization.localize_tree(content)
 	_apply_text_scale(content)
+	_wire_ui_feedback(content)
 	call_deferred("_focus_first", content)
 
 func _build_shell() -> void:
 	root = Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	root.theme = GalaxHeroTheme.create()
+	root.theme = GalaxHeroTheme.create(float(services.settings.get_setting(&"ui_scale", 1.0)))
 	add_child(root)
 	var key_art := TextureRect.new()
-	key_art.texture = load("res://assets_runtime/backgrounds/background_convergence_gold_sheet.png") as Texture2D
+	key_art.texture = _background_sheet_cell("res://assets_runtime/backgrounds/background_convergence_gold_sheet.png", 1)
 	key_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	key_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	key_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	key_art.modulate = Color(0.48, 0.62, 0.84, 0.48)
+	key_art.modulate = Color(0.68, 0.78, 0.96, 0.72)
 	key_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(key_art)
+	var stars := TextureRect.new()
+	stars.texture = _background_sheet_cell("res://assets_runtime/backgrounds/background_convergence_gold_sheet.png", 3)
+	stars.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	stars.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	stars.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	stars.modulate = Color(0.8, 0.92, 1.0, 0.58)
+	stars.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(stars)
 	var backdrop := ColorRect.new()
-	backdrop.color = Color(0.015, 0.035, 0.08, 0.88)
+	backdrop.color = Color(0.008, 0.025, 0.06, 0.68)
 	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	root.add_child(backdrop)
 	var margin := MarginContainer.new()
-	margin.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT, Control.PRESET_MODE_MINSIZE, 28)
+	margin.anchor_left = 0.5
+	margin.anchor_right = 0.5
+	margin.anchor_top = 0.0
+	margin.anchor_bottom = 1.0
+	margin.offset_left = -270.0 + 24.0
+	margin.offset_right = 270.0 - 24.0
+	margin.offset_top = 24.0
+	margin.offset_bottom = -24.0
 	root.add_child(margin)
 	var layout := VBoxContainer.new()
 	margin.add_child(layout)
 	var title := Label.new()
 	title.text = "GALAX HERO"
+	title.modulate = Color("fff09a")
 	title.add_theme_font_size_override("font_size", 34)
 	layout.add_child(title)
 	breadcrumb = Label.new()
@@ -163,7 +180,7 @@ func _main_page() -> Control:
 	var quit := UIComponentLibrary.secondary_button("Quit")
 	quit.pressed.connect(_confirm_quit)
 	box.add_child(quit)
-	return box
+	return _scroll(box)
 
 func _campaign_page() -> Control:
 	if campaign_controller == null:
@@ -562,12 +579,14 @@ func _accessibility_page() -> Control:
 	colorblind.item_selected.connect(func(index): services.settings.set_setting(&"colorblind_filter", modes[index].to_lower()))
 	var hostile_colors := PackedStringArray(["Red", "Orange", "Magenta"])
 	var hostile_values := ["ff566d", "ff9f43", "ff5ee7"]
-	var hostile_picker := UIComponentLibrary.drop_down(hostile_colors)
+	var hostile_index := maxi(0, hostile_values.find(String(services.settings.get_setting(&"hostile_bullet_color", hostile_values[0]))))
+	var hostile_picker := UIComponentLibrary.drop_down(hostile_colors, hostile_index)
 	hostile_picker.item_selected.connect(func(index): services.settings.set_setting(&"hostile_bullet_color", hostile_values[index]))
 	_add_labeled_control(box, "Hostile bullet color", hostile_picker)
 	var friendly_colors := PackedStringArray(["Cyan", "Green", "White"])
 	var friendly_values := ["62dcff", "66ff9a", "ffffff"]
-	var friendly_picker := UIComponentLibrary.drop_down(friendly_colors)
+	var friendly_index := maxi(0, friendly_values.find(String(services.settings.get_setting(&"friendly_bullet_color", friendly_values[0]))))
+	var friendly_picker := UIComponentLibrary.drop_down(friendly_colors, friendly_index)
 	friendly_picker.item_selected.connect(func(index): services.settings.set_setting(&"friendly_bullet_color", friendly_values[index]))
 	_add_labeled_control(box, "Friendly bullet color", friendly_picker)
 	_add_toggle_setting(box, "Projectile outline", &"projectile_outline")
@@ -649,8 +668,35 @@ func _page_box(description: String) -> VBoxContainer:
 func _scroll(content: Control) -> ScrollContainer:
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(content)
 	return scroll
+
+func apply_ui_scale(value: float) -> void:
+	if root == null: return
+	root.scale = Vector2.ONE
+	root.theme = GalaxHeroTheme.create(value)
+	if not current_page.is_empty(): show_page(current_page, false)
+
+func _wire_ui_feedback(node: Node) -> void:
+	if node is BaseButton:
+		var button := node as BaseButton
+		if not button.has_meta(&"audio_feedback_wired"):
+			button.set_meta(&"audio_feedback_wired", true)
+			button.focus_entered.connect(func(): services.audio.play_ui_cue(&"navigate"))
+			button.mouse_entered.connect(func(): services.audio.play_ui_cue(&"navigate"))
+			button.pressed.connect(func(): services.audio.play_ui_cue(&"confirm"))
+	for child in node.get_children(): _wire_ui_feedback(child)
+
+func _background_sheet_cell(path: String, row: int) -> Texture2D:
+	if not ResourceLoader.exists(path): return null
+	var source := load(path) as Texture2D
+	if source == null: return null
+	var cell_size := source.get_width()
+	var atlas := AtlasTexture.new()
+	atlas.atlas = source
+	atlas.region = Rect2(0, clampi(row, 0, maxi(0, int(source.get_height() / cell_size) - 1)) * cell_size, cell_size, cell_size)
+	return atlas
 
 func _add_nav_button(box: VBoxContainer, text: String, callback: Callable) -> void:
 	var button := UIComponentLibrary.primary_button(text)
@@ -715,6 +761,17 @@ func _persist_hangar(profile: ProgressionProfile) -> void:
 	profile.profile_settings.campaign_ship_id = campaign_ship_id
 	profile.profile_settings.campaign_loadout = campaign_loadout.duplicate(true)
 	services.profiles.persist_profile(profile.profile_id)
+
+func _load_selected_profile_preferences() -> void:
+	campaign_ship_id = &"ship.vanguard"
+	campaign_loadout = DEFAULT_CAMPAIGN_LOADOUT.duplicate(true)
+	var selected_profile := services.profiles.get_progression_profile() if services != null and services.profiles != null else null
+	if selected_profile == null:
+		return
+	campaign_ship_id = StringName(selected_profile.profile_settings.get("campaign_ship_id", campaign_ship_id))
+	var saved_loadout = selected_profile.profile_settings.get("campaign_loadout", {})
+	if saved_loadout is Dictionary:
+		campaign_loadout.merge(saved_loadout, true)
 
 func _format_dictionary(values: Dictionary) -> String:
 	if values.is_empty(): return "Standard rules"

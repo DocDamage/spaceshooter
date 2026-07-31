@@ -13,6 +13,7 @@ All notable player-visible and release-engineering changes are recorded here. Ve
 - Player-triggered privacy-safe diagnostics export and Support & Diagnostics menu.
 - Development, QA, Demo, Release Candidate, and Release profiles; exported profile/load/Stage 1 smokes; Authenticode hook; release manifest; SPDX SBOM; versioned ZIP and checksums.
 - Fifty explicit Operation 2–6 narrative records with later decision echoes; five specialist hull visuals; distinct operation backdrops; expanded enemy, objective, hazard, pickup, projectile, and UI art; and a shared production theme.
+- A project-owned eight-character comms portrait atlas, animated explosion frames, layered mission backdrops, reduced-motion parallax, and dedicated menu navigation cues.
 - Bounded save/network parsers, sanitized profile/platform/transport text, provider-backed cloud document I/O, persistent achievement reconciliation, and restorable crossfaded music states.
 - Deterministic Phase 22 resilience coverage for 1,024 network messages and 320 save documents, including type confusion, malformed input, checksum failure, and corrupt-file preservation.
 - A four-hour simulated Stage 1 endurance gate plus three-candidate RC reproducibility reporting.
@@ -24,6 +25,10 @@ All notable player-visible and release-engineering changes are recorded here. Ve
 - Legacy compatibility facades are isolated to the smoke harness and excluded from shipping exports.
 - Phase 2 now tears down through one deterministic coroutine, eliminating an intermittent Godot native access violation after all assertions had passed.
 - Network protocol and compatibility validation now rejects attacker-controlled type confusion before performing conversions.
+- Profile creation, switching, and deletion now refresh the active campaign controller and reload the selected pilot's saved ship/loadout instead of retaining the previous pilot's choices.
+- Saved UI scale and projectile-color selections now initialize correctly in newly created menus.
+- Known settings are type-checked and bounded on load, while failed campaign/session preflight keeps a usable recovery menu available.
+- The portrait playfield now renders through a fixed viewport instead of cropping into the square desktop window; the mission camera preserves the authored arena, backgrounds use their individual layers, diagnostics default off, radio no longer covers the player or briefing, and long menus scroll within a clean non-stretched theme.
 
 ## [0.20.0] - 2026-07-31
 

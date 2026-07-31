@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "asset_count": 4788,
+  "asset_count": 4789,
   "triage_counts": {
-    "approved": 50,
+    "approved": 51,
     "candidate": 3628,
     "duplicate": 950,
     "source_only": 160
   },
-  "approved_count": 50,
-  "approved_runtime_bytes": 9646631,
+  "approved_count": 51,
+  "approved_runtime_bytes": 11413490,
   "license_groups": [
     {
       "license_status": "reviewed_commercial",
@@ -87,7 +87,8 @@
       "license_status": "owner_created",
       "license_source": "art_source/generated/LICENSE.txt",
       "asset_ids": [
-        "asset.ui.galax_hero_app_icon"
+        "asset.ui.galax_hero_app_icon",
+        "asset.portrait.galax_hero_comms_atlas"
       ]
     }
   ],
@@ -593,6 +594,16 @@
       "source_path": "art_source/generated/galax_hero_app_icon.png",
       "runtime_path": "res://assets_runtime/ui/galax_hero_app_icon.png",
       "sha256": "67571e59c2a1fe3058dc855a8c8ca8cf18b33ad4712150945d3c14029a8d8664",
+      "license_status": "owner_created",
+      "license_source": "art_source/generated/LICENSE.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.portrait.galax_hero_comms_atlas",
+      "source_path": "art_source/generated/galax_hero_comms_portraits.png",
+      "runtime_path": "res://assets_runtime/portraits/comms_portrait_atlas.png",
+      "sha256": "7d335b42a4983be9ef004fe9b31d7eaf3bac4ba09abf71fe00dee5df04cadb23",
       "license_status": "owner_created",
       "license_source": "art_source/generated/LICENSE.txt",
       "attribution_required": false,
