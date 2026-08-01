@@ -5,6 +5,8 @@ func generate(mission: MissionDefinition, seed_value: int, difficulty := 50) -> 
 	if mission == null or mission.recipe == null: return null
 	var recipe := mission.recipe
 	if not recipe.validate_definition().is_empty() or difficulty < recipe.minimum_difficulty or difficulty > recipe.maximum_difficulty: return null
+	if mission.encounter_timeline != null:
+		return _generate_timeline(mission, seed_value, difficulty)
 	var streams := SeededRandomStreams.new(seed_value)
 	var selection := streams.stream(&"segment_selection")
 	var sequence: Array[StageSegmentDefinition] = []
@@ -39,6 +41,39 @@ func generate(mission: MissionDefinition, seed_value: int, difficulty := 50) -> 
 	_add_branches(plan, recipe, streams.stream(&"branches"), node_seed_stream)
 	plan.generation_notes.append("Generated %d nodes from deterministic seed %d" % [plan.nodes.size(), seed_value])
 	return plan
+
+func _generate_timeline(mission: MissionDefinition, seed_value: int, difficulty: int) -> StagePlan:
+	var timeline := mission.encounter_timeline
+	if timeline == null or not timeline.validate_definition().is_empty(): return null
+	var plan := StagePlan.new()
+	plan.mission_id = mission.stable_id
+	plan.seed = seed_value
+	plan.difficulty = difficulty
+	var ids := {}
+	var primary_index := 0
+	var branch_index := 0
+	for beat in timeline.beats:
+		if beat == null or beat.segment == null: return null
+		var node_id := StringName("node.%02d.%s" % [primary_index, beat.segment.stable_id]) if beat.primary_route else StringName("branch.%02d.%s" % [branch_index, beat.segment.stable_id])
+		if beat.primary_route: primary_index += 1
+		else: branch_index += 1
+		if ids.has(beat.stable_id): return null
+		ids[beat.stable_id] = node_id
+		var node := _node_data(node_id, beat.segment, _timeline_node_seed(seed_value, beat.stable_id))
+		var beat_snapshot := beat.snapshot(seed_value)
+		for key in beat_snapshot: node[key] = beat_snapshot[key]
+		node["timeline_id"] = timeline.stable_id
+		plan.add_node(node, beat.segment)
+	for beat in timeline.beats:
+		var node := plan.node_for(ids[beat.stable_id])
+		for next_beat_id in beat.next_beat_ids:
+			node.next_ids.append(ids[next_beat_id])
+	for beat in timeline.ordered_primary_beats(): plan.main_route.append(ids[beat.stable_id])
+	plan.generation_notes.append("Authored timeline %s with %d beats and bounded seed variants" % [timeline.stable_id, timeline.beats.size()])
+	return plan
+
+func _timeline_node_seed(seed_value: int, beat_id: StringName) -> int:
+	return seed_value ^ hash(String(beat_id))
 
 func _compatible_insertion(sequence: Array[StageSegmentDefinition], candidate: StageSegmentDefinition, random: RandomNumberGenerator) -> int:
 	var positions: Array[int] = []

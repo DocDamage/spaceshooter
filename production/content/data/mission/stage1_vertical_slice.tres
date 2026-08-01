@@ -1,13 +1,14 @@
-[gd_resource type="Resource" script_class="MissionDefinition" load_steps=3 format=3]
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://production/content/definitions/mission_definition.gd" id="1"]
 [ext_resource type="Resource" path="res://production/content/data/mission_recipe/stage1_vertical_slice.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/stage_timeline/stage1_frontier.tres" id="3"]
 
 [resource]
 script = ExtResource("1")
 stable_id = &"mission.stage1_vertical_slice"
 display_name = "First Contact"
-dependency_ids = Array[StringName]([&"ship.vanguard", &"recipe.stage1_vertical_slice", &"boss.corsair_ace_miniboss", &"boss.corsair_dreadnought", &"pilot.nova", &"campaign_node.operation1_stage1"])
+dependency_ids = Array[StringName]([&"ship.vanguard", &"recipe.stage1_vertical_slice", &"timeline.stage1_frontier", &"boss.corsair_ace_miniboss", &"boss.corsair_dreadnought", &"pilot.nova", &"campaign_node.operation1_stage1"])
 content_version = "1.0.0"
 player_ship_id = &"ship.vanguard"
 enemy_ids = Array[StringName]([&"enemy.scout_mk2", &"enemy.raider", &"enemy.hunter", &"enemy.harrier", &"enemy.sentinel", &"enemy.guardian", &"enemy.bomber", &"enemy.corsair"])
@@ -18,6 +19,7 @@ stage_number = 1
 environment_tags = Array[StringName]([&"space", &"frontier"])
 enemy_factions = Array[StringName]([&"faction.raiders"])
 recipe = ExtResource("2")
+encounter_timeline = ExtResource("3")
 miniboss_id = &"boss.corsair_ace_miniboss"
 boss_id = &"boss.corsair_dreadnought"
 mission_rewards = {"credits": 500, "xp": 400, "equipment_id": &"equipment.reactor_matrix"}

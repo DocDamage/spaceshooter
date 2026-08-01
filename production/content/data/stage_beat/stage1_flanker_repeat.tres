@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="StageBeatDefinition" load_steps=4 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/stage_beat_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/segment/formation_combat.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/encounter_variant/frontier_flanker.tres" id="3"]
+[resource]
+script = ExtResource("1")
+stable_id = &"stage1.flanker_repeat"
+label = "Flanker Repeat"
+start_seconds = 55.0
+target_duration_seconds = 40.0
+segment = ExtResource("2")
+next_beat_ids = Array[StringName]([&"stage1.relay_fork"])
+encounter_variants = Array[ExtResource("3")]([ExtResource("3")])
+background_zone = &"planet_horizon"
+music_state = &"frontier_combine"
+practice_id = &"practice.stage1.flanker_repeat"
+variation_ids = Array[StringName]([&"high_flank", &"low_flank"])
+pressure = {"enemy_cap": 6, "projectile_cap": 260, "speed_multiplier": 1.05, "high_attention_roles": 2}

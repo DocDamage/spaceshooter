@@ -5,7 +5,8 @@ signal stage_started(mission_id: StringName, seed: int)
 signal segment_changed(node_id: StringName, segment_id: StringName)
 signal stage_completed
 signal segment_cleared(segment_id: StringName)
-signal enemy_spawn_requested(enemy_id: StringName, position: Vector2, formation: FormationRuntime, slot: int)
+signal enemy_spawn_requested(enemy_id: StringName, position: Vector2, formation: FormationRuntime, slot: int, wave_id: StringName)
+signal beat_started(beat_id: StringName, metadata: Dictionary)
 signal branch_choice_requested(node_id: StringName, choices: Array[StringName])
 signal objective_resolved(objective_id: StringName, succeeded: bool, reward: Dictionary, dialogue_hook: StringName)
 
@@ -22,6 +23,7 @@ var route_choices: Dictionary = {}
 var runtime_context: Dictionary = {}
 var _branch_gate_id: StringName
 var _mode_segments_cleared := 0
+var prop_presenter: StagePropPresenter
 
 func configure(game_session: GameSession, content_database: ContentDatabase, stage_plan: StagePlan, context: Dictionary = {}) -> bool:
 	if is_inside_tree() or game_session == null or content_database == null or stage_plan == null: return false
@@ -40,6 +42,12 @@ func _ready() -> void:
 	secrets = SecretController.new()
 	secrets.name = "SecretController"
 	add_child(secrets)
+	var timeline := session.config.mission_definition.encounter_timeline
+	if timeline != null:
+		prop_presenter = StagePropPresenter.new()
+		prop_presenter.name = "StagePropPresenter"
+		prop_presenter.configure(timeline)
+		add_child(prop_presenter)
 	session.stage_plan_snapshot = plan.to_snapshot()
 	stage_started.emit(plan.mission_id, plan.seed)
 	_activate_route_index(route_index)
@@ -81,6 +89,7 @@ func _activate_node(node_id: StringName, runtime_snapshot: Dictionary = {}) -> v
 		return
 	current_node_id = node_id
 	route_index = plan.main_route.find(node_id)
+	var node := plan.node_for(node_id)
 	var source_definition := plan.definition_for(node_id)
 	if source_definition == null: return
 	var difficulty := database.get_definition(session.difficulty_profile, &"difficulty_profile") as DifficultyProfileDefinition
@@ -89,15 +98,15 @@ func _activate_node(node_id: StringName, runtime_snapshot: Dictionary = {}) -> v
 	if StringName(session.config.mode_rules.get("mode_id", "")) in [&"survival", &"endless"]:
 		rating = mini(100, rating + _mode_segments_cleared * int(session.config.mode_rules.get("difficulty_per_segment", 3)))
 	var definition := EncounterPackageResolver.resolve(source_definition, session.config.mission_definition, node_id, plan.seed, rating, session.config.effective_player_count())
+	runtime_context["timeline_beat"] = node.duplicate(true)
 	current_segment = StageSegmentRuntime.new()
 	current_segment.name = "Segment_%s" % definition.stable_id
 	current_segment.configure(definition, objectives, secrets, runtime_context)
 	current_segment.segment_completed.connect(_on_segment_completed)
 	current_segment.checkpoint_ready.connect(_on_checkpoint_ready)
-	current_segment.enemy_spawn_requested.connect(func(enemy_id, spawn_position, formation, slot): enemy_spawn_requested.emit(enemy_id, spawn_position, formation, slot))
+	current_segment.enemy_spawn_requested.connect(func(enemy_id, spawn_position, formation, slot, wave_id): enemy_spawn_requested.emit(enemy_id, spawn_position, formation, slot, wave_id))
 	add_child(current_segment)
 	if not runtime_snapshot.is_empty(): current_segment.restore(runtime_snapshot)
-	var node := plan.node_for(node_id)
 	var branch_choices: Array[StringName] = []
 	branch_choices.assign(node.get("next_ids", []))
 	var branch_required := branch_choices.size() > 1 and not route_choices.has(node_id)
@@ -107,8 +116,24 @@ func _activate_node(node_id: StringName, runtime_snapshot: Dictionary = {}) -> v
 	session.current_segment = session.current_route.size()
 	if session.current_route.is_empty() or session.current_route[-1] != node_id: session.current_route.append(node_id)
 	session.active_waves = definition.waves.size()
+	_present_beat(node)
 	segment_changed.emit(node_id, definition.stable_id)
 	if branch_required: branch_choice_requested.emit(node_id, branch_choices)
+
+func _present_beat(node: Dictionary) -> void:
+	var beat_id := StringName(node.get("beat_id", ""))
+	if beat_id.is_empty(): return
+	var metadata := node.duplicate(true)
+	session.mission_state.timeline_beat = metadata
+	if prop_presenter != null: prop_presenter.present(node.get("landmark_ids", []))
+	var backdrop := runtime_context.get("mission_backdrop") as MissionBackdrop
+	if backdrop != null: backdrop.set_zone(StringName(node.get("background_zone", "")))
+	var music_state := StringName(node.get("music_state", ""))
+	if not music_state.is_empty(): session.services.audio.set_music_state(music_state)
+	var dialogue_id := StringName(node.get("dialogue_hook", ""))
+	if not dialogue_id.is_empty() and database.get_definition(dialogue_id, &"dialogue") != null:
+		session.services.story.start_dialogue(dialogue_id, {"beat_id": beat_id, "practice_id": node.get("practice_id", "")})
+	beat_started.emit(beat_id, metadata)
 
 func _on_objective_resolved(objective_id: StringName, succeeded: bool, reward: Dictionary, dialogue_hook: StringName) -> void:
 	if succeeded:

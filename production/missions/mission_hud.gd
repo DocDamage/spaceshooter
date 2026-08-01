@@ -39,6 +39,7 @@ func _ready() -> void:
 func bind_stage(runtime: StageRuntime) -> void:
 	stage_runtime = runtime
 	stage_runtime.segment_changed.connect(_on_segment_changed)
+	stage_runtime.beat_started.connect(_on_beat_started)
 	stage_runtime.objective_resolved.connect(_on_objective_resolved)
 	stage_runtime.branch_choice_requested.connect(_on_branch_choice_requested)
 
@@ -62,8 +63,13 @@ func _on_loop_changed(chain_fill: float, rate: float, rank_pips: int) -> void:
 
 func _on_segment_changed(_node_id: StringName, _segment_id: StringName) -> void:
 	if stage_runtime != null and stage_runtime.current_segment != null:
-		objective_label.text = stage_runtime.current_segment.definition.display_name.to_upper()
+		var node := stage_runtime.plan.node_for(_node_id)
+		objective_label.text = String(node.get("beat_label", stage_runtime.current_segment.definition.display_name)).to_upper()
 	if branch_panel != null: branch_panel.visible = false
+
+func _on_beat_started(_beat_id: StringName, metadata: Dictionary) -> void:
+	var zone := String(metadata.get("background_zone", "")).replace("_", " ").to_upper()
+	if not zone.is_empty(): status_label.text = "ZONE  %s" % zone
 
 func _on_objective_resolved(objective_id: StringName, succeeded: bool, _reward: Dictionary, _dialogue_hook: StringName) -> void:
 	objective_label.text = "%s  %s" % [String(objective_id).get_slice("@", 0).trim_prefix("objective.").replace("_", " ").to_upper(), "COMPLETE" if succeeded else "FAILED"]

@@ -1,7 +1,7 @@
 class_name StageSegmentRuntime
 extends Node2D
 
-signal enemy_spawn_requested(enemy_id: StringName, position: Vector2, formation: FormationRuntime, slot: int)
+signal enemy_spawn_requested(enemy_id: StringName, position: Vector2, formation: FormationRuntime, slot: int, wave_id: StringName)
 signal segment_completed(segment_id: StringName)
 signal checkpoint_ready(checkpoint_kind: StringName, safe_spawn: Vector2, snapshot: Dictionary)
 
@@ -39,7 +39,7 @@ func _ready() -> void:
 	wave_scheduler = WaveScheduler.new()
 	wave_scheduler.name = "WaveScheduler"
 	wave_scheduler.configure(definition.waves)
-	wave_scheduler.enemy_spawn_requested.connect(func(enemy_id, spawn_position, formation, slot): enemy_spawn_requested.emit(enemy_id, spawn_position, formation, slot))
+	wave_scheduler.enemy_spawn_requested.connect(func(enemy_id, spawn_position, formation, slot, wave_id): enemy_spawn_requested.emit(enemy_id, spawn_position, formation, slot, wave_id))
 	wave_scheduler.wave_completed.connect(_on_wave_completed)
 	wave_scheduler.formation_bonus.connect(_on_formation_bonus)
 	add_child(wave_scheduler)

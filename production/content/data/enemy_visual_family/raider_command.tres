@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="EnemyVisualFamilyDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/enemy_visual_family_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"visual.raider_command"
+display_name = "Raider Command Family"
+visual_asset_path = "res://assets_runtime/enemies/boss_raider_command_final.png"
+visual_scale = 1.4
+faction_tag = &"raider"
+presentation_tags = Array[StringName]([&"command", &"boss", &"frontier"])

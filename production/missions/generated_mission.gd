@@ -35,6 +35,7 @@ var mission_backdrop: MissionBackdrop
 var bullet_conversion: BulletConversionService
 var arcade_debug_overlay: ArcadeDebugOverlay
 var _finished_enemy_ids: Dictionary = {}
+var _enemy_wave_ids: Dictionary = {}
 var _retarget_elapsed := 0.0
 var _mode_lives_remaining := 0
 var _mode_continues_used := 0
@@ -120,7 +121,7 @@ func _ready() -> void:
 	if plan != null: plan = ModeStagePlanAdapter.adapt(plan, StringName(session.config.mode_rules.get("mode_id", "")))
 	stage_runtime = StageRuntime.new()
 	stage_runtime.name = "StageRuntime"
-	var runtime_context := {"projectile_pool": projectile_pool, "enemy_pool": enemy_pool, "players": player_actors, "difficulty": difficulty_definition, "registry": session.actor_registry, "event_bus": session.event_bus, "stage_seed": session.stage_seed, "score_tracker": score_tracker, "session": session}
+	var runtime_context := {"projectile_pool": projectile_pool, "enemy_pool": enemy_pool, "players": player_actors, "difficulty": difficulty_definition, "registry": session.actor_registry, "event_bus": session.event_bus, "stage_seed": session.stage_seed, "score_tracker": score_tracker, "session": session, "mission_backdrop": mission_backdrop}
 	if plan == null or not stage_runtime.configure(session, database, plan, runtime_context):
 		push_error("Generated stage failed validation")
 		return
@@ -264,14 +265,16 @@ func _physics_process(delta: float) -> void:
 		elif index != local_index and session.online_coop.world_state.actors.has(actor_id):
 			actor.position = session.online_coop.world_state.actors[actor_id].get("position", actor.position)
 
-func _spawn_enemy(enemy_id: StringName, spawn_position: Vector2, formation: FormationRuntime, slot: int) -> void:
+func _spawn_enemy(enemy_id: StringName, spawn_position: Vector2, formation: FormationRuntime, slot: int, wave_id: StringName = &"") -> void:
 	var definition := database.get_definition(enemy_id, &"enemy") as EnemyDefinition
 	if definition == null:
 		session.services.diagnostics.add_warning("Generated wave references missing enemy %s" % enemy_id)
-		if stage_runtime.current_segment != null: stage_runtime.current_segment.wave_scheduler.notify_enemy_finished()
+		if not wave_id.is_empty() and stage_runtime.current_segment != null: stage_runtime.current_segment.wave_scheduler.notify_enemy_finished(wave_id)
 		return
 	enemy_sequence += 1
+	definition = _apply_beat_variant(definition)
 	var actor_id := StringName("enemy.segment_%d.%d.%d" % [session.current_segment, slot, enemy_sequence])
+	_enemy_wave_ids[actor_id] = wave_id
 	var source_ids: Array[StringName] = []
 	for player in player_actors:
 		if is_instance_valid(player): source_ids.append(player.actor_id)
@@ -284,6 +287,22 @@ func _spawn_enemy(enemy_id: StringName, spawn_position: Vector2, formation: Form
 	if formation != null:
 		formation.player_count = maxi(1, player_actors.size())
 		formation.add_member(enemy, slot)
+
+func _apply_beat_variant(source: EnemyDefinition) -> EnemyDefinition:
+	if source == null or stage_runtime == null: return source
+	var beat: Dictionary = stage_runtime.runtime_context.get("timeline_beat", {})
+	var variant_ids: Array = beat.get("encounter_variant_ids", [])
+	if variant_ids.is_empty(): return source
+	var index := posmod(enemy_sequence - 1, variant_ids.size())
+	var variant := database.get_definition(StringName(variant_ids[index]), &"encounter_variant") as EncounterVariantDefinition
+	if variant == null: return source
+	var definition := source.duplicate(true) as EnemyDefinition
+	definition.visual_asset_path = ""
+	definition.visual_family = null
+	definition.combat_archetype = null
+	definition.behavior_score = null
+	definition.encounter_variant = variant
+	return definition
 
 func _on_pooled_enemy_defeated(_enemy: ProductionEnemy, actor_id: StringName, credits: int) -> void:
 	session.services.audio.play(SFX_EXPLOSION, &"Explosions", 3, 0.08, _enemy.global_position)
@@ -415,8 +434,10 @@ func _on_pooled_enemy_escaped(_enemy: ProductionEnemy, actor_id: StringName) -> 
 func _notify_enemy_finished(actor_id: StringName) -> void:
 	if _finished_enemy_ids.has(actor_id): return
 	_finished_enemy_ids[actor_id] = true
-	if stage_runtime != null and stage_runtime.current_segment != null and stage_runtime.current_segment.wave_scheduler != null:
-		stage_runtime.current_segment.wave_scheduler.notify_enemy_finished()
+	var wave_id := StringName(_enemy_wave_ids.get(actor_id, ""))
+	_enemy_wave_ids.erase(actor_id)
+	if not wave_id.is_empty() and stage_runtime != null and stage_runtime.current_segment != null and stage_runtime.current_segment.wave_scheduler != null:
+		stage_runtime.current_segment.wave_scheduler.notify_enemy_finished(wave_id)
 
 func _target_player(seed_offset := 0) -> ProductionPlayer:
 	var valid_players: Array[ProductionPlayer] = []

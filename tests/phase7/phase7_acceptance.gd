@@ -105,7 +105,7 @@ func _test_wave_scheduler() -> void:
 	host.add_child(scheduler)
 	scheduler.configure([wave])
 	var spawned := [0]
-	scheduler.enemy_spawn_requested.connect(func(_id, _position, _formation, _slot): spawned[0] += 1)
+	scheduler.enemy_spawn_requested.connect(func(_id, _position, _formation, _slot, _wave_id): spawned[0] += 1)
 	_assert(scheduler.start(), "wave scheduler accepts authored wave definitions")
 	scheduler.tick(0.01)
 	scheduler.tick(0.01)

@@ -19,6 +19,8 @@ var motion_layers: Array[Node2D] = []
 var motion_offsets: Array[float] = []
 var motion_ratios: Array[float] = []
 var tile_height := 540.0
+var current_zone: StringName
+var zone_overlay: ColorRect
 
 func _ready() -> void:
 	_align_playfield()
@@ -61,12 +63,26 @@ func _build() -> void:
 		else:
 			_build_single_texture(size)
 	_add_star_layer(24, _operation_accent(operation), 0.2, 7)
-	var readability := ColorRect.new()
-	readability.color = Color(0.005, 0.018, 0.045, 0.22)
-	readability.position = Vector2.ZERO
-	readability.size = VIEW_SIZE
-	readability.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(readability)
+	zone_overlay = ColorRect.new()
+	zone_overlay.color = Color(0.005, 0.018, 0.045, 0.22)
+	zone_overlay.position = Vector2.ZERO
+	zone_overlay.size = VIEW_SIZE
+	zone_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(zone_overlay)
+
+func set_zone(zone_id: StringName) -> bool:
+	if zone_id.is_empty() or zone_id == current_zone: return false
+	current_zone = zone_id
+	if zone_overlay == null: return true
+	var tint := Color(0.005, 0.018, 0.045, 0.22)
+	match zone_id:
+		&"planet_horizon": tint = Color(0.06, 0.13, 0.22, 0.24)
+		&"relay_approach", &"relay_core", &"relay_hidden_lane": tint = Color(0.04, 0.21, 0.30, 0.24)
+		&"debris_belt", &"orbit_breakup": tint = Color(0.17, 0.10, 0.04, 0.24)
+		&"carrier_approach", &"carrier_arena": tint = Color(0.20, 0.03, 0.08, 0.25)
+	var tween := create_tween()
+	tween.tween_property(zone_overlay, "color", tint, 0.22)
+	return true
 
 func _build_vertical_layer_sheet(size: Vector2) -> void:
 	var cell_size := size.x

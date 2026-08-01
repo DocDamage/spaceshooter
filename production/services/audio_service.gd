@@ -63,6 +63,13 @@ func play(stream: AudioStream, bus: StringName, priority := 1, pitch_variation :
 func play_music(stream: AudioStream, looped := true) -> AudioStreamPlayer:
 	return transition_music(stream, &"music", music_crossfade_seconds, looped)
 
+func set_music_state(state_id: StringName) -> bool:
+	if state_id.is_empty() or current_music_state == &"silent": return false
+	if current_music_state == state_id: return true
+	current_music_state = state_id
+	music_state_changed.emit(state_id)
+	return true
+
 func transition_music(stream: AudioStream, state_id: StringName, duration := -1.0, looped := true) -> AudioStreamPlayer:
 	if stream == null or state_id.is_empty(): return null
 	var fade_seconds := music_crossfade_seconds if duration < 0.0 else maxf(0.0, duration)

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="StageBeatDefinition" load_steps=4 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/stage_beat_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/segment/elite_encounter.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/encounter_variant/frontier_sweeper.tres" id="3"]
+[resource]
+script = ExtResource("1")
+stable_id = &"stage1.sweeper_escalation"
+label = "Sweeper Escalation"
+start_seconds = 205.0
+target_duration_seconds = 60.0
+segment = ExtResource("2")
+next_beat_ids = Array[StringName]([&"stage1.debris_release"])
+encounter_variants = Array[ExtResource("3")]([ExtResource("3")])
+background_zone = &"orbit_breakup"
+music_state = &"frontier_escalate"
+practice_id = &"practice.stage1.sweeper_escalation"
+variation_ids = Array[StringName]([&"clockwise_sweep", &"counter_sweep"])
+pressure = {"enemy_cap": 8, "projectile_cap": 560, "speed_multiplier": 1.15, "high_attention_roles": 2}

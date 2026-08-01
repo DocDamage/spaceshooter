@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="StageBeatDefinition" load_steps=5 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/stage_beat_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/segment/branch.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/encounter_variant/frontier_turret.tres" id="3"]
+[ext_resource type="Resource" path="res://production/content/data/stage_prop/frontier_relay_station.tres" id="4"]
+[resource]
+script = ExtResource("1")
+stable_id = &"stage1.relay_fork"
+label = "Relay Fork"
+start_seconds = 95.0
+target_duration_seconds = 10.0
+segment = ExtResource("2")
+next_beat_ids = Array[StringName]([&"stage1.convoy_rescue", &"stage1.relay_secret"])
+landmarks = Array[ExtResource("4")]([ExtResource("4")])
+encounter_variants = Array[ExtResource("3")]([ExtResource("3")])
+background_zone = &"relay_approach"
+music_state = &"frontier_choice"
+practice_id = &"practice.stage1.relay_fork"
+pressure = {"enemy_cap": 3, "projectile_cap": 120, "speed_multiplier": 1.0, "high_attention_roles": 1}

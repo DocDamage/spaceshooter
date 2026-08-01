@@ -71,7 +71,14 @@ func _render() -> void:
 		var report := StageValidator.validate(plan, mission)
 		output.append_text("%s Seed %d — %d nodes — %s\n" % [">" if index == selected_plan else " ", plan.seed, plan.nodes.size(), "VALID" if report.valid else "INVALID"])
 		for node in plan.nodes:
-			output.append_text("  %s [%s] waves/objectives %d, projectile budget %d -> %s\n" % [node.segment_id, node.category, node.objective_ids.size(), node.estimated_projectiles, node.next_ids])
+			var beat_label := String(node.get("beat_label", node.segment_id))
+			var timing := ""
+			if node.has("timeline_start"):
+				timing = "  %05.1fs +%04.1fs" % [float(node.timeline_start), float(node.get("timeline_duration", 0.0))]
+			var practice := String(node.get("practice_id", ""))
+			var pressure: Dictionary = node.get("pressure", {})
+			var pressure_text := "" if pressure.is_empty() else "  cap E%d/P%d/R%d" % [int(pressure.get("enemy_cap", 0)), int(pressure.get("projectile_cap", 0)), int(pressure.get("high_attention_roles", 0))]
+			output.append_text("  %s [%s]%s%s%s%s -> %s\n" % [beat_label, node.category, timing, pressure_text, "  practice " + practice if not practice.is_empty() else "", "  variant " + String(node.get("variation_id", "")) if node.has("variation_id") else "", node.next_ids])
 		for warning in report.warnings: output.append_text("  WARNING: %s\n" % warning)
 		for error in report.errors: output.append_text("  ERROR: %s\n" % error)
 	for note in choreography_notes: output.append_text("%s\n" % note)

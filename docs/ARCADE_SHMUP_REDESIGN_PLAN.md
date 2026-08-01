@@ -497,7 +497,7 @@ This lets hundreds of enemy visuals appear across the campaign without requiring
 - [ ] Group complete enemy visuals by silhouette, apparent scale, facing, faction fit, and animation readiness.
 - [ ] Group asteroid/prop assets by depth use, size family, collision suitability, tileability, and animation.
 - [ ] Confirm license/approval before promotion to assets_runtime.
-- [ ] Create EnemyVisualFamilyDefinition and StagePropDefinition resources with pivots, scale, collision recommendation, and presentation tags.
+- [x] Create EnemyVisualFamilyDefinition and StagePropDefinition resources with pivots, scale, collision recommendation, and presentation tags.
 - [ ] Generate draft resources only as review aids; do not auto-approve gameplay statistics.
 - [ ] Preview every promoted enemy in enemy_laboratory.tscn against player bullets, hostile-bullet palettes, explosion scale, and hitbox overlay.
 - [ ] Preview every prop at far, middle, near, and gameplay depth before choosing its layer.
@@ -634,15 +634,17 @@ Every later beat should teach, repeat, combine, release, or test. Beats that do 
 
 ### 9.6 Stage authoring work
 
-- [ ] Add StageEncounterTimeline and StageBeatDefinition resources.
-- [ ] Author Stage 1 in absolute beats before reconnecting procedural variation.
-- [ ] Allow controlled beat overlap and escape completion.
-- [ ] Synchronize enemy cues, background zones, landmarks, music states, and dialogue.
-- [ ] Add per-stage pressure curves for enemy count, projectile count, speed, and attention roles.
-- [ ] Add beat labels and live timeline diagnostics to stage_preview.tscn.
-- [ ] Replace generated stage identity claims with explicit beat sheets.
-- [ ] Keep seed variation inside authored bounds: mirrored entries, selected lane, cosmetic prop layout, or one of a few approved phrases.
-- [ ] Add section-start practice identifiers at every named beat.
+- [x] Add StageEncounterTimeline and StageBeatDefinition resources.
+- [x] Author Stage 1 in absolute beats before reconnecting procedural variation.
+- [x] Allow controlled beat overlap and escape completion.
+- [x] Synchronize enemy cues, background zones, landmarks, music states, and dialogue.
+- [x] Add per-stage pressure curves for enemy count, projectile count, speed, and attention roles.
+- [x] Add beat labels and live timeline diagnostics to stage_preview.tscn.
+- [x] Replace generated stage identity claims with explicit beat sheets.
+- [x] Keep seed variation inside authored bounds: mirrored entries, selected lane, cosmetic prop layout, or one of a few approved phrases.
+- [x] Add section-start practice identifiers at every named beat.
+
+**Implementation update (2026-08-01):** `timeline.stage1_frontier` now authors the complete Stage 1 route as 12 primary beats plus one visible secret route beat (13 total). Each beat owns its absolute cue, pressure caps, practice identifier, bounded seed variation, encounter variant, landmark, zone, music state, and optional dialogue cue. The runtime composes the beat's visual/behavior variant at spawn time; changes the backdrop zone; presents approved landmark props; changes music state; and starts valid dialogue hooks. `WaveScheduler` now tracks per-wave completion so a spawned or elapsed wave can overlap its predecessor safely. The Stage Preview renders labels, timing, pressure caps, practice IDs, and selected variants. The acceptance suite is `tests/phase24_arcade_timeline/phase24_arcade_timeline_acceptance.gd`.
 
 ---
 

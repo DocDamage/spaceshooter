@@ -27,6 +27,7 @@ static func validate(plan: StagePlan, mission: MissionDefinition, local_players 
 				if first != null and second != null and not first.connects_to(second): report.errors.append("Connector mismatch: %s -> %s" % [first.stable_id, second.stable_id])
 	_validate_main_route(plan, mission, report)
 	_validate_reachability(plan, mission, report)
+	if mission.encounter_timeline != null: _validate_timeline(plan, mission.encounter_timeline, report)
 	report.information.append("%d nodes; estimated peak projectile budget %d" % [plan.nodes.size(), _projectile_peak(plan)])
 	report.valid = report.errors.is_empty()
 	return report
@@ -68,6 +69,31 @@ static func _validate_reachability(plan: StagePlan, mission: MissionDefinition, 
 			if not bool(node.get("can_terminate", false)) and (StringName(node.get("category", "")) != &"exit" or not seen_encounter): report.errors.append("Route terminates before %s and exit at %s" % [required_encounter, state.id])
 			continue
 		for next_id in next_ids: stack.append({"id": next_id, "seen_encounter": seen_encounter})
+
+static func _validate_timeline(plan: StagePlan, timeline: StageEncounterTimelineDefinition, report: Dictionary) -> void:
+	if plan.mission_id != timeline.mission_id: report.errors.append("Timeline mission ID does not match generated plan")
+	if plan.nodes.size() != timeline.beats.size(): report.errors.append("Timeline beat count does not match generated nodes")
+	var nodes_by_beat := {}
+	for node in plan.nodes:
+		var beat_id := StringName(node.get("beat_id", ""))
+		if beat_id.is_empty() or nodes_by_beat.has(beat_id): report.errors.append("Timeline node is missing or repeats a beat ID")
+		nodes_by_beat[beat_id] = node
+		if StringName(node.get("timeline_id", "")) != timeline.stable_id: report.errors.append("Timeline node %s has the wrong source" % node.get("node_id", ""))
+		var pressure: Dictionary = node.get("pressure", {})
+		if StringName(node.get("practice_id", "")).is_empty() or int(pressure.get("enemy_cap", 0)) < 1 or int(pressure.get("projectile_cap", 0)) < 1 or int(pressure.get("high_attention_roles", 0)) > 2:
+			report.errors.append("Timeline beat %s has an invalid practice or pressure budget" % beat_id)
+	for beat in timeline.beats:
+		if beat == null or not nodes_by_beat.has(beat.stable_id): continue
+		var actual_next: Array[StringName] = []
+		for next_node_id in nodes_by_beat[beat.stable_id].get("next_ids", []):
+			var next_node := plan.node_for(StringName(next_node_id))
+			actual_next.append(StringName(next_node.get("beat_id", "")))
+		if actual_next != beat.next_beat_ids: report.errors.append("Timeline connections differ for %s" % beat.stable_id)
+	var expected_primary: Array[StringName] = []
+	for beat in timeline.ordered_primary_beats(): expected_primary.append(beat.stable_id)
+	var actual_primary: Array[StringName] = []
+	for node_id in plan.main_route: actual_primary.append(StringName(plan.node_for(node_id).get("beat_id", "")))
+	if actual_primary != expected_primary: report.errors.append("Timeline primary route differs from authored beats")
 
 static func _supports_local_players(definition: StageSegmentDefinition, local_players: int) -> bool:
 	if definition.safe_spawn_points.is_empty(): return false

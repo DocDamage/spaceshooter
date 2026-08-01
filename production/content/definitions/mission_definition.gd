@@ -10,6 +10,7 @@ extends ContentDefinition
 @export var environment_tags: Array[StringName] = []
 @export var enemy_factions: Array[StringName] = []
 @export var recipe: MissionRecipeDefinition
+@export var encounter_timeline: StageEncounterTimelineDefinition
 @export var miniboss_id: StringName
 @export var boss_id: StringName
 @export var mission_rewards: Dictionary = {}
@@ -27,6 +28,9 @@ func validate_definition() -> PackedStringArray:
 		errors.append("player_ship_id is required for %s" % stable_id)
 	if recipe != null:
 		errors.append_array(recipe.validate_definition())
+	if encounter_timeline != null:
+		errors.append_array(encounter_timeline.validate_definition())
+		if encounter_timeline.mission_id != stable_id: errors.append("encounter_timeline mission does not match %s" % stable_id)
 	if not background_asset_path.is_empty() and not ResourceLoader.exists(background_asset_path):
 		errors.append("background_asset_path does not exist for %s" % stable_id)
 	if not music_asset_path.is_empty() and not ResourceLoader.exists(music_asset_path):
