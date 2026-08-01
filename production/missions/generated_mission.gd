@@ -31,6 +31,8 @@ var briefing_presenter: BriefingPresenter
 var score_tracker: MissionScoreTracker
 var mission_hud: MissionHUD
 var mission_backdrop: MissionBackdrop
+var bullet_conversion: BulletConversionService
+var arcade_debug_overlay: ArcadeDebugOverlay
 var _finished_enemy_ids: Dictionary = {}
 var _retarget_elapsed := 0.0
 var _mode_lives_remaining := 0
@@ -57,6 +59,8 @@ func _ready() -> void:
 	projectile_pool.prewarm(&"pickup", 32)
 	projectile_pool.prewarm(&"impact", 48)
 	projectile_pool.prewarm(&"explosion", 24)
+	score_tracker = MissionScoreTracker.new(); score_tracker.name = "MissionScoreTracker"; add_child(score_tracker)
+	bullet_conversion = BulletConversionService.new(); bullet_conversion.name = "BulletConversionService"; bullet_conversion.configure(projectile_pool, score_tracker); add_child(bullet_conversion)
 	enemy_pool = EnemyPoolManager.new()
 	enemy_pool.name = "EnemyPoolManager"
 	add_child(enemy_pool)
@@ -87,8 +91,9 @@ func _ready() -> void:
 	var music_state := mission_definition.music_state if not mission_definition.music_state.is_empty() else StringName("operation_%d_stage" % operation_index)
 	session.services.audio.transition_music(_stage_music, music_state, session.services.audio.music_crossfade_seconds, true)
 	_spawn_players()
+	bullet_conversion.set_players(player_actors)
+	if session.mission_state.has("combat_replay"): CombatReplayState.restore(session.mission_state.combat_replay, player_actors)
 	_spawn_selected_wingman()
-	score_tracker = MissionScoreTracker.new(); score_tracker.name = "MissionScoreTracker"; add_child(score_tracker)
 	score_tracker.score_changed.connect(_on_score_changed)
 	if session.mission_state.has("score_snapshot"): score_tracker.restore(session.mission_state.score_snapshot)
 	if session.local_coop != null:
@@ -121,6 +126,8 @@ func _ready() -> void:
 	stage_runtime.objective_resolved.connect(_on_objective_resolved)
 	stage_runtime.stage_completed.connect(_on_stage_completed)
 	mission_hud = MissionHUD.new(); mission_hud.name = "MissionHUD"; mission_hud.configure(session, player_actors, score_tracker); add_child(mission_hud); mission_hud.bind_stage(stage_runtime)
+	if bool(session.services.settings.get_setting(&"diagnostics_visible", false)) and not player_actors.is_empty():
+		arcade_debug_overlay = ArcadeDebugOverlay.new(); arcade_debug_overlay.configure(player_actors[0] as ProductionPlayer, score_tracker, projectile_pool); add_child(arcade_debug_overlay)
 	add_child(stage_runtime)
 	if not session.checkpoint_snapshot.is_empty(): stage_runtime.call_deferred("restore_from_checkpoint", session.checkpoint_snapshot)
 
@@ -163,7 +170,17 @@ func _spawn_players() -> void:
 			if weapon != null and weapon not in weapons: weapons.append(weapon)
 		var spells: Array[SpellDefinition] = []
 		if spell != null: spells.append(spell)
-		player.configure_combat(projectile_pool, weapons, spells, melee, super_mode)
+		player.configure_combat(projectile_pool, weapons, spells, melee, super_mode, bullet_conversion)
+		if spell != null:
+			var element := ElementRuntime.new(); element.name = "ElementRuntime"; player.add_child(element); element.configure(player.spell_runtime, spell, bullet_conversion)
+			element.activated.connect(func(_element_id: StringName, result: Dictionary): score_tracker.record_element_damage(player.actor_id, float(result.get(&"damage_dealt", 0.0))))
+		var graze := GrazeComponent.new(); graze.name = "GrazeComponent"; player.add_child(graze); graze.call_deferred("configure", player, score_tracker)
+		var bomb := ArcadeBombRuntime.new(); bomb.name = "ArcadeBombRuntime"; player.add_child(bomb); bomb.configure(bullet_conversion)
+		bomb.detonated.connect(func(owner_id: StringName, _stock: int, _converted: int): score_tracker.record_bomb(owner_id))
+		if player.super_runtime != null:
+			player.super_runtime.activated.connect(func(_id): score_tracker.set_overdrive(true, player.actor_id))
+			player.super_runtime.ended.connect(func(_id): score_tracker.set_overdrive(false, player.actor_id))
+			player.super_runtime.cancelled.connect(func(_id): score_tracker.set_overdrive(false, player.actor_id))
 		player.weapon_runtime.fired.connect(func(_weapon_id: StringName, projectile_count: int):
 			if projectile_count > 0: session.services.audio.play(SFX_PLAYER_SHOT, &"Weapons", 2, 0.045, player.global_position))
 		var profile_id := session.config.selected_profiles[mini(player_index, session.config.selected_profiles.size() - 1)]
@@ -222,6 +239,10 @@ func _skill_modifiers(profile: ProgressionProfile) -> Array[Dictionary]:
 
 func _physics_process(delta: float) -> void:
 	if session == null: return
+	if score_tracker != null:
+		score_tracker.set_beam_hold(player_actors.any(func(player): return player is ProductionPlayer and player.input_service != null and player.input_service.is_focus_beam_pressed(player.player_index)))
+		if enemy_pool != null:
+			for enemy in enemy_pool.active_enemies(): enemy.attack_controller.sample_rank(score_tracker.rank_pips())
 	_retarget_elapsed += delta
 	if _retarget_elapsed >= 0.5:
 		_retarget_elapsed = 0.0
@@ -264,6 +285,8 @@ func _on_pooled_enemy_defeated(_enemy: ProductionEnemy, actor_id: StringName, cr
 	_spawn_explosion(_enemy.global_position, 0.72)
 	if camera_rig != null: camera_rig.add_shake(&"enemy_destroyed", 1.8, 0.12, 29.0)
 	session.reward_state.credits = int(session.reward_state.get("credits", 0)) + credits
+	var archetype := _enemy.definition.resolved_archetype() if _enemy.definition != null else null
+	if archetype != null and archetype.conversion_marker and bullet_conversion != null and not player_actors.is_empty(): bullet_conversion.convert_near(_enemy.global_position, player_actors[0].actor_id)
 	_notify_enemy_finished(actor_id)
 
 func _on_pooled_enemy_rewards(_enemy: ProductionEnemy, source_player_id: StringName, score: int, experience: int, drops: Array[Dictionary]) -> void:
@@ -298,6 +321,7 @@ func _apply_collected_drop(drop: Dictionary, collector_id: StringName) -> void:
 				if player is ProductionPlayer and player.actor_id == collector_id:
 					player.grant_temporary_drop(category, amount)
 					if category == &"temporary_weapon_power": session.temporary_upgrade_state.weapon_power_stacks = int(session.temporary_upgrade_state.get("weapon_power_stacks", 0)) + amount
+		&"flux": pass # BulletConversionService owns Flux score and Element energy attribution.
 		_: session.reward_state.items.append(drop.duplicate(true))
 	session.services.audio.play(SFX_HIT, &"Player", 1, 0.08)
 

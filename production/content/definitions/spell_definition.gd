@@ -2,8 +2,10 @@ class_name SpellDefinition
 extends ContentDefinition
 
 enum School { NOVA, AEGIS, GRAVITY, WARP, VOID, SOLAR, CRYO, STORM, SUMMON, REPAIR }
+enum ElementRole { ATTACK, CONTROL, DEFENSE }
 
 @export var school: School = School.NOVA
+@export var element_role: ElementRole = ElementRole.ATTACK
 @export var energy_cost := 25.0
 @export var cooldown_seconds := 5.0
 @export var duration_seconds := 0.0

@@ -2,6 +2,7 @@ class_name AttackDeckDefinition
 extends ContentDefinition
 
 @export var attack_patterns: Array[AttackPatternDefinition] = []
+@export var attack_phrases: Array[AttackPhraseDefinition] = []
 @export var selection_mode: StringName = &"sequential"
 @export var minimum_distance := 0.0
 @export var maximum_distance := 9999.0
@@ -15,6 +16,6 @@ func get_content_type() -> StringName:
 
 func validate_definition() -> PackedStringArray:
 	var errors := super()
-	if attack_patterns.is_empty(): errors.append("%s requires at least one attack pattern" % stable_id)
+	if attack_patterns.is_empty() and attack_phrases.is_empty(): errors.append("%s requires at least one attack pattern or phrase" % stable_id)
 	if selection_mode not in [&"sequential", &"random", &"distance"]: errors.append("%s has unsupported selection_mode" % stable_id)
 	return errors

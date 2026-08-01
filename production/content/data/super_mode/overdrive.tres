@@ -12,3 +12,6 @@ damage_multiplier = 1.65
 speed_multiplier = 1.2
 invulnerable = false
 cancel_refund_ratio = 0.2
+activation_invulnerability_seconds = 0.45
+recovery_seconds = 1.25
+rank_gain = 1

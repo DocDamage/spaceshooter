@@ -20,6 +20,8 @@ var registry: ActorRegistry
 var event_bus: TypedEventBus
 var absorbed := false
 var visual_texture: Texture2D
+var grazed_players: Dictionary = {}
+var collision_shape: CollisionShape2D
 
 const DEFAULT_VISUALS := {
 	&"player_bullet": "res://assets_runtime/projectiles/projectile_plasma_lance.png",
@@ -31,11 +33,11 @@ const DEFAULT_VISUALS := {
 func _ready() -> void:
 	collision_layer = 0
 	collision_mask = 0
-	var collision := CollisionShape2D.new()
+	collision_shape = CollisionShape2D.new()
 	var shape := CircleShape2D.new()
 	shape.radius = 5.0
-	collision.shape = shape
-	add_child(collision)
+	collision_shape.shape = shape
+	add_child(collision_shape)
 	area_entered.connect(_on_area_entered)
 	queue_redraw()
 
@@ -65,6 +67,7 @@ func configure_from_pool(configuration: Dictionary) -> void:
 		speed = float(configuration.get("speed", 0.0))
 		remaining_lifetime = float(configuration.get("lifetime", 5.0))
 		team = configuration.get("team", &"neutral")
+		interaction_tags.assign(configuration.get("interaction_tags", []))
 		var configured_visual := String(configuration.get("visual_asset_path", ""))
 		visual_texture = load(configured_visual) as Texture2D if not configured_visual.is_empty() and ResourceLoader.exists(configured_visual) else null
 	if visual_texture == null:
@@ -75,6 +78,8 @@ func configure_from_pool(configuration: Dictionary) -> void:
 		visual_texture = load("res://assets_runtime/projectiles/projectile_plasma_orb_01.png") as Texture2D
 	velocity = direction.normalized() * speed
 	absorbed = false
+	grazed_players.clear()
+	_apply_collision_radius()
 	_apply_collision_team()
 	queue_redraw()
 
@@ -106,6 +111,7 @@ func reset_pool_object() -> void:
 	registry = null
 	event_bus = null
 	absorbed = false
+	grazed_players.clear()
 	visual_texture = null
 	collision_layer = 0
 	collision_mask = 0
@@ -145,6 +151,29 @@ func absorb() -> void:
 	absorbed = true
 	deactivate_to_pool()
 
+func try_graze(player_id: StringName) -> bool:
+	if not pool_active or absorbed or team != &"enemies" or player_id.is_empty() or grazed_players.has(player_id): return false
+	grazed_players[player_id] = true
+	return true
+
+func clear_graze_player(player_id: StringName) -> void:
+	if definition != null and definition.allow_regraze: grazed_players.erase(player_id)
+
+func graze_value() -> int:
+	return definition.graze_value if definition != null else 1
+
+func can_convert() -> bool:
+	return pool_active and not absorbed and team == &"enemies" and ((definition != null and definition.cancel_class == &"eligible") or &"cancelable" in interaction_tags)
+
+func flux_value() -> int:
+	return definition.flux_value if definition != null else maxi(1, roundi(damage * 0.1))
+
+func convert_to_flux() -> void:
+	if not can_convert(): return
+	absorbed = true
+	if event_bus != null: event_bus.publish(ProjectileInteractionEvent.new(source_id if not source_id.is_empty() else actor_id, actor_id, &"flux_convert"))
+	deactivate_to_pool()
+
 func _on_area_entered(area: Area2D) -> void:
 	if not pool_active or absorbed or not (area is BaseActor2D) or area.faction == team:
 		return
@@ -177,9 +206,17 @@ func _apply_collision_team() -> void:
 		collision_layer = 0
 		collision_mask = 0
 
+func _apply_collision_radius() -> void:
+	if collision_shape == null: return
+	var shape := collision_shape.shape as CircleShape2D
+	if shape == null:
+		shape = CircleShape2D.new()
+		collision_shape.shape = shape
+	shape.radius = definition.collision_radius if definition != null else 5.0
+
 func _draw() -> void:
 	var radius := definition.collision_radius if definition != null else 5.0
-	var color := Color("69efff") if team == &"players" else Color("ff6688")
+	var color := Color("69efff") if team == &"players" else Color("ffd36d") if can_convert() else Color("ff6688")
 	draw_circle(Vector2.ZERO, radius + 1.5, Color(color, 0.28))
 	if visual_texture != null:
 		var size := visual_texture.get_size()

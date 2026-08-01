@@ -603,7 +603,7 @@ func _accessibility_page() -> Control:
 	_add_slider_setting(box, "Subtitle background opacity", &"subtitle_background_opacity", 0.25, 1.0, 0.05)
 	_add_slider_setting(box, "Aim assistance", &"aim_assistance", 0, 1, 0.1)
 	_add_slider_setting(box, "Game speed assistance", &"game_speed_assistance", 0.5, 1, 0.05)
-	for pair in [["Auto-fire", &"auto_fire"], ["Toggle focus", &"focus_toggle"], ["Toggle shield", &"shield_toggle"], ["System damage", &"system_damage_enabled"], ["Simplified patterns", &"simplified_patterns"], ["Invulnerability assist", &"invulnerability_assist"]]:
+	for pair in [["Auto-fire", &"auto_fire"], ["Story auto-bomb", &"story_auto_bomb"], ["Toggle focus", &"focus_toggle"], ["Toggle shield", &"shield_toggle"], ["System damage", &"system_damage_enabled"], ["Simplified patterns", &"simplified_patterns"], ["Invulnerability assist", &"invulnerability_assist"]]:
 		_add_toggle_setting(box, pair[0], pair[1])
 	_add_back_button(box)
 	var preview := AccessibilityPreview.new()

@@ -5,4 +5,5 @@ script = ExtResource("1")
 stable_id = &"spell.aegis"
 display_name = "Aegis"
 school = 1
+element_role = 2
 power = 40.0

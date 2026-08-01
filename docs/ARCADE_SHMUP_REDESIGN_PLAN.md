@@ -2,7 +2,7 @@
 
 - **Reference direction:** Caladrius Blaze, DoDonPachi Resurrection, and Danmaku Unlimited 3
 - **Plan date:** 2026-07-31
-- **Status:** Phase 0 baseline and the automated Phase 1 prototype are implemented (2026-07-31); target-hardware capture and human acceptance remain required before Phase 2.
+- **Status:** Phases 0–3 implementation and automated acceptance are complete (2026-08-01); target-hardware, human loop-comprehension, and two-minute-course gates remain required before Stage 1 re-authoring.
 - **Engine baseline:** Godot 4.7.1
 - **Primary playfield:** 540 × 960 portrait
 - **Planning assumption:** One primary developer; estimates should be re-baselined after the control prototype and Stage 1 playtest.
@@ -427,16 +427,16 @@ Do not generate lower difficulty by deleting every other bullet. Preserve the re
 
 ### 7.4 Combat implementation work
 
-- [ ] Add GrazeComponent or a dedicated graze Area2D separate from damage collision.
-- [ ] Add per-projectile grazed-player state and cancel/conversion tags.
-- [ ] Update ProductionProjectile collision shape from its definition rather than leaving it fixed at five pixels.
-- [ ] Add BulletConversionService with pooled Flux items and deterministic attribution.
-- [ ] Expand MissionScoreTracker into an explicit Chain state with drain, beam hold, graze, damage, bomb, and Overdrive events.
-- [ ] Expand SuperModeRuntime or replace it with OverdriveRuntime supporting conversion, Rank, recovery, and score metadata.
-- [ ] Add ElementRuntime as the single active tactical slot; adapt existing spells/shield/melee tools behind it.
-- [ ] Add damage-contribution tracking for Element scoring.
-- [ ] Add score breakdown and reason codes to results/replay metadata.
-- [ ] Add debug overlays for damage core, graze ring, cancel eligibility, chain source, and Rank branch.
+- [x] Add GrazeComponent or a dedicated graze Area2D separate from damage collision.
+- [x] Add per-projectile grazed-player state and cancel/conversion tags.
+- [x] Update ProductionProjectile collision shape from its definition rather than leaving it fixed at five pixels.
+- [x] Add BulletConversionService with pooled Flux items and deterministic attribution.
+- [x] Expand MissionScoreTracker into an explicit Chain state with drain, beam hold, graze, damage, bomb, and Overdrive events.
+- [x] Expand SuperModeRuntime or replace it with OverdriveRuntime supporting conversion, Rank, recovery, and score metadata.
+- [x] Add ElementRuntime as the single active tactical slot; adapt existing spells/shield/melee tools behind it.
+- [x] Add damage-contribution tracking for Element scoring.
+- [x] Add score breakdown and reason codes to results/replay metadata.
+- [x] Add debug overlays for damage core, graze ring, cancel eligibility, chain source, and Rank branch.
 
 ---
 
@@ -1033,14 +1033,14 @@ Names may change, but ownership boundaries should remain explicit.
 
 **Estimate:** 10–15 working days
 
-**Goal:** Graze, Chain, Flux, Element, Bomb, and Overdrive form one understandable loop.
+**Goal:** Graze, Chain, Flux, Element, Bomb, and Overdrive form one understandable loop. Automated implementation/acceptance completed 2026-08-01 (`tests/phase23_arcade/phase23_arcade_acceptance.gd`).
 
-- Implement collision/graze/conversion state.
-- Implement Chain bar and beam hold.
-- Implement one Attack Element, one Control Element, and one Defense Element.
-- Implement Overdrive activation/recovery and Story auto-bomb option.
-- Build HUD prototype and results breakdown.
-- Add deterministic replay state.
+- [x] Implement collision/graze/conversion state.
+- [x] Implement Chain bar and beam hold.
+- [x] Implement one Attack Element, one Control Element, and one Defense Element.
+- [x] Implement Overdrive activation/recovery and Story auto-bomb option.
+- [x] Build HUD prototype and results breakdown.
+- [x] Add deterministic replay state.
 
 **Gate:** Newcomers can describe the loop; experts can find at least two meaningful score routes in the test room.
 
@@ -1048,13 +1048,13 @@ Names may change, but ownership boundaries should remain explicit.
 
 **Estimate:** 15–20 working days
 
-**Goal:** Replace same-deck enemies with roles, paths, phrases, telegraphs, and difficulty variants.
+**Goal:** Replace same-deck enemies with roles, paths, phrases, telegraphs, and difficulty variants. Automated implementation/acceptance completed 2026-08-01 (`tests/phase23_arcade/phase23_arcade_acceptance.gd`).
 
-- Add visual-family/archetype/behavior/encounter separation.
-- Implement six core roles and ten attack phrases.
-- Implement path resources and telegraph state.
-- Upgrade enemy laboratory and stage preview.
-- Add safe-lane and deterministic replay validators.
+- [x] Add visual-family/archetype/behavior/encounter separation.
+- [x] Implement six core roles and ten attack phrases.
+- [x] Implement path resources and telegraph state.
+- [x] Upgrade enemy laboratory and stage preview.
+- [x] Add safe-lane and deterministic replay validators.
 
 **Gate:** A two-minute combat course teaches, combines, releases, and tests three pattern verbs without random dead ends.
 

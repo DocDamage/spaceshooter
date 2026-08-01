@@ -10,9 +10,16 @@ var seed_input: SpinBox
 var output: RichTextLabel
 var plans: Array[StagePlan] = []
 var selected_plan := 0
+var choreography_notes := PackedStringArray()
 
 func configure(mission_definition: MissionDefinition) -> void:
 	mission = mission_definition
+
+func set_choreography_notes(behavior: EnemyBehaviorScoreDefinition) -> void:
+	choreography_notes.clear()
+	if behavior == null: return
+	choreography_notes.append("%s — %s" % [behavior.display_name, "SAFE LANES VALID" if EnemyPhraseValidator.validate_behavior(behavior).is_empty() else "SAFE LANE REVIEW REQUIRED"])
+	choreography_notes.append("Replay fingerprint: %s" % behavior.fingerprint(mission.default_seed if mission != null else 0))
 
 func _ready() -> void:
 	_build_ui()
@@ -67,3 +74,4 @@ func _render() -> void:
 			output.append_text("  %s [%s] waves/objectives %d, projectile budget %d -> %s\n" % [node.segment_id, node.category, node.objective_ids.size(), node.estimated_projectiles, node.next_ids])
 		for warning in report.warnings: output.append_text("  WARNING: %s\n" % warning)
 		for error in report.errors: output.append_text("  ERROR: %s\n" % error)
+	for note in choreography_notes: output.append_text("%s\n" % note)

@@ -1,6 +1,5 @@
 class_name ProductionPlayer
 extends BaseActor2D
-
 var player_index := 0
 var ship_definition: ShipDefinition
 var weapon_definition: WeaponDefinition
@@ -51,7 +50,7 @@ func configure(id: StringName, index: int, ship: ShipDefinition, weapon: WeaponD
 	movement_controller.name = "PlayerMovementController"
 	add_child(movement_controller)
 	movement_controller.configure(self, profile)
-func configure_combat(pool_manager: ProjectilePoolManager, weapons: Array[WeaponDefinition], spells: Array[SpellDefinition] = [], melee_definition: MeleeDefinition = null, super_definition: SuperModeDefinition = null) -> void:
+func configure_combat(pool_manager: ProjectilePoolManager, weapons: Array[WeaponDefinition], spells: Array[SpellDefinition] = [], melee_definition: MeleeDefinition = null, super_definition: SuperModeDefinition = null, conversion_service: BulletConversionService = null) -> void:
 	projectile_pool = pool_manager
 	equipped_spells.assign(spells)
 	weapon_runtime = WeaponRuntime.new()
@@ -78,7 +77,7 @@ func configure_combat(pool_manager: ProjectilePoolManager, weapons: Array[Weapon
 		super_runtime = SuperModeRuntime.new()
 		super_runtime.name = "SuperModeRuntime"
 		add_child(super_runtime)
-		super_runtime.configure(self, weapon_runtime, super_definition)
+		super_runtime.configure(self, weapon_runtime, super_definition, conversion_service)
 func apply_progression(profile: ProgressionProfile, equipment_modifiers: Array[Dictionary] = [], skill_modifiers: Array[Dictionary] = [], temporary_modifiers: Array[Dictionary] = [], status_modifiers: Array[Dictionary] = [], difficulty_modifiers: Dictionary = {}) -> Dictionary:
 	if profile == null or ship_definition == null: return {}
 	progression_profile = profile
@@ -169,7 +168,10 @@ func _physics_process(delta: float) -> void:
 			weapon_runtime.global_damage_multiplier = _base_weapon_damage_multiplier * super_runtime.damage_multiplier()
 		ship_visual.update_state(move_input, shield_component.current / maxf(shield_component.capacity, 1.0), health_component.current / maxf(health_component.maximum, 1.0), not fire_mode.is_empty(), super_runtime != null and super_runtime.active, focus_active, bool(input_service.get_gameplay_setting(&"always_show_hitbox", false)), delta)
 		var fire_direction := Vector2.UP if aim.length_squared() == 0.0 else aim
-		if input_service.is_action_just_pressed_for_player(&"element", player_index) and not equipped_spells.is_empty(): spell_runtime.cast(equipped_spells[0], _combat_targets(), _hostile_projectiles())
+		if input_service.is_action_just_pressed_for_player(&"element", player_index) and not equipped_spells.is_empty():
+			var element := get_node_or_null("ElementRuntime") as ElementRuntime
+			if element != null: element.activate(_combat_targets(), _hostile_projectiles())
+			else: spell_runtime.cast(equipped_spells[0], _combat_targets(), _hostile_projectiles())
 		if not ship_definition.regulation_controls and input_service.is_action_just_pressed_for_player(&"secondary_fire", player_index): weapon_runtime.fire_slot(1, fire_direction)
 		if not ship_definition.regulation_controls and input_service.is_action_just_pressed_for_player(&"heavy_weapon", player_index): weapon_runtime.fire_slot(2, fire_direction)
 		if not ship_definition.regulation_controls and melee_runtime != null and input_service.is_action_just_pressed_for_player(&"melee", player_index): melee_runtime.attack(_combat_targets(), fire_direction)
@@ -180,6 +182,8 @@ func _physics_process(delta: float) -> void:
 		if super_runtime != null and input_service.consume_buffered_action(&"overdrive", player_index):
 			if super_runtime.active: super_runtime.cancel()
 			else: super_runtime.activate()
+		var bomb := get_node_or_null("ArcadeBombRuntime") as ArcadeBombRuntime
+		if bomb != null and input_service.consume_buffered_action(&"bomb", player_index): bomb.activate(self)
 		if not ship_definition.regulation_controls:
 			if input_service.is_action_just_pressed_for_player(&"wingman_command", player_index): _issue_wingman_command(false)
 			if input_service.is_action_just_pressed_for_player(&"wingman_command_wheel", player_index): _issue_wingman_command(true)
@@ -191,6 +195,9 @@ func _physics_process(delta: float) -> void:
 			fire_cooldown = weapon_definition.cooldown_seconds
 			get_parent().spawn_projectile(self)
 func receive_damage(packet: DamagePacket) -> DamageResult:
+	var bomb := get_node_or_null("ArcadeBombRuntime") as ArcadeBombRuntime
+	if input_service != null and bool(input_service.get_gameplay_setting(&"story_auto_bomb", false)) and bomb != null and not is_invulnerable() and packet.base_damage > shield_component.current:
+		bomb.activate(self)
 	if input_service != null and input_service.is_assist_enabled(&"invulnerability_assist"):
 		var blocked := DamageResult.new()
 		blocked.blocked_reason = &"accessibility_assist"
@@ -203,14 +210,12 @@ func receive_damage(packet: DamagePacket) -> DamageResult:
 
 func grant_super_charge(amount: float) -> void:
 	if super_runtime != null: super_runtime.add_charge(amount)
-
 func grant_temporary_drop(category: StringName, amount: int) -> void:
 	match category:
 		&"healing": health_component.heal(maxi(1, amount) * 20.0)
 		&"temporary_weapon_power":
 			_base_weapon_damage_multiplier *= 1.0 + 0.05 * float(maxi(1, amount))
 			if weapon_runtime != null: weapon_runtime.global_damage_multiplier = _base_weapon_damage_multiplier
-
 func combat_loadout_snapshot() -> Dictionary:
 	var weapon_ids: Array[StringName] = []
 	if weapon_runtime != null:
@@ -220,7 +225,6 @@ func combat_loadout_snapshot() -> Dictionary:
 	for spell in equipped_spells:
 		if spell != null: spell_ids.append(spell.stable_id)
 	return {"weapons": weapon_ids, "spells": spell_ids, "melee": melee_runtime.definition.stable_id if melee_runtime != null else &"", "super": super_runtime.definition.stable_id if super_runtime != null else &""}
-
 func arcade_metrics() -> Dictionary:
 	return {&"velocity": movement_controller.velocity if movement_controller != null else Vector2.ZERO, &"hitbox_radius": hurtbox_component.radius, &"graze_radius": ship_definition.graze_radius}
 
@@ -231,7 +235,6 @@ func _weapon_index_for(weapon_id: StringName, fallback: int) -> int:
 		if weapon_runtime.inventory[index] != null and weapon_runtime.inventory[index].stable_id == weapon_id:
 			return index
 	return fallback
-
 func _select_arcade_weapon(fire_mode: StringName) -> void:
 	if weapon_runtime == null or fire_mode.is_empty():
 		return
@@ -250,7 +253,6 @@ func _apply_control_collision() -> void:
 			graze_shape = CircleShape2D.new()
 			graze_collision.shape = graze_shape
 		graze_shape.radius = ship_definition.graze_radius
-
 func _combat_targets() -> Array[Node]:
 	var targets: Array[Node] = []
 	if registry == null: return targets
@@ -260,7 +262,6 @@ func _combat_targets() -> Array[Node]:
 	for objective in registry.get_actors(&"objective"):
 		if objective is BaseActor2D and objective.faction == &"enemies": targets.append(objective)
 	return targets
-
 func _hostile_projectiles() -> Array[ProductionProjectile]:
 	var result: Array[ProductionProjectile] = []
 	if projectile_pool == null: return result
@@ -268,7 +269,6 @@ func _hostile_projectiles() -> Array[ProductionProjectile]:
 		for object in projectile_pool.get_active_objects(category):
 			if object is ProductionProjectile and object.team != faction: result.append(object)
 	return result
-
 func _issue_wingman_command(use_special: bool) -> void:
 	if registry == null: return
 	var modes := [&"attack", &"defend", &"focus", &"intercept"]

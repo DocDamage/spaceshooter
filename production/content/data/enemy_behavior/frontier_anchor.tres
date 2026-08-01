@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="EnemyBehaviorScoreDefinition" load_steps=6 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/enemy_behavior_score_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/movement_path/frontier_arc.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/movement_path/frontier_flank.tres" id="3"]
+[ext_resource type="Resource" path="res://production/content/data/attack_phrase/anchor_bridge.tres" id="4"]
+[ext_resource type="Resource" path="res://production/content/data/attack_phrase/cancel_window.tres" id="5"]
+[resource]
+script = ExtResource("1")
+stable_id = &"behavior.frontier_anchor"
+display_name = "Frontier Anchor Score"
+entry_path = ExtResource("2")
+reposition_path = ExtResource("3")
+phrases = Array[ExtResource("4")]([ExtResource("4"), ExtResource("5")])

@@ -19,6 +19,7 @@ var _visual: Sprite2D
 var _escaping := false
 var _life_elapsed := 0.0
 var presentation: PresentationActor
+var telegraph_remaining := 0.0
 
 func _init() -> void:
 	super()
@@ -54,11 +55,20 @@ func configure(id: StringName, enemy_definition: EnemyDefinition, session_regist
 	presentation.configure(_visual)
 	presentation.targetability_changed.connect(func(value): hurtbox_component.enabled = value)
 	var move := definition.movement_pattern if definition.movement_pattern != null else _fallback_movement(definition.move_speed * speed_scale)
+	var behavior := definition.resolved_behavior_score()
+	if behavior != null and behavior.entry_path != null:
+		move = move.duplicate(true) as MovementPatternDefinition
+		move.path = behavior.entry_path
 	movement_controller.configure(self, move, target)
-	if definition.attack_deck != null and projectile_pool != null:
-		attack_controller.configure(self, definition.attack_deck, target, projectile_pool, session_registry, session_events)
+	var deck := definition.attack_deck
+	if behavior != null and not behavior.phrases.is_empty():
+		deck = deck.duplicate(true) as AttackDeckDefinition if deck != null else AttackDeckDefinition.new()
+		deck.attack_phrases = behavior.phrases
+	if deck != null and projectile_pool != null:
+		attack_controller.configure(self, deck, target, projectile_pool, session_registry, session_events)
 		attack_controller.difficulty = difficulty
 		attack_controller.elite = definition.elite_profile != null
+		if not attack_controller.telegraph_started.is_connected(_on_telegraph_started): attack_controller.telegraph_started.connect(_on_telegraph_started)
 	_escaping = false
 	_life_elapsed = 0.0
 
@@ -79,6 +89,8 @@ func _physics_process(delta: float) -> void:
 	super(delta)
 	if not active or definition == null: return
 	_life_elapsed += delta
+	telegraph_remaining = maxf(0.0, telegraph_remaining - delta)
+	if telegraph_remaining > 0.0: queue_redraw()
 	if _escaping:
 		position.y -= definition.move_speed * 1.5 * delta
 	else:
@@ -136,10 +148,15 @@ func _finish_escape() -> void:
 
 func _initialize_visual() -> void:
 	_visual.texture = null
-	if not definition.visual_asset_path.is_empty() and ResourceLoader.exists(definition.visual_asset_path):
-		_visual.texture = load(definition.visual_asset_path) as Texture2D
-	_visual.scale = Vector2.ONE * definition.visual_scale
+	var family := definition.resolved_visual_family()
+	var visual_path := definition.visual_asset_path if not definition.visual_asset_path.is_empty() else family.visual_asset_path if family != null else ""
+	if not visual_path.is_empty() and ResourceLoader.exists(visual_path): _visual.texture = load(visual_path) as Texture2D
+	_visual.scale = Vector2.ONE * (family.visual_scale if family != null else definition.visual_scale)
 	_visual.modulate = definition.elite_profile.tint if definition.elite_profile != null else definition.visual_tint
+
+func _on_telegraph_started(_phrase_id: StringName, seconds: float) -> void:
+	telegraph_remaining = seconds
+	queue_redraw()
 
 func _fallback_movement(speed: float) -> MovementPatternDefinition:
 	var pattern := MovementPatternDefinition.new()
@@ -151,3 +168,4 @@ func _draw() -> void:
 	if _visual.texture == null:
 		draw_colored_polygon(PackedVector2Array([Vector2(0, 22), Vector2(22, -15), Vector2(0, -8), Vector2(-22, -15)]), Color("ff6783"))
 		draw_circle(Vector2.ZERO, 5.0, Color("ffd36d"))
+	if telegraph_remaining > 0.0: draw_arc(Vector2.ZERO, definition.collision_radius + 10.0, -PI * 0.5, -PI * 0.5 + TAU * clampf(telegraph_remaining, 0.0, 1.0), 20, Color("ffd36d"), 2.0)

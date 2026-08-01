@@ -19,12 +19,15 @@ func configure(actor: BaseActor2D, manager: ProjectilePoolManager, session_event
 	event_bus = session_events
 
 func tick(delta: float) -> void:
-	energy = minf(100.0, energy + energy_recharge * delta)
+	add_energy(energy_recharge * delta)
 	for spell_id in cooldowns:
 		cooldowns[spell_id] = maxf(0.0, float(cooldowns[spell_id]) - delta)
 
+func add_energy(amount: float) -> void:
+	energy = clampf(energy + amount, 0.0, 100.0)
+
 func cast(spell: SpellDefinition, targets: Array[Node] = [], projectiles: Array[ProductionProjectile] = []) -> Dictionary:
-	var result := {"success": false, "affected": 0, "energy_gained": 0.0, "score_gained": 0}
+	var result := {"success": false, "affected": 0, "energy_gained": 0.0, "score_gained": 0, "damage_dealt": 0.0}
 	if spell == null or owner_actor == null:
 		return result
 	if float(cooldowns.get(spell.stable_id, 0.0)) > 0.0:
@@ -46,6 +49,7 @@ func cast(spell: SpellDefinition, targets: Array[Node] = [], projectiles: Array[
 					packet.source_ability_id = spell.stable_id
 					target.receive_damage(packet)
 					result.affected += 1
+					result.damage_dealt += effective_power
 		SpellDefinition.School.AEGIS:
 			owner_actor.shield_component.current = minf(owner_actor.shield_component.capacity, owner_actor.shield_component.current + effective_power)
 			owner_actor.shield_component.capacity_changed.emit(owner_actor.shield_component.current, owner_actor.shield_component.capacity)

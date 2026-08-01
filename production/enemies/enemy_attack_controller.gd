@@ -2,6 +2,7 @@ class_name EnemyAttackController
 extends Node
 
 signal pattern_fired(pattern_id: StringName, projectile_count: int)
+signal telegraph_started(phrase_id: StringName, seconds: float)
 
 var actor: BaseActor2D
 var deck: AttackDeckDefinition
@@ -21,6 +22,11 @@ var burst_timer := 0.0
 var burst_pattern: AttackPatternDefinition
 var disabled_pattern_ids: Array[StringName] = []
 var cadence_multiplier := 1.0
+var telegraph_remaining := 0.0
+var pending_pattern: AttackPatternDefinition
+var pending_phrase: AttackPhraseDefinition
+var phrase_index := 0
+var sampled_rank_pips := 0
 
 func configure(owner_actor: BaseActor2D, attack_deck: AttackDeckDefinition, injected_target: Node2D, projectile_pool: ProjectilePoolManager, actor_registry: ActorRegistry, events: TypedEventBus) -> void:
 	actor = owner_actor
@@ -35,15 +41,33 @@ func tick(delta: float) -> void:
 		return
 	cooldown = maxf(0.0, cooldown - delta)
 	burst_timer = maxf(0.0, burst_timer - delta)
+	if telegraph_remaining > 0.0:
+		telegraph_remaining = maxf(0.0, telegraph_remaining - delta)
+		if telegraph_remaining <= 0.0 and pending_pattern != null:
+			_fire(pending_pattern)
+			cooldown = pending_pattern.cooldown / _cadence_multiplier() + (pending_phrase.recovery_seconds if pending_phrase != null else 0.0)
+			pending_pattern = null; pending_phrase = null
+		return
 	if burst_remaining > 0 and burst_timer <= 0.0 and burst_pattern != null:
 		_fire(burst_pattern, false)
 		burst_remaining -= 1
 		burst_timer = burst_pattern.burst_interval
 	if cooldown > 0.0 or not _conditions_met(): return
-	var pattern := _select_pattern()
+	var phrase := _select_phrase()
+	var pattern := phrase.pattern_for_rating((difficulty.rating if difficulty != null else 50) + sampled_rank_pips * 10) if phrase != null else _select_pattern()
 	if pattern == null: return
+	var telegraph := phrase.telegraph_seconds if phrase != null else pattern.telegraph_seconds
+	if telegraph > 0.0:
+		pending_pattern = pattern; pending_phrase = phrase; telegraph_remaining = telegraph
+		telegraph_started.emit(phrase.stable_id if phrase != null else pattern.stable_id, telegraph)
+		if delta >= telegraph:
+			telegraph_remaining = 0.0
+			_fire(pending_pattern)
+			cooldown = pending_pattern.cooldown / _cadence_multiplier() + (pending_phrase.recovery_seconds if pending_phrase != null else 0.0)
+			pending_pattern = null; pending_phrase = null
+		return
 	_fire(pattern)
-	cooldown = pattern.cooldown / _cadence_multiplier()
+	cooldown = pattern.cooldown / _cadence_multiplier() + (phrase.recovery_seconds if phrase != null else 0.0)
 
 func _conditions_met() -> bool:
 	var distance := actor.global_position.distance_to(target.global_position) if is_instance_valid(target) else 9999.0
@@ -64,12 +88,26 @@ func _select_pattern() -> AttackPatternDefinition:
 	deck_index = (index + 1) % available.size()
 	return available[index]
 
+func _select_phrase() -> AttackPhraseDefinition:
+	if deck.attack_phrases.is_empty(): return null
+	var available: Array[AttackPhraseDefinition] = []
+	for phrase in deck.attack_phrases:
+		if phrase != null: available.append(phrase)
+	if available.is_empty(): return null
+	var index := phrase_index % available.size()
+	phrase_index = (index + 1) % available.size()
+	return available[index]
+
+func sample_rank(rank_pips: int) -> void:
+	# Rank is sampled only between phrases; an active warning/pattern never changes topology.
+	if telegraph_remaining <= 0.0 and burst_remaining <= 0: sampled_rank_pips = clampi(rank_pips, 0, 3)
+
 func _fire(pattern: AttackPatternDefinition, begin_burst := true) -> void:
 	var directions := _directions(pattern)
 	var spawned := 0
 	for direction in directions:
 		sequence += 1
-		var config := {"actor_id": StringName("projectile.%s.%d" % [actor.actor_id, sequence]), "source_id": actor.actor_id, "source_ability_id": pattern.stable_id, "damage": pattern.damage, "speed": pattern.projectile_speed * _projectile_speed_multiplier(), "team": &"enemies", "direction": direction, "registry": registry, "event_bus": event_bus}
+		var config := {"actor_id": StringName("projectile.%s.%d" % [actor.actor_id, sequence]), "source_id": actor.actor_id, "source_ability_id": pattern.stable_id, "damage": pattern.damage, "speed": pattern.projectile_speed * _projectile_speed_multiplier(), "team": &"enemies", "direction": direction, "interaction_tags": [&"cancelable"], "registry": registry, "event_bus": event_bus}
 		if pool.acquire(_category(pattern), config, Transform2D(direction.angle() + PI * 0.5, actor.global_position)) != null: spawned += 1
 	pattern_fired.emit(pattern.stable_id, spawned)
 	if begin_burst and pattern.burst_count > 1:

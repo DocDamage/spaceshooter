@@ -8,6 +8,7 @@ var stage_runtime: StageRuntime
 var score_label: Label
 var objective_label: Label
 var status_label: Label
+var loop_label: Label
 var branch_panel: PanelContainer
 var branch_box: VBoxContainer
 
@@ -26,11 +27,14 @@ func _ready() -> void:
 	var row := HBoxContainer.new(); row.add_theme_constant_override("separation", 12); stack.add_child(row)
 	score_label = Label.new(); score_label.text = "SCORE 000000  CHAIN x0"; score_label.add_theme_font_size_override("font_size", 17); row.add_child(score_label)
 	objective_label = Label.new(); objective_label.text = "OBJECTIVE  ADVANCE"; objective_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; objective_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT; objective_label.add_theme_font_size_override("font_size", 16); row.add_child(objective_label)
+	loop_label = Label.new(); loop_label.text = "CHAIN DRAIN  [----------]  RATE 1.00×  OVERDRIVE 0%"; loop_label.add_theme_font_size_override("font_size", 13); stack.add_child(loop_label)
 	status_label = Label.new(); status_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT; status_label.add_theme_font_size_override("font_size", 14); stack.add_child(status_label)
 	branch_panel = PanelContainer.new(); branch_panel.visible = false; branch_panel.set_anchors_preset(Control.PRESET_CENTER); branch_panel.position = Vector2(-190, -170); branch_panel.size = Vector2(380, 340); branch_panel.mouse_filter = Control.MOUSE_FILTER_STOP; root.add_child(branch_panel)
 	var margin := MarginContainer.new(); margin.add_theme_constant_override("margin_left", 24); margin.add_theme_constant_override("margin_right", 24); margin.add_theme_constant_override("margin_top", 22); margin.add_theme_constant_override("margin_bottom", 22); branch_panel.add_child(margin)
 	branch_box = VBoxContainer.new(); branch_box.add_theme_constant_override("separation", 12); margin.add_child(branch_box)
-	if score_tracker != null: score_tracker.score_changed.connect(_on_score_changed)
+	if score_tracker != null:
+		score_tracker.score_changed.connect(_on_score_changed)
+		score_tracker.loop_changed.connect(_on_loop_changed)
 
 func bind_stage(runtime: StageRuntime) -> void:
 	stage_runtime = runtime
@@ -45,11 +49,16 @@ func _process(_delta: float) -> void:
 		if not is_instance_valid(player): continue
 		var energy := int(player.weapon_runtime.energy) if player.weapon_runtime != null else 0
 		var super_charge := int(player.super_runtime.charge) if player.super_runtime != null else 0
-		fragments.append("P%d HP %d SH %d EN %d OV %d" % [index + 1, int(player.health_component.current), int(player.shield_component.current), energy, super_charge])
+		fragments.append("P%d HP %d SH %d  ELEMENT %d  OVERDRIVE %d" % [index + 1, int(player.health_component.current), int(player.shield_component.current), int(player.spell_runtime.energy) if player.spell_runtime != null else 0, super_charge])
 	status_label.text = "  ".join(fragments)
 
 func _on_score_changed(value: int, chain: int, multiplier: float) -> void:
 	score_label.text = "SCORE %06d  CHAIN x%d  %.2f×" % [value, chain, multiplier]
+
+func _on_loop_changed(chain_fill: float, rate: float, rank_pips: int) -> void:
+	if loop_label == null: return
+	var filled := roundi(chain_fill * 10.0)
+	loop_label.text = "CHAIN DRAIN  [%s%s]  RATE %.2f×  RANK %s" % ["#".repeat(filled), "-".repeat(10 - filled), rate, "●".repeat(rank_pips)]
 
 func _on_segment_changed(_node_id: StringName, _segment_id: StringName) -> void:
 	if stage_runtime != null and stage_runtime.current_segment != null:

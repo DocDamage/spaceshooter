@@ -50,5 +50,8 @@ func _spawn_selected() -> void:
 	var definition := roster[selected_index] as EnemyDefinition
 	var normal := database.get_definition(&"difficulty.normal", &"difficulty_profile") as DifficultyProfileDefinition
 	var enemy := enemy_pool.acquire({"actor_id": StringName("lab.%d" % selected_index), "definition": definition, "registry": registry, "event_bus": events, "target": target, "projectile_pool": projectile_pool, "difficulty": normal}, Vector2(270, 160))
-	status_label.text = "%s  [%d/%d]\nLeft/Right: roster   Fire: respawn\nMovement: %s   Elite: %s" % [definition.display_name, selected_index + 1, roster.size(), definition.movement_pattern.display_name if definition.movement_pattern else "fallback", "yes" if definition.elite_profile else "no"]
+	var role := definition.resolved_archetype().role_name() if definition.resolved_archetype() != null else &"legacy"
+	var score := definition.resolved_behavior_score()
+	var phrase_state := "legacy deck" if score == null else "%d phrases • %s" % [score.phrases.size(), "VALID" if EnemyPhraseValidator.validate_behavior(score).is_empty() else "CHECK LANES"]
+	status_label.text = "%s  [%d/%d]\nLeft/Right: roster   Fire: respawn\nRole: %s   Movement: %s\nChoreography: %s   Telegraph: %.2fs" % [definition.display_name, selected_index + 1, roster.size(), role, definition.movement_pattern.display_name if definition.movement_pattern else "fallback", phrase_state, enemy.attack_controller.telegraph_remaining if enemy != null else 0.0]
 	if enemy != null: enemy.stage_seed = 7007

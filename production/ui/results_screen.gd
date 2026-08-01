@@ -13,6 +13,7 @@ var reward_label: Label
 var continue_button: Button
 var rewards_already_claimed := false
 var narrative_text := ""
+var score_breakdown: Dictionary = {}
 var decision_choices: Array = []
 var decision_buttons: Array[Button] = []
 
@@ -20,12 +21,14 @@ func configure(owner_profile: ProgressionProfile, mission_result: Dictionary) ->
 	profile = owner_profile
 	transaction_id = StringName(mission_result.get("transaction_id", ""))
 	rewards = RewardCalculator.calculate(mission_result)
+	score_breakdown = mission_result.get("metrics", mission_result.get("score_breakdown", {})).duplicate(true)
 
 func configure_persisted(owner_profile: ProgressionProfile, completion: Dictionary, narrative := "", choices: Array = []) -> void:
 	profile = owner_profile
 	transaction_id = &""
 	rewards = completion.get("rewards", {}).duplicate(true)
 	rewards_already_claimed = bool(completion.get("claimed", false))
+	score_breakdown = completion.get("metrics", {}).duplicate(true)
 	narrative_text = narrative
 	decision_choices = choices.duplicate(true)
 
@@ -36,6 +39,8 @@ func _ready() -> void:
 	var panel := VBoxContainer.new(); panel.add_theme_constant_override("separation", 12); frame.add_child(panel)
 	title_label = Label.new(); title_label.text = "MISSION RESULTS"; panel.add_child(title_label)
 	reward_label = Label.new(); reward_label.text = "%d XP   %d CREDITS" % [rewards.get("xp", 0), rewards.get("currency", 0)]; panel.add_child(reward_label)
+	if not score_breakdown.is_empty():
+		var arcade := Label.new(); arcade.text = "SCORE %d  CHAIN %d  GRAZE %d  FLUX %d\nELEMENT %d  BOMBS %d  OVERDRIVES %d" % [score_breakdown.get("score", 0), score_breakdown.get("max_chain", 0), score_breakdown.get("graze", 0), score_breakdown.get("flux", 0), score_breakdown.get("element_score", 0), score_breakdown.get("bombs", 0), score_breakdown.get("overdrives", 0)]; panel.add_child(arcade)
 	if not narrative_text.is_empty():
 		var narrative := Label.new(); narrative.text = narrative_text; narrative.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; narrative.custom_minimum_size.x = 420; panel.add_child(narrative)
 	if not decision_choices.is_empty():

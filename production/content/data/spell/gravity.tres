@@ -10,5 +10,6 @@ script = ExtResource("1")
 stable_id = &"spell.gravity"
 display_name = "Gravity Well"
 school = 2
+element_role = 1
 duration_seconds = 3.0
 interaction_policy = SubResource("Policy")

@@ -11,6 +11,7 @@ enum Pattern { STRAIGHT, SINE, ZIGZAG, FORMATION_FOLLOW, DIVE, CHASE, FLANK, ORB
 @export var duration := 5.0
 @export var target_offset := Vector2.ZERO
 @export var arena_margin := 24.0
+@export var path: MovementPathDefinition
 
 func get_content_type() -> StringName:
 	return &"movement_pattern"

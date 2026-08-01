@@ -23,6 +23,12 @@ func tick(delta: float, speed_multiplier := 1.0) -> void:
 		elapsed += delta
 		return
 	elapsed += delta
+	if definition.path != null:
+		var progress := (elapsed - definition.delay) / definition.path.duration
+		var destination := definition.path.position_at(progress)
+		actor.position = origin + destination if definition.path.relative_to_spawn else destination
+		_clamp_to_arena()
+		return
 	var speed := definition.speed * speed_multiplier
 	var velocity := Vector2.DOWN * speed
 	var wave := sin(elapsed * TAU * definition.frequency + phase)

@@ -26,7 +26,7 @@ func configure_from_pool(configuration: Dictionary) -> void:
 	players.clear(); players.assign(configuration.get("players", []))
 	registry = configuration.get("registry") as ActorRegistry
 	lifetime = maxf(1.0, float(configuration.get("lifetime", 10.0)))
-	velocity = Vector2(0, 38)
+	velocity = configuration.get("initial_velocity", Vector2(0, 38))
 	collected_once = false
 	collision_layer = 16; collision_mask = 1
 
@@ -83,5 +83,6 @@ func _draw() -> void:
 		&"healing": tint = Color("71ff8b"); texture = HEALTH_TEXTURE; source = Rect2(Vector2.ZERO, HEALTH_TEXTURE.get_size())
 		&"experience": tint = Color("c792ff"); texture = ENERGY_TEXTURE; source = Rect2(Vector2.ZERO, ENERGY_TEXTURE.get_size())
 		&"temporary_weapon_power": tint = Color("ffd36d"); texture = ENERGY_TEXTURE; source = Rect2(Vector2.ZERO, ENERGY_TEXTURE.get_size())
+		&"flux": tint = Color("f4ff82"); texture = ENERGY_TEXTURE; source = Rect2(Vector2.ZERO, ENERGY_TEXTURE.get_size())
 	draw_circle(Vector2.ZERO, 13.0, Color(tint, 0.22))
 	draw_texture_rect_region(texture, Rect2(-10, -10, 20, 20), source, tint)

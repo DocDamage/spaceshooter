@@ -54,6 +54,7 @@ const DEFAULTS := {
 	&"aim_assistance": 0.0,
 	&"game_speed_assistance": 1.0,
 	&"auto_fire": false,
+	&"story_auto_bomb": false,
 	&"focus_toggle": false,
 	&"shield_toggle": false,
 	&"system_damage_enabled": true,

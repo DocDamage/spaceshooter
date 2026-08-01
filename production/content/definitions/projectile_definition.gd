@@ -18,6 +18,10 @@ enum DespawnBehavior { SILENT, IMPACT, EXPLODE, SPLIT }
 @export var hit_behavior: HitBehavior = HitBehavior.DESPAWN
 @export var despawn_behavior: DespawnBehavior = DespawnBehavior.IMPACT
 @export var interaction_tags: Array[StringName] = []
+@export var graze_value := 1
+@export var cancel_class: StringName = &"none"
+@export var flux_value := 1
+@export var allow_regraze := false
 @export var trail_effect_id: StringName
 @export var impact_effect_id: StringName
 @export var audio_event_id: StringName
@@ -32,8 +36,10 @@ func validate_definition() -> PackedStringArray:
 		errors.append("collision_radius must be positive for %s" % stable_id)
 	if speed < 0.0 or lifetime_seconds <= 0.0:
 		errors.append("speed cannot be negative and lifetime must be positive for %s" % stable_id)
-	if damage < 0.0 or pierce_count < 0 or bounce_count < 0:
+	if damage < 0.0 or pierce_count < 0 or bounce_count < 0 or graze_value < 0 or flux_value < 0:
 		errors.append("damage and interaction counts cannot be negative for %s" % stable_id)
+	if cancel_class not in [&"none", &"eligible", &"protected"]:
+		errors.append("cancel_class must be none, eligible, or protected for %s" % stable_id)
 	if pool_category.is_empty():
 		errors.append("pool_category is required for %s" % stable_id)
 	return errors

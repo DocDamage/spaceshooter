@@ -148,6 +148,7 @@ func _on_checkpoint_ready(kind: StringName, safe_spawn: Vector2, runtime_snapsho
 	session.segment_runtime_snapshot = runtime_snapshot.duplicate(true)
 	var tracker := runtime_context.get("score_tracker") as MissionScoreTracker
 	if tracker != null: session.mission_state.score_snapshot = tracker.snapshot()
+	session.mission_state.combat_replay = CombatReplayState.snapshot(tracker, runtime_context.get("players", []))
 	session.objective_state = objectives.snapshot()
 	session.secret_state = secrets.snapshot()
 	session.create_checkpoint(kind)

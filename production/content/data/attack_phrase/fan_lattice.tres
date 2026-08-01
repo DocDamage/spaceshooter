@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AttackPhraseDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/attack_phrase_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/attack/ring.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"phrase.fan_lattice"
+display_name = "Fan Lattice"
+pattern = ExtResource("2")
+expected_gear = &"focus"
+safe_lane = Rect2(200, 700, 140, 180)
