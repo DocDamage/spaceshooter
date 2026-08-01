@@ -9,7 +9,7 @@ const OPERATION_BACKGROUNDS := {
 	5: "res://assets_runtime/backgrounds/background_frontier_planets_final.png",
 	6: "res://assets_runtime/backgrounds/background_convergence_gold_sheet.png"
 }
-const CAMPAIGN_MUSIC := "res://assets_runtime/audio/music_stage1_frontier_theme.mp3"
+const CAMPAIGN_MUSIC := "res://assets_runtime/audio/music_stage1_frontier_theme.ogg"
 const SPECIALIST_SHIP_VISUALS := {
 	2: "res://assets_runtime/players/ship_aegis_spear.png",
 	3: "res://assets_runtime/players/ship_veil_skimmer.png",

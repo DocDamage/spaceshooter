@@ -257,6 +257,9 @@ def build_manifest(source_root: Path, config: dict[str, Any]) -> dict[str, Any]:
         override = overrides.get(relative)
         if override:
             record.update({key: value for key, value in override.items() if key != "source_path"})
+        if record.get("runtime_transform"):
+            runtime = PROJECT_ROOT / record["runtime_path"].removeprefix("res://")
+            record["runtime_sha256"] = sha256(runtime) if runtime.is_file() else ""
         if record["import_status"] == "approved":
             record["triage_status"] = "approved"
         elif record["license_status"] in {"missing", "needs_review"} or not record["commercial_use"]:
@@ -409,7 +412,7 @@ def write_runtime_reports(manifest: dict[str, Any], output: Path) -> None:
         "approved_count": len(approved),
         "approved_runtime_bytes": sum((PROJECT_ROOT / item["runtime_path"].removeprefix("res://")).stat().st_size for item in approved if (PROJECT_ROOT / item["runtime_path"].removeprefix("res://")).is_file()),
         "license_groups": list(license_groups.values()),
-        "approved_assets": [{key: item.get(key) for key in ("stable_id", "source_path", "runtime_path", "sha256", "license_status", "license_source", "attribution_required", "content_definition_links")} for item in approved],
+        "approved_assets": [{key: item.get(key) for key in ("stable_id", "source_path", "runtime_path", "sha256", "runtime_sha256", "license_status", "license_source", "attribution_required", "content_definition_links")} for item in approved],
     }
     write_json(output / "runtime_asset_report.json", report)
     lines = ["# Runtime Asset Credits Report", "", "Generated from the approved asset manifest. Exact hashes and paths remain authoritative in `manifest.json`.", ""]
@@ -447,6 +450,20 @@ def safe_copy(source: Path, destination: Path) -> None:
     temporary.replace(destination)
 
 
+def transcode_ogg(source: Path, destination: Path, quality: int = 4) -> None:
+    executable = shutil.which("ffmpeg")
+    if executable is None:
+        raise OSError("ffmpeg is required for OGG runtime transcodes")
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    temporary = destination.with_name(destination.stem + ".tmp.ogg")
+    try:
+        subprocess.run([executable, "-y", "-v", "error", "-i", str(source), "-map_metadata", "-1", "-c:a", "libvorbis", "-q:a", str(quality), str(temporary)], check=True)
+        temporary.replace(destination)
+    finally:
+        if temporary.exists():
+            temporary.unlink()
+
+
 def approve(args: argparse.Namespace) -> int:
     manifest_path = Path(args.manifest).resolve()
     manifest = load_json(manifest_path)
@@ -466,7 +483,12 @@ def approve(args: argparse.Namespace) -> int:
             continue
         relative_destination = destination_value.removeprefix("res://assets_runtime/")
         try:
-            safe_copy(resolve_source_path(item, source_root), runtime_root / relative_destination)
+            source = resolve_source_path(item, source_root)
+            destination = runtime_root / relative_destination
+            if item.get("runtime_transform") == "ogg_vorbis":
+                transcode_ogg(source, destination, int(item.get("ogg_quality", 4)))
+            else:
+                safe_copy(source, destination)
             approved += 1
         except (OSError, FileExistsError) as error:
             errors.append(f"{item['stable_id']}: {error}")
@@ -611,7 +633,7 @@ def validate(args: argparse.Namespace) -> int:
                 runtime_file = PROJECT_ROOT / runtime_path.removeprefix("res://")
                 if runtime_file.name.lower() in runtime_names: errors.append(f"duplicate approved runtime filename: {runtime_file.name}")
                 runtime_names.add(runtime_file.name.lower())
-                if sha256(runtime_file) != item.get("sha256"):
+                if sha256(runtime_file) != item.get("runtime_sha256", item.get("sha256")):
                     errors.append(f"approved runtime hash mismatch: {stable_id}")
                 if source_file.is_file() and sha256(source_file) != item.get("sha256"):
                     errors.append(f"approved source hash mismatch: {stable_id}")

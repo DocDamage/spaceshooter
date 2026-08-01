@@ -7,7 +7,7 @@ This is the production contract for assets promoted into `assets_runtime/`. The 
 - Gameplay is authored in a 540×960 logical portrait frame. Desktop presentation is 960×960 with pillarbox/side-panel space; gameplay coordinates never stretch to fill widescreen.
 - Pixel art uses nearest-neighbor filtering, no mipmaps for actor/UI sprites, whole-pixel source artwork, and uniform X/Y scale. Backgrounds may be cropped but not non-uniformly distorted.
 - Player fighters read at roughly 48–64 logical pixels wide. Standard enemies read at 28–48, elites at 45–70, minibosses at 55–90, and operation bosses at 70–130.
-- Gameplay collision is authored separately from transparent canvas bounds. Tight ellipse/circle collision should cover the solid central mass, normally 65–80% of the visible silhouette.
+- Gameplay collision is authored separately from transparent canvas bounds. Enemy collision normally covers 65–80% of the solid central silhouette. The player is the exception: its bullet-hell damage core is the `ShipDefinition` hitbox (currently 4.5 logical pixels), with a separate 28-pixel graze ring; the core is shown while focusing and may be set to always visible.
 - Player and enemy ships face up in source art. Runtime movement/telegraphing communicates faction direction; do not rotate raster ships merely to indicate aim unless the weapon explicitly supports it.
 
 ## Silhouette and faction language

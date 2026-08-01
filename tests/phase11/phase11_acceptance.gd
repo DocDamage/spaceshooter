@@ -96,7 +96,7 @@ func _test_audio_and_vibration() -> void:
 	_assert(not vibration.emit(&"player_damage", -1, 1.0, 1.0, 0.2), "vibration events respect global accessibility settings")
 
 func _test_ship_and_stress() -> void:
-	var visual := ShipPresentation.new(); root.add_child(visual); visual.update_state(Vector2(1, -1), 0.8, 0.2, true, true, 0.1)
+	var visual := ShipPresentation.new(); root.add_child(visual); visual.update_state(Vector2(1, -1), 0.8, 0.2, true, true, false, false, 0.1)
 	_assert(visual.thrust > 0.0 and visual.recoil > 0.0 and visual.super_active, "ship presentation covers thrust, shield, damage, recoil, and super state")
 	var actors: Array[Node2D] = []
 	var start := Time.get_ticks_usec()

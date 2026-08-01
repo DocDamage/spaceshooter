@@ -145,7 +145,7 @@ func _test_platform_and_achievement_persistence() -> void:
 	restored.queue_free()
 
 func _test_music_state_machine() -> void:
-	var music := load("res://assets_runtime/audio/music_stage1_frontier_theme.mp3") as AudioStream
+	var music := load("res://assets_runtime/audio/music_stage1_frontier_theme.ogg") as AudioStream
 	var menu_voice := hub.audio.transition_music(music, &"menu", 0.0, true)
 	var stage_voice := hub.audio.transition_music(music, &"operation_2_stage", 0.0, true)
 	var snapshot := hub.audio.capture_music_state()

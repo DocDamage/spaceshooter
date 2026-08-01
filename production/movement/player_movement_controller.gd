@@ -23,6 +23,11 @@ func simulate(input_vector: Vector2, delta: float) -> void:
 	if direction != Vector2.ZERO:
 		last_direction = direction.normalized()
 	var target := direction * state_machine.speed_for(profile) * actor.status_component.movement_multiplier()
+	if profile.regulation_direct:
+		velocity = target
+		actor.position += velocity * delta
+		_apply_boundary()
+		return
 	var rate := profile.acceleration if direction != Vector2.ZERO else profile.deceleration
 	velocity = velocity.move_toward(target, rate * delta)
 	actor.position += velocity * delta

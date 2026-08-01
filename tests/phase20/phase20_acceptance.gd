@@ -29,7 +29,7 @@ func _run() -> void:
 	_assert(mission.mission_backdrop != null and mission.mission_backdrop.motion_layers.size() >= 3 and mission.camera_rig.position.distance_to(Vector2(270, 480)) < 1.0, "live missions keep the layered background in screen space and the authored portrait arena centered")
 	var player := mission.player_actors[0] as ProductionPlayer
 	var loadout := player.combat_loadout_snapshot()
-	_assert(loadout.weapons == [&"weapon.pulse_cannon", &"weapon.spread_cannon", &"weapon.missile_launcher"] and loadout.spells == [&"spell.aegis"] and loadout.melee == &"melee.energy_blade" and loadout.super == &"super.overdrive", "primary, secondary, heavy, spell, melee, and super selections reach the live player")
+	_assert(loadout.weapons == [&"weapon.pulse_cannon", &"weapon.beam", &"weapon.spread_cannon", &"weapon.missile_launcher"] and loadout.spells == [&"spell.aegis"] and loadout.melee == &"melee.energy_blade" and loadout.super == &"super.overdrive", "Rapid, Focus Beam, secondary, heavy, Element, melee, and Overdrive selections reach the live player")
 	var focus_has_dash_conflict := false
 	for focus_event in InputMap.action_get_events(&"focus"):
 		if &"dash" in hub.input.get_conflicts(&"focus", focus_event): focus_has_dash_conflict = true

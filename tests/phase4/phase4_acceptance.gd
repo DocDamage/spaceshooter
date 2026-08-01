@@ -49,7 +49,7 @@ func _free_services(pair: Array) -> void:
 func _test_action_map_and_devices() -> void:
 	var pair := _make_services()
 	var input: GameInputService = pair[1]
-	_assert(GameInputService.ACTION_NAMES.size() == 37, "complete navigation, movement, aim, and combat action catalog exists")
+	_assert(GameInputService.ACTION_NAMES.size() == 42, "complete navigation, movement, legacy compatibility, and arcade action catalog exists")
 	_assert(GameInputService.ACTION_NAMES.all(func(action): return InputMap.has_action(action) and not InputMap.action_get_events(action).is_empty()), "every Phase 4 action has a default binding")
 	_assert(input.assign_device(0, GameInputService.DEVICE_KEYBOARD_MOUSE), "keyboard and mouse can be assigned to player one")
 	_assert(not input.assign_device(1, GameInputService.DEVICE_KEYBOARD_MOUSE), "a device cannot control multiple players by default")

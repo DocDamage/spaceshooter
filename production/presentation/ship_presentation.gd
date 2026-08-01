@@ -11,6 +11,10 @@ var ship_texture: Texture2D
 var shield_texture: Texture2D
 var visual_scale := 1.0
 var visual_tint := Color.WHITE
+var hitbox_radius := 4.5
+var graze_radius := 28.0
+var focus_active := false
+var always_show_hitbox := false
 
 func configure_visual(asset_path: String, scale_factor := 1.0, tint := Color.WHITE) -> void:
 	ship_texture = load(asset_path) as Texture2D if not asset_path.is_empty() and ResourceLoader.exists(asset_path) else null
@@ -19,9 +23,15 @@ func configure_visual(asset_path: String, scale_factor := 1.0, tint := Color.WHI
 	visual_tint = tint
 	queue_redraw()
 
-func update_state(move_input: Vector2, shield: float, health: float, firing: bool, super_mode: bool, delta: float) -> void:
+func configure_arcade_feedback(damage_radius: float, graze_ring_radius: float) -> void:
+	hitbox_radius = maxf(0.5, damage_radius)
+	graze_radius = maxf(hitbox_radius, graze_ring_radius)
+	queue_redraw()
+
+func update_state(move_input: Vector2, shield: float, health: float, firing: bool, super_mode: bool, focused: bool, show_hitbox: bool, delta: float) -> void:
 	thrust = move_toward(thrust, clampf(0.45 - move_input.y * 0.45, 0.15, 1.0), delta * 4.0)
 	shield_ratio = clampf(shield, 0.0, 1.0); health_ratio = clampf(health, 0.0, 1.0); super_active = super_mode
+	focus_active = focused; always_show_hitbox = show_hitbox
 	recoil = move_toward(recoil, 1.0 if firing else 0.0, delta * 10.0)
 	queue_redraw()
 
@@ -43,3 +53,7 @@ func _draw() -> void:
 			draw_arc(Vector2.ZERO, 27.0, -PI, PI, 48, Color(0.3, 0.8, 1.0, shield_ratio * 0.55), 2.0)
 	if health_ratio < 0.35:
 		for index in 3: draw_circle(Vector2(-5 + index * 5, -12 - index * 6), 2.0 + index, Color(0.3, 0.32, 0.38, 0.45))
+	if focus_active or always_show_hitbox:
+		draw_arc(Vector2.ZERO, graze_radius, 0.0, TAU, 48, Color(0.45, 0.95, 1.0, 0.18), 1.0)
+		draw_circle(Vector2.ZERO, hitbox_radius, Color(1.0, 1.0, 1.0, 0.85))
+		draw_arc(Vector2.ZERO, hitbox_radius + 1.0, 0.0, TAU, 24, Color("54eaff"), 1.0)

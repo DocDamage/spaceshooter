@@ -58,7 +58,7 @@ func _physics_process(delta: float) -> void:
 		weapon_runtime.locked_target = target
 		weapon_runtime.set_trigger(should_fire, global_position.direction_to(target.global_position) if target != null else Vector2.UP)
 		weapon_runtime.tick(delta)
-	if ship_visual != null: ship_visual.update_state(velocity.normalized(), shield_component.current / maxf(1.0, shield_component.capacity), health_component.current / maxf(1.0, health_component.maximum), weapon_runtime != null and weapon_runtime.trigger_held, false, delta)
+	if ship_visual != null: ship_visual.update_state(velocity.normalized(), shield_component.current / maxf(1.0, shield_component.capacity), health_component.current / maxf(1.0, health_component.maximum), weapon_runtime != null and weapon_runtime.trigger_held, false, false, false, delta)
 
 func issue_command(mode: StringName, target_id: StringName = &"") -> bool:
 	if definition == null or mode not in MODES or command_cooldown_remaining > 0.0: return false

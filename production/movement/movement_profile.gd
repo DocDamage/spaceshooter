@@ -5,6 +5,7 @@ extends Resource
 @export var acceleration := 1800.0
 @export var deceleration := 2200.0
 @export var focus_speed := 150.0
+@export var regulation_direct := false
 @export var boost_speed := 480.0
 @export var dash_distance := 150.0
 @export var dash_time := 0.16

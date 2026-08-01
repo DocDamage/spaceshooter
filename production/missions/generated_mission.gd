@@ -1,11 +1,11 @@
 class_name GeneratedMission
 extends Node2D
 
-const STAGE_ONE_MUSIC := preload("res://assets_runtime/audio/music_stage1_frontier_theme.mp3")
-const SFX_PLAYER_SHOT := preload("res://assets_runtime/audio/sfx_shot_player.wav")
-const SFX_ENEMY_SHOT := preload("res://assets_runtime/audio/sfx_shot_enemy.wav")
-const SFX_HIT := preload("res://assets_runtime/audio/sfx_hit_primary.wav")
-const SFX_EXPLOSION := preload("res://assets_runtime/audio/sfx_explosion_primary.wav")
+const STAGE_ONE_MUSIC := preload("res://assets_runtime/audio/music_stage1_frontier_theme.ogg")
+const SFX_PLAYER_SHOT := preload("res://assets_runtime/audio/sfx_shot_player.ogg")
+const SFX_ENEMY_SHOT := preload("res://assets_runtime/audio/sfx_shot_enemy.ogg")
+const SFX_HIT := preload("res://assets_runtime/audio/sfx_hit_primary.ogg")
+const SFX_EXPLOSION := preload("res://assets_runtime/audio/sfx_explosion_primary.ogg")
 const EXPLOSION_SHEET := preload("res://assets_runtime/effects/effect_explosion_small_01_sheet.png")
 
 var session: GameSession
@@ -133,6 +133,7 @@ func _spawn_players() -> void:
 		var ship := database.get_definition(ship_id, &"ship") as ShipDefinition
 		var loadout: Dictionary = session.config.loadouts[player_index] if player_index < session.config.loadouts.size() else {}
 		var primary := _weapon_from_loadout(loadout, [&"weapon_id", &"primary"], ship.default_weapon_id)
+		var focus_weapon := database.get_definition(ship.focus_pattern_id, &"weapon") as WeaponDefinition
 		var secondary := _weapon_from_loadout(loadout, [&"secondary_id", &"secondary"], &"weapon.spread_cannon")
 		var heavy := _weapon_from_loadout(loadout, [&"heavy_id", &"heavy_weapon", &"heavy"], &"weapon.missile_launcher")
 		var spell := database.get_definition(_id_from_loadout(loadout, [&"spell_id", &"spell"], &"spell.aegis"), &"spell") as SpellDefinition
@@ -158,8 +159,8 @@ func _spawn_players() -> void:
 			if player_index != local_online_index: player.set_physics_process(false)
 		if session.local_coop != null: session.local_coop.attach_actor(StringName(session.local_coop.roster.participants[player_index].slot_id), player)
 		var weapons: Array[WeaponDefinition] = []
-		for weapon in [primary, secondary, heavy]:
-			if weapon != null: weapons.append(weapon)
+		for weapon in [primary, focus_weapon, secondary, heavy]:
+			if weapon != null and weapon not in weapons: weapons.append(weapon)
 		var spells: Array[SpellDefinition] = []
 		if spell != null: spells.append(spell)
 		player.configure_combat(projectile_pool, weapons, spells, melee, super_mode)

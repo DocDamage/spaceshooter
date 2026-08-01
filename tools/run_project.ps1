@@ -81,7 +81,7 @@ function Test-Metadata {
     if ($projectText -notmatch ('config/content_revision="' + [regex]::Escape($contentRevision) + '"')) {
         throw "CONTENT_REVISION '$contentRevision' does not match project.godot."
     }
-    $exactTag = (git -C $ProjectRoot describe --tags --exact-match 2>$null | Out-String).Trim()
+    $exactTag = (git -C $ProjectRoot tag --points-at HEAD --list "v*" | Select-Object -First 1 | Out-String).Trim()
     if (-not [string]::IsNullOrWhiteSpace($exactTag) -and $exactTag -match '^v(.+)$' -and $Matches[1] -ne $version) {
         throw "Release tag '$exactTag' does not match VERSION '$version'."
     }
