@@ -1,0 +1,664 @@
+{
+  "schema_version": 1,
+  "asset_count": 4789,
+  "triage_counts": {
+    "approved": 51,
+    "candidate": 3628,
+    "duplicate": 950,
+    "source_only": 160
+  },
+  "approved_count": 51,
+  "approved_runtime_bytes": 8483132,
+  "license_groups": [
+    {
+      "license_status": "reviewed_commercial",
+      "license_source": "parallax and backgrounds/Space Shooter files/public-license.txt",
+      "asset_ids": [
+        "asset.audio.menu_space_asteroids",
+        "asset.audio.explosion_primary",
+        "asset.audio.hit_primary",
+        "asset.audio.shot_player",
+        "asset.audio.shot_enemy"
+      ]
+    },
+    {
+      "license_status": "approved_cc0",
+      "license_source": "Pixel Art Spaceships full/license.txt",
+      "asset_ids": [
+        "asset.ship.aegis_spear",
+        "asset.ship.arsenal_talon",
+        "asset.ship.convergence_star",
+        "asset.ship.veil_skimmer",
+        "asset.ship.banner_warden"
+      ]
+    },
+    {
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "asset_ids": [
+        "asset.background.frontier_planets_final",
+        "asset.effect.explosion_raider_final",
+        "asset.effect.shield_final",
+        "asset.ship.raider_scout_final",
+        "asset.ship.raider_interceptor_final",
+        "asset.ship.raider_heavy_final",
+        "asset.ship.raider_command_final",
+        "asset.audio.stage1_frontier_theme",
+        "asset.ship.vanguard_final",
+        "asset.ship.bastion_final"
+      ]
+    },
+    {
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "asset_ids": [
+        "asset.background.space_blue_01",
+        "asset.background.nebula_violet",
+        "asset.background.warfront_amber",
+        "asset.background.convergence_gold",
+        "asset.objective.relay_station",
+        "asset.hazard.asteroids_sheet",
+        "asset.hazard.mine_explosive",
+        "asset.ship.enemy_crab",
+        "asset.hazard.debris_sheet",
+        "asset.ship.enemy_fighter_blue",
+        "asset.ship.enemy_fighter_red",
+        "asset.ship.enemy_gunship",
+        "asset.projectile.enemy_missile",
+        "asset.hazard.pirate_base",
+        "asset.ship.pirate_boss",
+        "asset.ship.pirate_fighter",
+        "asset.pickup.credits_01",
+        "asset.pickup.energy_container",
+        "asset.pickup.health_container",
+        "asset.effect.explosion_small_01",
+        "asset.projectile.plasma_orb_01",
+        "asset.projectile.plasma_lance",
+        "asset.projectile.ion_orb",
+        "asset.projectile.reactor_core",
+        "asset.ui.button_frame",
+        "asset.ui.healthbar_sheet",
+        "asset.ui.panel_primary",
+        "asset.ui.panel_secondary",
+        "asset.ui.separator_horizontal"
+      ]
+    },
+    {
+      "license_status": "owner_created",
+      "license_source": "art_source/generated/LICENSE.txt",
+      "asset_ids": [
+        "asset.ui.galax_hero_app_icon",
+        "asset.portrait.galax_hero_comms_atlas"
+      ]
+    }
+  ],
+  "approved_assets": [
+    {
+      "stable_id": "asset.audio.menu_space_asteroids",
+      "source_path": "parallax and backgrounds/Space Shooter files/music/exports/space-asteroids.ogg",
+      "runtime_path": "res://assets_runtime/audio/music_menu_space_asteroids.ogg",
+      "sha256": "08b90e2f9eba0a6801b57d8e7e5c3642638a5b1f46bdc4c71cdf042c173f0242",
+      "runtime_sha256": null,
+      "license_status": "reviewed_commercial",
+      "license_source": "parallax and backgrounds/Space Shooter files/public-license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.audio.explosion_primary",
+      "source_path": "parallax and backgrounds/Space Shooter files/Sound FX/explosion.wav",
+      "runtime_path": "res://assets_runtime/audio/sfx_explosion_primary.ogg",
+      "sha256": "54c4150ef1eb4fbff053f814cda4982bc56c03c469c7a1d400e0707253c48d56",
+      "runtime_sha256": "27bf7f047150d5fc020dd5edb45a49d07335c2a9b7469cb0d82f898490d266fc",
+      "license_status": "reviewed_commercial",
+      "license_source": "parallax and backgrounds/Space Shooter files/public-license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.audio.hit_primary",
+      "source_path": "parallax and backgrounds/Space Shooter files/Sound FX/hit.wav",
+      "runtime_path": "res://assets_runtime/audio/sfx_hit_primary.ogg",
+      "sha256": "6bc660e1349ce0470d116f35444fe08d4108d5fcf9cf2196bd25bc94f1f7a7fc",
+      "runtime_sha256": "a0bd076882ff9a5fd70009b09b635b7ea98f17e92a56f5aab5c0ebb332a0a2cb",
+      "license_status": "reviewed_commercial",
+      "license_source": "parallax and backgrounds/Space Shooter files/public-license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.audio.shot_player",
+      "source_path": "parallax and backgrounds/Space Shooter files/Sound FX/shot 1.wav",
+      "runtime_path": "res://assets_runtime/audio/sfx_shot_player.ogg",
+      "sha256": "114cbe040e7ec1370bbdc1eebe951db5bbff1a69da0be5ad1945331628072d66",
+      "runtime_sha256": "c9d5da586e6f851dea294e2a5d69f6ae0852f772c34d7c8168336b9339bbc14a",
+      "license_status": "reviewed_commercial",
+      "license_source": "parallax and backgrounds/Space Shooter files/public-license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.audio.shot_enemy",
+      "source_path": "parallax and backgrounds/Space Shooter files/Sound FX/shot 2.wav",
+      "runtime_path": "res://assets_runtime/audio/sfx_shot_enemy.ogg",
+      "sha256": "efd18ffdb7ca570ca4e422452d3d6a4628fa22c402e120091dbee4ca41c32b6e",
+      "runtime_sha256": "e932d955838a52408ea9dfb4adb694fd1d92932fcabadb507d1da1a10dddd8e1",
+      "license_status": "reviewed_commercial",
+      "license_source": "parallax and backgrounds/Space Shooter files/public-license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.aegis_spear",
+      "source_path": "Pixel Art Spaceships full/spaceships_no_bloom/1.png",
+      "runtime_path": "res://assets_runtime/players/ship_aegis_spear.png",
+      "sha256": "9a0bb5dc35c30391e2cfea8006db2327767cd59b0a2a01449065eca2be6efb63",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Pixel Art Spaceships full/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.arsenal_talon",
+      "source_path": "Pixel Art Spaceships full/spaceships_no_bloom/13.png",
+      "runtime_path": "res://assets_runtime/players/ship_arsenal_talon.png",
+      "sha256": "0cff863f73f9da99354e47e3ed4e14871b2f6dca74f8ab56725d95d4e8aa6f19",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Pixel Art Spaceships full/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.convergence_star",
+      "source_path": "Pixel Art Spaceships full/spaceships_no_bloom/17.png",
+      "runtime_path": "res://assets_runtime/players/ship_convergence_star.png",
+      "sha256": "2e07a0f2cd5b5d2f7120a9ee19962437a612942d6381a09674db950235106965",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Pixel Art Spaceships full/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.veil_skimmer",
+      "source_path": "Pixel Art Spaceships full/spaceships_no_bloom/5.png",
+      "runtime_path": "res://assets_runtime/players/ship_veil_skimmer.png",
+      "sha256": "303c516bc63c34c2471e5ea5ffb9eb54be0c457e1992f36197d5a1fbbc21b00e",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Pixel Art Spaceships full/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.banner_warden",
+      "source_path": "Pixel Art Spaceships full/spaceships_no_bloom/9.png",
+      "runtime_path": "res://assets_runtime/players/ship_banner_warden.png",
+      "sha256": "e339e48e958eef27ca1a729a85f9df57d222ac1a0cef888e8373c22e811dedbc",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Pixel Art Spaceships full/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.background.frontier_planets_final",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Backgroud/Background (1).png",
+      "runtime_path": "res://assets_runtime/backgrounds/background_frontier_planets_final.png",
+      "sha256": "fcf920c1c1c4eb2959157c26d4137deff4ecba4f2316567895ad71b0240e9d97",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.effect.explosion_raider_final",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Effect/PNG/Explo (3)1.png",
+      "runtime_path": "res://assets_runtime/effects/effect_explosion_raider_final.png",
+      "sha256": "7b74ec39a6f6f9c07b7bcdaa9a0387ada13e374ddaffb60a88b558c5e96f23d7",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.effect.shield_final",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Effect/PNG/shield (1)1.png",
+      "runtime_path": "res://assets_runtime/effects/effect_shield_final.png",
+      "sha256": "1f90c9aae3f9b770930e440a2c8dadb2cb50954ffc3a9f99b1e2df2369bfe53e",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.raider_scout_final",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Inimigos/PNG/INIMIGO (14)1.png",
+      "runtime_path": "res://assets_runtime/enemies/enemy_raider_scout_final.png",
+      "sha256": "79b19eb35d33e5a6ee83642f2073a1b6f1e26192839b6ce14781c4753dbef5e5",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.raider_interceptor_final",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Inimigos/PNG/INIMIGO (16)1.png",
+      "runtime_path": "res://assets_runtime/enemies/enemy_raider_interceptor_final.png",
+      "sha256": "125e4e7112b5830623075b4bc4339d091c07c0ed0176dd198fc630139cc0a4e2",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.raider_heavy_final",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Inimigos/PNG/INIMIGO (6)1.png",
+      "runtime_path": "res://assets_runtime/enemies/enemy_raider_heavy_final.png",
+      "sha256": "a6e5298460b07c0e1e035c86ef04dd9ba2275bf17b0dbc2efe08abd7f774dace",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.raider_command_final",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Inimigos/PNG/INIMIGO (8)1.png",
+      "runtime_path": "res://assets_runtime/enemies/boss_raider_command_final.png",
+      "sha256": "0a7660e202a404b3740154ca3d91aa5cb3983c016eac331fe91b8cad9da4f200",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.audio.stage1_frontier_theme",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Musicas test/Pixel Hero_s Quest.mp3",
+      "runtime_path": "res://assets_runtime/audio/music_stage1_frontier_theme.ogg",
+      "sha256": "07472275eff43c4e2e9560678530083465a644f167c53a7b86fbd36b7bfb3c37",
+      "runtime_sha256": "fd620695697060e9e807a15e7c229c32efc6f46c0bbfc616ad99b661308f9afe",
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.vanguard_final",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Nave/PNG NAVE/Nave (1)1.png",
+      "runtime_path": "res://assets_runtime/players/ship_vanguard_final.png",
+      "sha256": "5a535475e3d2675f09644f484be1908d20f927baebb8b170c9eecb49fd9d9339",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": [
+        "ship.vanguard"
+      ]
+    },
+    {
+      "stable_id": "asset.ship.bastion_final",
+      "source_path": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/Nave/PNG NAVE/Nave (2)1.png",
+      "runtime_path": "res://assets_runtime/players/ship_bastion_final.png",
+      "sha256": "161bd9d18c28af329937392b5ab16fa1c1048ac6e2a918979904320a4468ea22",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "Space Shooter Pack – 2D Pixel Art Ships, Enemies, VFX & Music/license.txt",
+      "attribution_required": false,
+      "content_definition_links": [
+        "ship.bastion"
+      ]
+    },
+    {
+      "stable_id": "asset.background.space_blue_01",
+      "source_path": "SpaceShooter/Backgrounds/Space_01-Sheet.png",
+      "runtime_path": "res://assets_runtime/backgrounds/background_space_blue_01_sheet.png",
+      "sha256": "df0584d17e70a223db251eba289b631391d47d9eb341dab8fa30d4f33fbed39c",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.background.nebula_violet",
+      "source_path": "SpaceShooter/Backgrounds/Space_02-Sheet.png",
+      "runtime_path": "res://assets_runtime/backgrounds/background_nebula_violet_sheet.png",
+      "sha256": "306624b0899f95aacfa2201cb746033be9cec86c9fcbf9d1dad640c892951860",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.background.warfront_amber",
+      "source_path": "SpaceShooter/Backgrounds/Space_03-Sheet.png",
+      "runtime_path": "res://assets_runtime/backgrounds/background_warfront_amber_sheet.png",
+      "sha256": "e775da46b394c8c522884fb3089d6e656ca610560e5bd4b090280374dd90977e",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.background.convergence_gold",
+      "source_path": "SpaceShooter/Backgrounds/Space_04-Sheet.png",
+      "runtime_path": "res://assets_runtime/backgrounds/background_convergence_gold_sheet.png",
+      "sha256": "2c64312a4338589ebb91f7a213e76a5e04be5840c34f0a3784fe749e587cfb8c",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.objective.relay_station",
+      "source_path": "SpaceShooter/Backgrounds/SpaceStation.png",
+      "runtime_path": "res://assets_runtime/objectives/objective_relay_station.png",
+      "sha256": "a0abc41866ffdb9a56a4f7352dbbb45d1e1b7706d5509e6d9cb92a9ffbefb4f0",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.hazard.asteroids_sheet",
+      "source_path": "SpaceShooter/Enemies/Asteroids-Sheet.png",
+      "runtime_path": "res://assets_runtime/hazards/hazard_asteroids_sheet.png",
+      "sha256": "d34f8efe2127e86852c795272a3020de3ad01a816e51c02b2372e8e8d76e8fed",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.hazard.mine_explosive",
+      "source_path": "SpaceShooter/Enemies/Asteroids_Explosive.png",
+      "runtime_path": "res://assets_runtime/hazards/hazard_mine_explosive.png",
+      "sha256": "7da4954849e8f12db491336c916798e561662a291e8be95d96872e6e57a191bc",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.enemy_crab",
+      "source_path": "SpaceShooter/Enemies/CrabShip.png",
+      "runtime_path": "res://assets_runtime/enemies/enemy_crab.png",
+      "sha256": "c4107b6fda90151666f7a1c66e2097cc2fb638b9a5b656092e2527c3673e21b0",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.hazard.debris_sheet",
+      "source_path": "SpaceShooter/Enemies/Debris-Sheet.png",
+      "runtime_path": "res://assets_runtime/hazards/hazard_debris_sheet.png",
+      "sha256": "68910d5697066725b20af32353096809f3ae2e9ceba37789eb4a4073df8175ed",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.enemy_fighter_blue",
+      "source_path": "SpaceShooter/Enemies/fighter1.png",
+      "runtime_path": "res://assets_runtime/enemies/enemy_fighter_blue.png",
+      "sha256": "c2df66ee62483b2668d50d834b301b3695d66b57fe81eb1509c74b7b801283a9",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.enemy_fighter_red",
+      "source_path": "SpaceShooter/Enemies/fighter2.png",
+      "runtime_path": "res://assets_runtime/enemies/enemy_fighter_red.png",
+      "sha256": "648d09dcec6c11c0398f6f579345f4338c79dec8158661d270afd33e1f6d4f04",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.enemy_gunship",
+      "source_path": "SpaceShooter/Enemies/Gunship.png",
+      "runtime_path": "res://assets_runtime/enemies/enemy_gunship.png",
+      "sha256": "caa61efd9041144e5daa31309cad2e1d596f834bcec06eb258e6e4e2156a2d49",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.projectile.enemy_missile",
+      "source_path": "SpaceShooter/Enemies/Missile.png",
+      "runtime_path": "res://assets_runtime/projectiles/projectile_enemy_missile.png",
+      "sha256": "32189dcf66e6b485c1bd0c7e86f040c772fd84f62e897a7db98c1e978e524e79",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.hazard.pirate_base",
+      "source_path": "SpaceShooter/Enemies/Pirate_Base.png",
+      "runtime_path": "res://assets_runtime/hazards/hazard_pirate_base.png",
+      "sha256": "0436880a52a2fd95c4bcb890a5cd076b2376261b9a37dfe12009e4b9da644267",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.pirate_boss",
+      "source_path": "SpaceShooter/Enemies/Pirate_Boss.png",
+      "runtime_path": "res://assets_runtime/enemies/ship_pirate_boss.png",
+      "sha256": "329f762df6aa3f74c1c52f867e7d8ad2888e419ba3e2e618703a5808e1a9afdc",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ship.pirate_fighter",
+      "source_path": "SpaceShooter/Enemies/Pirate_Fighter.png",
+      "runtime_path": "res://assets_runtime/enemies/ship_pirate_fighter.png",
+      "sha256": "1bc744ced5c6fe87f2bd12d7bced7676b836f27f3365904cdf34872257f840ad",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": [
+        "enemy.scout"
+      ]
+    },
+    {
+      "stable_id": "asset.pickup.credits_01",
+      "source_path": "SpaceShooter/Powerup/Credits-Sheet.png",
+      "runtime_path": "res://assets_runtime/pickups/pickup_credits_01_sheet.png",
+      "sha256": "8b284178f7e6393319a1b9d7db7b40d86b027d5ce4d5c534bbb3988f41179ca3",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.pickup.energy_container",
+      "source_path": "SpaceShooter/Powerup/EnergyContainer.png",
+      "runtime_path": "res://assets_runtime/pickups/pickup_energy_container.png",
+      "sha256": "30499ad56c80e05d3e32e08bdc5af5824bd50a90f05e8c6b6a70b89f51939403",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.pickup.health_container",
+      "source_path": "SpaceShooter/Powerup/HPContainer.png",
+      "runtime_path": "res://assets_runtime/pickups/pickup_health_container.png",
+      "sha256": "1b4be03da081ab79da0165991e9f4d4b25d73e2ab5ced0e4162678d9fcb75b92",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.effect.explosion_small_01",
+      "source_path": "SpaceShooter/Projectiles And Explosions/Explosion01-Sheet.png",
+      "runtime_path": "res://assets_runtime/effects/effect_explosion_small_01_sheet.png",
+      "sha256": "16e182e67003e8045f8e7e15c7da51ab9bd01edbbb8b82a79cb9d3d9fa415976",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.projectile.plasma_orb_01",
+      "source_path": "SpaceShooter/Projectiles And Explosions/Projectile01.png",
+      "runtime_path": "res://assets_runtime/projectiles/projectile_plasma_orb_01.png",
+      "sha256": "add6a47da4410416c6083b573e8dbb11a5740fae5a63618f90201468bae42dd2",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.projectile.plasma_lance",
+      "source_path": "SpaceShooter/Projectiles And Explosions/Projectile02.png",
+      "runtime_path": "res://assets_runtime/projectiles/projectile_plasma_lance.png",
+      "sha256": "a36bedb7bb2feb8952adac04b7283174559c33afeceebf929b922d253948e65b",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.projectile.ion_orb",
+      "source_path": "SpaceShooter/Projectiles And Explosions/Projectile03.png",
+      "runtime_path": "res://assets_runtime/projectiles/projectile_ion_orb.png",
+      "sha256": "29280a5397a92fb776ce2bedb2c3e11cfdcbcbdedf7fbdd49dc594a20e6f0477",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.projectile.reactor_core",
+      "source_path": "SpaceShooter/Projectiles And Explosions/Projectile04.png",
+      "runtime_path": "res://assets_runtime/projectiles/projectile_reactor_core.png",
+      "sha256": "6965395c0e06d715a7d4c3dcbe9c3b6e881c19ccbff933165c597d52f8c3f120",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ui.button_frame",
+      "source_path": "SpaceShooter/UI/BtnFrame.png",
+      "runtime_path": "res://assets_runtime/ui/ui_button_frame.png",
+      "sha256": "9b091200cf4ced084ce6aca97421ca008c79cc80c71a0abb82bf1a11f6d31d61",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ui.healthbar_sheet",
+      "source_path": "SpaceShooter/UI/HealthBar-Sheet.png",
+      "runtime_path": "res://assets_runtime/ui/ui_healthbar_sheet.png",
+      "sha256": "5f55cd546455eb539168c8202442953ef6166f990d84667ef309d626456c30cd",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ui.panel_primary",
+      "source_path": "SpaceShooter/UI/Panel.png",
+      "runtime_path": "res://assets_runtime/ui/ui_panel_primary.png",
+      "sha256": "75dc4aa31ea795bae1eb6c47e09493111b45abb01c8c95c6a45ed6b9bada82d5",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ui.panel_secondary",
+      "source_path": "SpaceShooter/UI/Panel2.png",
+      "runtime_path": "res://assets_runtime/ui/ui_panel_secondary.png",
+      "sha256": "5775065a590d3afa2c37143cd3a8173ae00348f48c98f40c9d1d86c645361ce9",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ui.separator_horizontal",
+      "source_path": "SpaceShooter/UI/SeperatorH.png",
+      "runtime_path": "res://assets_runtime/ui/ui_separator_horizontal.png",
+      "sha256": "1d1c5aed38ce8480035110e73c6763e693cdf3385125e463c2eb05aa4dcee008",
+      "runtime_sha256": null,
+      "license_status": "approved_cc0",
+      "license_source": "SpaceShooter/license.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.ui.galax_hero_app_icon",
+      "source_path": "art_source/generated/galax_hero_app_icon.png",
+      "runtime_path": "res://assets_runtime/ui/galax_hero_app_icon.png",
+      "sha256": "67571e59c2a1fe3058dc855a8c8ca8cf18b33ad4712150945d3c14029a8d8664",
+      "runtime_sha256": null,
+      "license_status": "owner_created",
+      "license_source": "art_source/generated/LICENSE.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    },
+    {
+      "stable_id": "asset.portrait.galax_hero_comms_atlas",
+      "source_path": "art_source/generated/galax_hero_comms_portraits.png",
+      "runtime_path": "res://assets_runtime/portraits/comms_portrait_atlas.png",
+      "sha256": "7d335b42a4983be9ef004fe9b31d7eaf3bac4ba09abf71fe00dee5df04cadb23",
+      "runtime_sha256": null,
+      "license_status": "owner_created",
+      "license_source": "art_source/generated/LICENSE.txt",
+      "attribution_required": false,
+      "content_definition_links": []
+    }
+  ]
+}

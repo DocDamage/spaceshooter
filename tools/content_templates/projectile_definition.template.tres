@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ProjectileDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/projectile_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"projectile.replace_me"
+display_name = "Replace Me"
+content_version = "1.0.0"
+visual_asset_path = "res://assets_runtime/projectiles/replace_me.png"
+collision_radius = 6.0
+speed = 600.0
+lifetime_seconds = 5.0
+faction = &"neutral"

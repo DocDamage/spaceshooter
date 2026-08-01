@@ -1,0 +1,15 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: 2,000 projectile objects prewarm into one stable pool
+PASS: 2,000 projectile stress acquisition remains stable
+PASS: pool returns every active projectile
+PASS: returned projectile objects have a complete clean reset
+PASS: reflected bullets change ownership and reward attribution
+PASS: absorbed bullets deactivate before they can damage the player
+PASS: lock-on acquires prioritized targets
+PASS: lock-on safely clears a destroyed target
+PASS: weapon switching preserves and advances valid cooldown state
+PASS: Phase 6 data definitions pass content validation
+PASS: all ten initial weapon families are data-driven
+PASS: all ten early-priority spell schools have examples
+PHASE 6 ACCEPTANCE: all 12 checks passed

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="DropTableDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/drop_table_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"drop_table.scout"
+display_name = "Scout Drops"
+guaranteed_entries = [{"amount": 3, "category": &"experience"}]
+weighted_entries = [{"amount": 5, "category": &"currency", "weight": 70.0}, {"amount": 1, "category": &"healing", "weight": 20.0}, {"amount": 1, "category": &"temporary_weapon_power", "weight": 10.0}]
+rolls = 1
+pity_after_misses = 4

@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="OperationDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/operation_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"operation.frontier_shield"
+display_name = "Operation 1: Frontier Shield"
+dependency_ids = Array[StringName]([&"mission.stage1_vertical_slice", &"mission.operation1_stage2", &"mission.operation1_stage3", &"mission.operation1_stage4", &"mission.operation1_stage5", &"mission.operation1_stage6", &"mission.operation1_stage7", &"mission.operation1_stage8", &"mission.operation1_stage9", &"mission.operation1_stage10", &"campaign_node.operation1_stage1", &"campaign_node.operation1_stage2", &"campaign_node.operation1_stage3", &"campaign_node.operation1_stage4", &"campaign_node.operation1_stage5", &"campaign_node.operation1_stage6", &"campaign_node.operation1_stage7", &"campaign_node.operation1_stage8", &"campaign_node.operation1_stage9", &"campaign_node.operation1_stage10", &"ship.bastion", &"ship.lancer", &"pilot.reyes", &"pilot.kael", &"wingman.rook", &"dialogue.operation1_campaign_briefing", &"dialogue.operation1_campaign_results", &"dialogue.operation1_finale"])
+content_version = "1.0.0"
+operation_index = 1
+theme = "A frontier patrol discovers that Corsair raids are screening an alien vanguard invasion."
+environment_tags = Array[StringName]([&"frontier", &"orbital", &"asteroid", &"alien_ruins"])
+faction_ids = Array[StringName]([&"faction.human_defense", &"faction.raiders", &"faction.alien_vanguard"])
+stage_ids = Array[StringName]([&"mission.stage1_vertical_slice", &"mission.operation1_stage2", &"mission.operation1_stage3", &"mission.operation1_stage4", &"mission.operation1_stage5", &"mission.operation1_stage6", &"mission.operation1_stage7", &"mission.operation1_stage8", &"mission.operation1_stage9", &"mission.operation1_stage10"])
+campaign_node_ids = Array[StringName]([&"campaign_node.operation1_stage1", &"campaign_node.operation1_stage2", &"campaign_node.operation1_stage3", &"campaign_node.operation1_stage4", &"campaign_node.operation1_stage5", &"campaign_node.operation1_stage6", &"campaign_node.operation1_stage7", &"campaign_node.operation1_stage8", &"campaign_node.operation1_stage9", &"campaign_node.operation1_stage10"])
+stage_mechanics = {1: &"core_systems", 2: &"formation_order", 3: &"lock_on", 4: &"rescue", 5: &"scrolling_hazards", 6: &"wingman_command", 7: &"projectile_interaction", 8: &"multi_branch_secret", 9: &"equipment_check", 10: &"operation_finale"}
+story_beats = {1: "Raiders breach the patrol line.", 2: "Defense formations identify stolen alien weapons.", 3: "Alien armor appears among the raiders.", 4: "Civilian survivors reveal a hidden invasion route.", 5: "The squad crosses a mined debris belt.", 6: "Lieutenant Rook joins as a wingman.", 7: "The alien vanguard deploys projectile converters.", 8: "A secret route exposes the command relay.", 9: "The fleet stages its counterattack.", 10: "The squad destroys the alien command carrier and secures the frontier."}
+unlocks_by_stage = {1: Array[StringName]([&"ship.vanguard"]), 2: Array[StringName]([&"weapon.spread_cannon"]), 3: Array[StringName]([&"ability.lock_on"]), 4: Array[StringName]([&"pilot.reyes"]), 5: Array[StringName]([&"ship.bastion"]), 6: Array[StringName]([&"wingman.rook", &"ability.wing_command"]), 7: Array[StringName]([&"spell.aegis", &"spell.void"]), 8: Array[StringName]([&"weapon.rail"]), 9: Array[StringName]([&"ship.lancer"]), 10: Array[StringName]([&"pilot.kael", &"operation1.complete"])}
+economy_targets = {3: {"expected_level": 3, "currency_min": 900, "currency_max": 3600}, 6: {"expected_level": 6, "currency_min": 2200, "currency_max": 7600}, 10: {"expected_level": 10, "currency_min": 4500, "currency_max": 15000}}
+review_seeds = {1: Array[int]([140001, 140014, 140099]), 2: Array[int]([150201, 150202, 150203]), 3: Array[int]([150301, 150302, 150303]), 4: Array[int]([150401, 150402, 150403]), 5: Array[int]([150501, 150502, 150503]), 6: Array[int]([150601, 150602, 150603]), 7: Array[int]([150701, 150702, 150703]), 8: Array[int]([150801, 150802, 150803]), 9: Array[int]([150901, 150902, 150903]), 10: Array[int]([151001, 151002, 151003])}
+segment_usage_targets = {&"opening": 10, &"checkpoint": 10, &"miniboss": 10, &"pre_boss": 10, &"boss": 2, &"branch": 4, &"secret": 3, &"escort": 2, &"hazard_field": 4, &"formation_combat": 6}
+next_operation_node_id = &"campaign_node.operation2_stage1"

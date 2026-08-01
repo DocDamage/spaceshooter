@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="StagePropDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/stage_prop_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"prop.frontier_carrier_arrival"
+display_name = "Corsair Carrier Arrival"
+visual_asset_path = "res://assets_runtime/enemies/boss_raider_command_final.png"
+local_position = Vector2(270, 190)
+visual_scale = Vector2(2.8, 2.8)
+z_order = -3
+depth = "near"
+collision_recommendation = "solid"
+presentation_tags = Array[StringName]([&"frontier", &"carrier", &"boss_approach"])

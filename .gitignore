@@ -1,0 +1,32 @@
+.godot/
+.import/
+*.tmp
+*.log
+*.bak
+*.swp
+*~
+
+# Exported artifacts are retained by CI/release storage, not source control.
+builds/*
+!builds/.gitkeep
+
+# Local test/runtime state.
+test-results/
+coverage/
+crash-dumps/
+*.pck
+*.exe
+*.zip
+*.tpz
+
+# Python tooling caches.
+__pycache__/
+*.py[cod]
+
+# IDE and OS state.
+.idea/
+.vscode/
+.vs/
+.DS_Store
+Thumbs.db
+desktop.ini

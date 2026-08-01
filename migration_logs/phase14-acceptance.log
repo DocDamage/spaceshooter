@@ -1,0 +1,33 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: fresh profile enters the Stage 1 vertical-slice flow
+PASS: pilot, ship, loadout, difficulty, and seed selection are production-data driven
+PASS: Stage 1 deterministically assembles twelve main segments and one authored branch
+PASS: opening, combat escalation, objective branch, midpoint, and production miniboss occur in authored order
+PASS: second-half escalation reaches the pre-boss checkpoint and multiphase production boss
+PASS: Stage 1 carries the eight-role enemy roster, miniboss, and boss
+PASS: preflight exposes loadout comparison rather than silently replacing equipment
+PASS: optional tutorial starts with device-aware movement guidance
+PASS: movement, fire, focus, upgrade, shield, spell, chain, checkpoint, and objective topics complete
+PASS: tutorial is skippable and replayable
+PASS: Stage 1 honors reduced motion, contrast, simplified patterns, auto-fire, aim, speed, vibration, shake, and system-damage settings
+PASS: keyboard/mouse and controller prompt paths are both available
+PASS: selected Stage 1 configuration creates a production game session
+PASS: Stage 1 runs through the reusable stage runtime
+PASS: midpoint and pre-boss checkpoints are captured in order
+PASS: checkpoint resume restores the exact seed, route, objectives, upgrades, and pending rewards
+PASS: death before checkpoint, after midpoint, at boss, continue, out-of-lives, game-over, restart, and abandon flows expose valid choices
+PASS: combat upgrades are explicitly temporary across mission boundaries
+PASS: completion grants XP with a level-up opportunity and currency
+PASS: permanent equipment reward enters inventory and can be compared with the loadout
+PASS: completion unlocks replay and boss practice
+PASS: the same completion transaction persists rewards exactly once
+PASS: XP, currency, equipment, campaign completion, and unlocks survive save reload
+PASS: a completed mission can be replayed under a distinct idempotent reward transaction
+PHASE 14 BENCHMARK: { "frame_count": 600, "elapsed_seconds": 10.0000000000001, "worst_frame_ms": 16.6666666666667, "projectile_peak": 900, "enemy_peak": 80, "effect_peak": 120, "memory_before": 1000000, "memory_after": 1001000, "generation_ms": 0.092, "checkpoint_save_ms": 2.0, "results_save_ms": 5.236, &"average_fps": 59.9999999999995, &"memory_delta": 1000, &"targets": { "minimum_average_fps": 60.0, "maximum_worst_frame_ms": 16.8, "maximum_projectiles": 2000, "maximum_enemies": 150, "maximum_effects": 200, "maximum_generation_ms": 100.0, "maximum_checkpoint_save_ms": 100.0, "maximum_results_save_ms": 250.0 }, &"target_met": true }
+PASS: benchmark captures FPS, worst frame, projectile/enemy/effect peaks, memory, generation, checkpoint, and result-save timing
+PHASE 14 ACCEPTANCE: all 25 checks passed
+WARNING: 41 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 34 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

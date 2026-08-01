@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AttackPatternDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/attack_pattern_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"attack.ring"
+display_name = "Ring"
+pattern = 3
+projectile_count = 12
+projectile_speed = 170.0
+damage = 5.0
+cooldown = 2.4

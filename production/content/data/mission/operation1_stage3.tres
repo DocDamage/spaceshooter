@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/mission_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/mission_recipe/operation1_stage3.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"mission.operation1_stage3"
+display_name = "Armor Lock"
+dependency_ids = Array[StringName]([&"ship.vanguard", &"recipe.operation1_stage3", &"boss.iron_mantis"])
+content_version = "1.0.0"
+player_ship_id = &"ship.vanguard"
+enemy_ids = Array[StringName]([&"enemy.interceptor", &"enemy.hunter", &"enemy.guardian", &"enemy.bomber"])
+default_seed = 150301
+segment_count = 10
+stage_number = 3
+environment_tags = Array[StringName]([&"space", &"armored_convoy"])
+enemy_factions = Array[StringName]([&"faction.raiders", &"faction.alien_vanguard"])
+recipe = ExtResource("2")
+miniboss_id = &"boss.iron_mantis"
+mission_rewards = {"credits": 650, "xp": 490, "equipment_id": &"equipment.reactor_matrix"}
+dialogue_hooks = {"briefing": &"dialogue.operation1_campaign_briefing", "results": &"dialogue.operation1_campaign_results"}

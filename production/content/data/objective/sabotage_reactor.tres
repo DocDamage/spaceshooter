@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ObjectiveDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/objective_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"objective.sabotage_reactor"
+display_name = "Destroy the Reactor Nodes"
+objective_type = "sabotage"
+target_id = &"objective_actor.reactor_node"
+target_count = 2
+reward = {"credits": 400}
+

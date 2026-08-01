@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="StagePropDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/stage_prop_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"prop.frontier_planet_pass"
+display_name = "Frontier Planet Pass"
+visual_asset_path = "res://assets_runtime/backgrounds/background_frontier_planets_final.png"
+local_position = Vector2(382, 248)
+visual_scale = Vector2(0.56, 0.56)
+z_order = -30
+depth = "far"
+presentation_tags = Array[StringName]([&"frontier", &"planet", &"landmark"])

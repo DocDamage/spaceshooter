@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampaignNodeDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/campaign_node_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"campaign_node.operation1_stage5"
+display_name = "1-5 Shattered Belt"
+operation_index = 1
+stage_index = 5
+mission_id = &"mission.operation1_stage5"
+prerequisite_node_ids = Array[StringName]([&"campaign_node.operation1_stage4"])
+practice_boss_ids = Array[StringName]([&"boss.debris_warden"])
+reward_preview = {"credits": 800, "xp": 600, "equipment_id": &"equipment.reactor_matrix"}
+map_position = Vector2(360, 340)

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TemporaryUpgradeDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/temporary_upgrade_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"upgrade.overcharged_rounds"
+display_name = "Overcharged Rounds"
+content_version = "1.0.0"
+rarity = &"rare"
+modifiers = {&"damage": 0.25}
+tags = Array[StringName]([&"weapon"])
+incompatible_tags = Array[StringName]([&"pacifist"])
+synergy_hint = "Strong with high projectile count."

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="MissionRecipeDefinition" load_steps=13 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/mission_recipe_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/segment/opening.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/segment/branch.tres" id="3"]
+[ext_resource type="Resource" path="res://production/content/data/segment/formation_combat.tres" id="4"]
+[ext_resource type="Resource" path="res://production/content/data/segment/elite_encounter.tres" id="5"]
+[ext_resource type="Resource" path="res://production/content/data/segment/checkpoint.tres" id="6"]
+[ext_resource type="Resource" path="res://production/content/data/segment/miniboss.tres" id="7"]
+[ext_resource type="Resource" path="res://production/content/data/segment/hazard_field.tres" id="8"]
+[ext_resource type="Resource" path="res://production/content/data/segment/pre_boss.tres" id="9"]
+[ext_resource type="Resource" path="res://production/content/data/segment/exit.tres" id="10"]
+[ext_resource type="Resource" path="res://production/content/data/segment/secret.tres" id="11"]
+[ext_resource type="Resource" path="res://production/content/data/segment/sabotage.tres" id="12"]
+[resource]
+script = ExtResource("1")
+stable_id = &"recipe.operation1_stage8"
+display_name = "Ghost Relay"
+required_sequence = Array[ExtResource("2")]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("3"), ExtResource("8"), ExtResource("9"), ExtResource("10")])
+branch_pool = Array[ExtResource("2")]([ExtResource("11"), ExtResource("12")])
+branch_count = 2
+minimum_segment_count = 10
+maximum_segment_count = 10
+repetition_limit = 2
+allow_secrets = true

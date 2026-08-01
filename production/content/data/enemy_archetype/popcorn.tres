@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EnemyArchetypeDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/enemy_archetype_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"archetype.popcorn"
+display_name = "Popcorn"
+role = 0
+pressure_cost = 1

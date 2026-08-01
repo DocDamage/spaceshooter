@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampaignNodeDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/campaign_node_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"campaign_node.operation1_stage2"
+display_name = "1-2 Ordered Fire"
+operation_index = 1
+stage_index = 2
+mission_id = &"mission.operation1_stage2"
+prerequisite_node_ids = Array[StringName]([&"campaign_node.operation1_stage1"])
+practice_boss_ids = Array[StringName]([&"boss.formation_breaker"])
+reward_preview = {"credits": 575, "xp": 440, "equipment_id": &"equipment.vector_thrusters"}
+map_position = Vector2(220, 240)

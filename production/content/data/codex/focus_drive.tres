@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CodexEntryDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/codex_entry_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"codex.technology.focus_drive"
+display_name = "Focus Drive"
+category = "technology"
+body = "Focus mode reduces translational speed to make small corrections around the fighter's true collision body. It is a control discipline, not a defensive bonus: shields, armor, and damage remain unchanged."
+unlock_rule = {}

@@ -1,0 +1,33 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: Phase 10 resources pass content validation
+PASS: sample mission and recipe are resource-authored
+PASS: sample library covers all 19 planned segment categories
+PASS: a mission regenerates exactly from its seed
+PASS: independent seeded streams produce authored variation
+PASS: generated plans serialize for diagnostics and checkpoint replay
+PASS: generation is bounded and does not stall gameplay
+PASS: structural, connector, content, and local multiplayer validation pass
+PASS: every generated main route reaches the boss and exit
+PASS: required midpoint and pre-boss checkpoints appear in order
+PASS: optional branches reconnect or terminate intentionally
+PASS: invalid segment definitions are rejected before generation
+PASS: objective progress, success, and rewards serialize through checkpoints
+PASS: secret triggers reveal authored routes without hard-coded scene logic
+PASS: production services initialize for generated stage runtime
+PASS: generated stage configures for two local players
+PASS: complete generated stage launches without a one-off master scene
+PASS: authored branch choices alter the traversed runtime route and reconnect
+PASS: authored midpoint and pre-boss events automatically create checkpoints
+PASS: checkpoint captures graph, clearance, next segment, route, and safe spawn
+PASS: exact generated route and objective state restore through GameSession
+PASS: seed replay and local participant route survive restore
+PASS: stage preview generates multiple seeds with graph diagnostics
+PASS: minimum mission editor authors metadata, recipe, factions, bosses, rewards, dialogue, and preview seeds
+PHASE 10 ACCEPTANCE: all 24 checks passed
+WARNING: 1 RID of type "CanvasItem" was leaked.
+   at: _free_rids (servers/rendering/renderer_canvas_cull.cpp:2733)
+WARNING: 47 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 33 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/weapon_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"weapon.homing_laser"
+display_name = "Homing Laser"
+family = 8
+damage = 22.0
+cooldown_seconds = 0.3
+energy_cost = 4.0

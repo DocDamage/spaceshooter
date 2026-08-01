@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="MovementPathDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/movement_path_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"path.frontier_arc"
+display_name = "Frontier Arc"
+points = PackedVector2Array(-130, 0, -40, 120, 70, 220, 150, 310)
+duration = 2.4

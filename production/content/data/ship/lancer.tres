@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ShipDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/ship_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"ship.lancer"
+display_name = "Lancer"
+dependency_ids = Array[StringName]([&"weapon.rail"])
+content_version = "1.0.0"
+visual_asset_path = "res://assets_runtime/players/ship_vanguard_final.png"
+visual_scale = 0.72
+max_health = 82
+move_speed = 385.0
+armor = 2.0
+shield_capacity = 32.0
+shield_recharge_delay = 1.5
+shield_recharge_rate = 10.0
+default_weapon_id = &"weapon.rail"
+normal_speed = 350.0
+focus_speed = 170.0
+hitbox_radius = 4.5
+graze_radius = 28.0
+shot_pattern_id = &"weapon.rail"
+focus_pattern_id = &"weapon.beam"
+element_slot_id = &"spell.aegis"

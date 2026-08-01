@@ -1,0 +1,287 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+Starting conversion.
+Trying to convert	1/141 file - "default_env.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	2/141 file - "project.godot" with size - 13 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	3/141 file - "Scenes/test_scene/test_scene.gd" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	4/141 file - "Scenes/test_scene/test_scene.tscn" with size - 3 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	5/141 file - "Scenes/SplashScreen/SplashScreen.gd" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	6/141 file - "Scenes/SplashScreen/SplashScreen.tscn" with size - 12 KB
+    File was changed, conversion took 12 ms.
+Trying to convert	7/141 file - "Scenes/Levels/CalmStage.tscn" with size - 23 KB
+    File was changed, conversion took 21 ms.
+Trying to convert	8/141 file - "Scenes/Levels/just-some-crazy-level.tscn" with size - 74 KB
+    File was changed, conversion took 56 ms.
+Trying to convert	9/141 file - "Scenes/Levels/Core/Level.gd" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	10/141 file - "Scenes/Levels/Core/Level.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	11/141 file - "Lib/ScriptTemplate.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	12/141 file - "Lib/Util/NumberSplit/NumberSplit.gd" with size - 2 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	13/141 file - "Lib/Util/DateTime/DateTime.gd" with size - 6 KB
+    File was changed, conversion took 5 ms.
+Trying to convert	14/141 file - "Lib/Singleton/AudioCenter/AudioCenter.gd" with size - 4 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	15/141 file - "Lib/Singleton/AudioCenter/AudioCenter.tscn" with size - 5 KB
+    File was changed, conversion took 5 ms.
+Trying to convert	16/141 file - "Lib/Instanceable/SpriteCycling/SpriteCycling.gd" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	17/141 file - "Lib/Instanceable/SpriteCycling/SpriteCycling.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	18/141 file - "Lib/Instanceable/SineBehavior2D/SineBehavior2D.gd" with size - 6 KB
+    File was changed, conversion took 5 ms.
+Trying to convert	19/141 file - "Lib/Instanceable/SineBehavior2D/SineBehavior2D.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	20/141 file - "Lib/Instanceable/ShakeBehavior/ShakeBehavior.gd" with size - 8 KB
+    File was changed, conversion took 5 ms.
+Trying to convert	21/141 file - "Lib/Instanceable/ShakeBehavior/ShakeBehavior.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	22/141 file - "Lib/Instanceable/BulletBehavior/BulletBehavior.gd" with size - 7 KB
+    File was changed, conversion took 4 ms.
+Trying to convert	23/141 file - "Lib/Instanceable/BulletBehavior/BulletBehavior.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	24/141 file - "Lib/Instanceable/BrightnessShader/Brightness.shader" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	25/141 file - "Lib/Instanceable/BrightnessShader/BrightnessShader.gd" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	26/141 file - "Lib/Instanceable/BrightnessShader/BrightnessShader.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	27/141 file - "Lib/Instanceable/BgColorSetter/BgColorSetter.gd" with size - 1 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	28/141 file - "Lib/Instanceable/BgColorSetter/BgColorSetter.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	29/141 file - "Lib/Instanceable/8DirectionBehavior/8DirectionBehavior.gd" with size - 4 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	30/141 file - "Lib/Instanceable/8DirectionBehavior/8DirectionBehavior.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	31/141 file - "GlobalClass/ExtendedButton.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	32/141 file - "GameObject/PlayerWeapon/PulseCannon.gd" with size - 4 KB
+    File was changed, conversion took 4 ms.
+Trying to convert	33/141 file - "GameObject/PlayerWeapon/PulseCannon.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	34/141 file - "GameObject/PlayerWeapon/Core/PlayerWeapon.gd" with size - 3 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	35/141 file - "GameObject/PlayerWeapon/Core/PlayerWeapon.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	36/141 file - "GameObject/PlayerSuperpower/test-player-superpower.gd" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	37/141 file - "GameObject/PlayerSuperpower/test-player-superpower.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	38/141 file - "GameObject/PlayerSuperpower/Core/PlayerSuperpower.gd" with size - 3 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	39/141 file - "GameObject/PlayerSuperpower/Core/PlayerSuperpower.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	40/141 file - "GameObject/PlayerShip/test-player-ship.tscn" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	41/141 file - "GameObject/PlayerShip/Core/PlayerShip.gd" with size - 14 KB
+    File was changed, conversion took 14 ms.
+Trying to convert	42/141 file - "GameObject/PlayerShip/Core/PlayerShip.tscn" with size - 4 KB
+    File was changed, conversion took 4 ms.
+Trying to convert	43/141 file - "GameObject/PlayerShip/Core/PlayerShipTouchController.gd" with size - 4 KB
+    File was changed, conversion took 4 ms.
+Trying to convert	44/141 file - "GameObject/PlayerShip/Core/PlayerShipTouchController.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	45/141 file - "GameObject/PlayerShield/test-shield.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	46/141 file - "GameObject/PlayerShield/Core/PlayerShield.gd" with size - 5 KB
+    File was changed, conversion took 6 ms.
+Trying to convert	47/141 file - "GameObject/PlayerShield/Core/PlayerShield.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	48/141 file - "GameObject/PlayerSatellite/test-satellite.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	49/141 file - "GameObject/PlayerSatellite/Core/PlayerSatellite.gd" with size - 3 KB
+    File was changed, conversion took 4 ms.
+Trying to convert	50/141 file - "GameObject/PlayerSatellite/Core/PlayerSatellite.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	51/141 file - "GameObject/PlayerProjectileTurret/PlayerProjectileTurret.gd" with size - 3 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	52/141 file - "GameObject/PlayerProjectileTurret/PlayerProjectileTurret.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	53/141 file - "GameObject/PlayerProjectile/Debris.gd" with size - 0 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	54/141 file - "GameObject/PlayerProjectile/Debris.tscn" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	55/141 file - "GameObject/PlayerProjectile/PulseBeam.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	56/141 file - "GameObject/PlayerProjectile/test-player-projectile.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	57/141 file - "GameObject/PlayerProjectile/Core/PlayerProjectile.gd" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	58/141 file - "GameObject/PlayerProjectile/Core/PlayerProjectile.tscn" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	59/141 file - "GameObject/PlayerModule/NanofiberStructure.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	60/141 file - "GameObject/PlayerModule/Core/PlayerModule.gd" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	61/141 file - "GameObject/PlayerModule/Core/PlayerModule.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	62/141 file - "GameObject/PlayerEquipmentCore/PlayerEquipmentCore.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	63/141 file - "GameObject/PlayerEquipmentCore/PlayerEquipmentCore.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	64/141 file - "GameObject/PickupsTurret/PickupsTurret.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	65/141 file - "GameObject/PickupsTurret/PickupsTurret.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	66/141 file - "GameObject/PickupsCollector/PickupsCollector.gd" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	67/141 file - "GameObject/PickupsCollector/PickupsCollector.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	68/141 file - "GameObject/Pickups/PickupsItem.gd" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	69/141 file - "GameObject/Pickups/PickupsItem.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	70/141 file - "GameObject/Pickups/PickupsMainCurrency.gd" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	71/141 file - "GameObject/Pickups/PickupsMainCurrency.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	72/141 file - "GameObject/Pickups/Core/Pickups.gd" with size - 3 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	73/141 file - "GameObject/Pickups/Core/Pickups.tscn" with size - 3 KB
+    File was changed, conversion took 4 ms.
+Trying to convert	74/141 file - "GameObject/LevelBulletBhv/LevelBulletBhv.gd" with size - 0 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	75/141 file - "GameObject/LevelBulletBhv/LevelBulletBhv.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	76/141 file - "GameObject/InvincibleState/InvincibleState.gd" with size - 2 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	77/141 file - "GameObject/InvincibleState/InvincibleState.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	78/141 file - "GameObject/ExperienceSystem/ExperienceSystem.gd" with size - 2 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	79/141 file - "GameObject/ExperienceSystem/ExperienceSystem.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	80/141 file - "GameObject/Entity/Entity.gd" with size - 5 KB
+    File was changed, conversion took 7 ms.
+Trying to convert	81/141 file - "GameObject/Entity/Entity.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	82/141 file - "GameObject/EnemyTurret/EnemyTurret.gd" with size - 4 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	83/141 file - "GameObject/EnemyTurret/EnemyTurret.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	84/141 file - "GameObject/EnemySpawner/EnemySpawner.gd" with size - 2 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	85/141 file - "GameObject/EnemySpawner/EnemySpawner.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	86/141 file - "GameObject/EnemyProjectile/EnemyBullet.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	87/141 file - "GameObject/EnemyProjectile/EnemyWeakBullet.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	88/141 file - "GameObject/EnemyProjectile/Core/EnemyProjectileCore.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	89/141 file - "GameObject/EnemyProjectile/Core/EnemyProjectileCore.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	90/141 file - "GameObject/EnemyCore/Droplet.gd" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	91/141 file - "GameObject/EnemyCore/Droplet.tscn" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	92/141 file - "GameObject/EnemyCore/Explodang.gd" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	93/141 file - "GameObject/EnemyCore/Explodang.tscn" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	94/141 file - "GameObject/EnemyCore/test-brisker-enemy.gd" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	95/141 file - "GameObject/EnemyCore/test-brisker-enemy.tscn" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	96/141 file - "GameObject/EnemyCore/test-counter-enemy.gd" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	97/141 file - "GameObject/EnemyCore/test-counter-enemy.tscn" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	98/141 file - "GameObject/EnemyCore/test-dash-enemy.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	99/141 file - "GameObject/EnemyCore/test-enemy-static.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	100/141 file - "GameObject/EnemyCore/test-explosive-enemy.tscn" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	101/141 file - "GameObject/EnemyCore/test-moving-enemy.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	102/141 file - "GameObject/EnemyCore/test-moving-enemy.tscn" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	103/141 file - "GameObject/EnemyCore/test-weak-enemy.gd" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	104/141 file - "GameObject/EnemyCore/test-weak-enemy.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	105/141 file - "GameObject/EnemyCore/NonEnemyObject/LevelEndObject.gd" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	106/141 file - "GameObject/EnemyCore/NonEnemyObject/LevelEndObject.tscn" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	107/141 file - "GameObject/EnemyCore/Core/EnemyCore.gd" with size - 6 KB
+    File was changed, conversion took 6 ms.
+Trying to convert	108/141 file - "GameObject/EnemyCore/Core/EnemyCore.tscn" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	109/141 file - "GameObject/Effect/ExplosionEffect.tscn" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	110/141 file - "GameObject/Effect/SmallExplosionEffect.tscn" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	111/141 file - "GameObject/DamagePopupTurret/DamagePopupTurret.gd" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	112/141 file - "GameObject/DamagePopupTurret/DamagePopupTurret.tscn" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	113/141 file - "GameObject/DamagePopup/DamagePopup.gd" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	114/141 file - "GameObject/DamagePopup/DamagePopup.tscn" with size - 2 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	115/141 file - "GameDatabase/Item/Item.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	116/141 file - "GameDatabase/Item/Equipment/Equipment.gd" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	117/141 file - "GameDatabase/Item/Equipment/Weapons/PulseCannon.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	118/141 file - "GameDatabase/Item/Equipment/Weapons/Weapon.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	119/141 file - "GameDatabase/Item/Equipment/Superpowers/Superpower.gd" with size - 2 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	120/141 file - "GameDatabase/Item/Equipment/Superpowers/test-superpower.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	121/141 file - "GameDatabase/Item/Equipment/Shields/Shield.gd" with size - 2 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	122/141 file - "GameDatabase/Item/Equipment/Shields/test-shield.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	123/141 file - "GameDatabase/Item/Equipment/Satellites/Satellite.gd" with size - 1 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	124/141 file - "GameDatabase/Item/Equipment/Satellites/test-satellite.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	125/141 file - "GameDatabase/Item/Equipment/Modules/Module.gd" with size - 2 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	126/141 file - "GameDatabase/Item/Equipment/Modules/Nanofiber.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	127/141 file - "Autoload/BattleServer.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	128/141 file - "Autoload/Currency.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	129/141 file - "Autoload/EnemySpawnerData.gd" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	130/141 file - "Autoload/GameServer.gd" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	131/141 file - "Autoload/LevelServer.gd" with size - 1 KB
+    File was changed, conversion took 2 ms.
+Trying to convert	132/141 file - "Autoload/LevelGUI/LevelGUI.gd" with size - 6 KB
+    File was changed, conversion took 6 ms.
+Trying to convert	133/141 file - "Autoload/LevelGUI/LevelGUI.tscn" with size - 40 KB
+    File was changed, conversion took 40 ms.
+Trying to convert	134/141 file - "Assets/Theme/ClassicThemeV2/ClassicTheme_V2.tres" with size - 16 KB
+    File was changed, conversion took 3 ms.
+Trying to convert	135/141 file - "Assets/Theme/ClassicThemeV2/img/AnimatedButtonPanelFocus.tres" with size - 1 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	136/141 file - "Assets/Image/Enemy/AnimatedWeakBullet.tres" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	137/141 file - "Assets/Image/Collectibles/AnimatedCredits.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	138/141 file - "Assets/Fonts/Font.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	139/141 file - "Assets/Fonts/RpgDigit.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Trying to convert	140/141 file - "Assets/Fonts/SkyFly8Bit.tres" with size - 0 KB
+    File was changed, conversion took 1 ms.
+Trying to convert	141/141 file - "Assets/Fonts/SkyFly8BitOutline.tres" with size - 0 KB
+    File was changed, conversion took 0 ms.
+Conversion ended - all files(141), converted files: (141), not converted files: (0).
+Conversion of all files took      0.570 seconds.

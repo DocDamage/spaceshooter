@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="StagePropDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/stage_prop_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"prop.frontier_relay_station"
+display_name = "Frontier Relay Station"
+visual_asset_path = "res://assets_runtime/objectives/objective_relay_station.png"
+local_position = Vector2(270, 190)
+visual_scale = Vector2(2.2, 2.2)
+z_order = -4
+depth = "middle"
+collision_recommendation = "solid"
+presentation_tags = Array[StringName]([&"frontier", &"relay", &"route_cue"])

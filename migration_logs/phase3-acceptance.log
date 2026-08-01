@@ -1,0 +1,28 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: machine-readable asset manifest exists
+PASS: asset manifest parses as JSON
+PASS: full supplied archive is inventoried
+PASS: catalog stable IDs are present and unique
+PASS: initial approved runtime asset set is cataloged
+PASS: approved assets have verified commercial-use status
+PASS: approved normalized runtime copies exist
+PASS: assets can be found by faction and role
+PASS: animation metadata format covers layout, timing, events, flash, and destruction
+PASS: searchable thumbnail catalog exists
+PASS: atlas candidates are generated
+PASS: content template exists: enemy_definition.template.tres
+PASS: content template exists: ship_definition.template.tres
+PASS: content template exists: projectile_definition.template.tres
+PASS: content template exists: background_layer_definition.template.tres
+PASS: content template exists: portrait_definition.template.tres
+PASS: content template exists: ui_theme_asset_definition.template.tres
+PASS: content template exists: effect_definition.template.tres
+PASS: projectile content definition validates
+PASS: effect content definition validates
+PASS: export excludes source format: psd
+PASS: export excludes source format: eps
+PASS: export excludes source format: scml
+PASS: export excludes source format: ai
+PASS: export excludes source format: aseprite
+PHASE 3 ACCEPTANCE: all 25 checks passed

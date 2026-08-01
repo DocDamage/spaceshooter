@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="AttackPhraseDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/attack_phrase_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/attack/aimed_burst.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"phrase.flank_crossfire"
+display_name = "Flank Crossfire"
+pattern = ExtResource("2")
+telegraph_seconds = 0.3
+expected_gear = &"either"

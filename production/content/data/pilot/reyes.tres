@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="PilotDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/pilot_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"pilot.reyes"
+display_name = "Mara Reyes"
+content_version = "1.0.0"
+biography = "A defense-line rescue commander who turns civilian evacuation doctrine into aggressive escort tactics."
+voice_style = "steady"
+campaign_perspective = &"defense_fleet"
+unlock_flags = {&"campaign_node.operation1_stage4": true}

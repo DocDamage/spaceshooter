@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.boss_corsair_breach"
+display_name = "Corsair Breach Phase"
+context = "combat"
+priority = 10
+lines = Array[Dictionary]([{"speaker": "Corsair", "text": "Enough formation games. Open every battery."}, {"speaker": "Nova", "text": "The core is exposed. Stay focused and finish it."}])

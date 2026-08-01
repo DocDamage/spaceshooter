@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="StageBeatDefinition" load_steps=5 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/stage_beat_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/segment/opening.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/encounter_variant/frontier_scout.tres" id="3"]
+[ext_resource type="Resource" path="res://production/content/data/stage_prop/frontier_planet_pass.tres" id="4"]
+[resource]
+script = ExtResource("1")
+stable_id = &"stage1.opening_hook"
+label = "Outer-Orbit Hook"
+target_duration_seconds = 15.0
+segment = ExtResource("2")
+next_beat_ids = Array[StringName]([&"stage1.streamer_lesson"])
+landmarks = Array[ExtResource("4")]([ExtResource("4")])
+encounter_variants = Array[ExtResource("3")]([ExtResource("3")])
+background_zone = &"outer_orbit"
+music_state = &"frontier_hook"
+dialogue_hook = &"dialogue.stage1_entry"
+practice_id = &"practice.stage1.opening_hook"
+variation_ids = Array[StringName]([&"wide_entry", &"mirrored_entry"])
+pressure = {"enemy_cap": 3, "projectile_cap": 80, "speed_multiplier": 0.9, "high_attention_roles": 1}

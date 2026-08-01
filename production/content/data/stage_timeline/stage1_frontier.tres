@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="StageEncounterTimelineDefinition" load_steps=15 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/stage_encounter_timeline_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_opening.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_streamer_lesson.tres" id="3"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_flanker_repeat.tres" id="4"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_relay_fork.tres" id="5"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_convoy_rescue.tres" id="6"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_midpoint_beacon.tres" id="7"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_corsair_ace.tres" id="8"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_sweeper_escalation.tres" id="9"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_debris_release.tres" id="10"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_carrier_approach.tres" id="11"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_command_ship.tres" id="12"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_debrief_exit.tres" id="13"]
+[ext_resource type="Resource" path="res://production/content/data/stage_beat/stage1_relay_secret.tres" id="14"]
+[resource]
+script = ExtResource("1")
+stable_id = &"timeline.stage1_frontier"
+display_name = "Stage 1: Frontier Intercept"
+dependency_ids = Array[StringName]([&"prop.frontier_planet_pass", &"prop.frontier_relay_station", &"prop.frontier_carrier_arrival", &"prop.frontier_debris_screen", &"encounter.frontier_scout", &"encounter.frontier_streamer", &"encounter.frontier_flanker", &"encounter.frontier_turret", &"encounter.frontier_anchor", &"encounter.frontier_gunship", &"encounter.frontier_sweeper", &"encounter.frontier_command"])
+mission_id = &"mission.stage1_vertical_slice"
+beats = Array[ExtResource("2")]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("13"), ExtResource("14")])

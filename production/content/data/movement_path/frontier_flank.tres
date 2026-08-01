@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="MovementPathDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/movement_path_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"path.frontier_flank"
+display_name = "Frontier Flank"
+points = PackedVector2Array(140, 0, 90, 100, -40, 180, -170, 240)
+duration = 2.8

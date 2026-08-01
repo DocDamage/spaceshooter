@@ -1,0 +1,924 @@
+class_name MenuShell
+extends CanvasLayer
+
+signal start_requested
+signal resume_requested
+signal campaign_stage_requested(global_stage: int)
+signal mode_requested(mode_id: StringName, global_stage: int, difficulty: int, seed: int, player_count: int, ship_id: StringName, loadout: Dictionary)
+
+const DEFAULT_CAMPAIGN_LOADOUT := {&"primary": &"weapon.pulse_cannon", &"secondary": &"weapon.spread_cannon", &"heavy": &"weapon.missile_launcher", &"spell": &"spell.aegis", &"melee": &"melee.energy_blade", &"super": &"super.overdrive"}
+
+var services: ServiceHub
+var root: Control
+var page_host: MarginContainer
+var breadcrumb: Label
+var prompt_label: Label
+var page_stack: Array[StringName] = []
+var current_page: StringName = &""
+var is_pause_shell := false
+var _capture_action: StringName = &""
+var _capture_button: Button
+var _profile_name_sequence := 1
+var campaign_controller: FullCampaignController
+var campaign_model: CampaignMapModel
+var campaign_ship_id: StringName = &"ship.vanguard"
+var campaign_local_players := 1
+var campaign_loadout := DEFAULT_CAMPAIGN_LOADOUT.duplicate(true)
+var selected_mode_id: StringName = &"arcade"
+var mode_stage := 1
+var mode_difficulty := 50
+var mode_seed := 0
+var mode_players := 1
+var mode_mutators: Array[StringName] = [&"aggressive_enemies"]
+var training_options := {&"invulnerability": true, &"infinite_resources": true, &"damage_numbers": true, &"hitbox_display": false}
+var training_speed := 1.0
+var boss_practice_phase := 0
+var local_devices: Array[int] = [GameInputService.DEVICE_KEYBOARD_MOUSE, GameInputService.UNASSIGNED_DEVICE]
+var local_companion_profile_id: StringName
+var local_companion_ship_id: StringName = &"ship.bastion"
+var local_companion_ready := false
+
+func configure(service_hub: ServiceHub, pause_shell := false, full_campaign: FullCampaignController = null) -> void:
+	services = service_hub
+	is_pause_shell = pause_shell
+	campaign_controller = full_campaign
+
+func set_campaign_controller(full_campaign: FullCampaignController) -> void:
+	campaign_controller = full_campaign
+	campaign_model = null
+	_load_selected_profile_preferences()
+	if is_inside_tree() and current_page == &"campaign": show_page(&"campaign", false)
+
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	_load_selected_profile_preferences()
+	_build_shell()
+	services.input.active_device_changed.connect(_on_active_device_changed)
+	services.input.controller_connection_changed.connect(_on_controller_connection_changed)
+	show_page(&"pause" if is_pause_shell else &"main", false)
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
+		return
+	if not _capture_action.is_empty():
+		if event.is_action_pressed(&"ui_cancel"):
+			_end_capture(false)
+		elif event.is_pressed() and (event is InputEventKey or event is InputEventMouseButton or event is InputEventJoypadButton or event is InputEventJoypadMotion):
+			if event is InputEventJoypadMotion and absf(event.axis_value) < 0.6:
+				return
+			var conflicts := services.input.get_conflicts(_capture_action, event)
+			if conflicts.is_empty() or services.input.rebind(_capture_action, event, &"replace"):
+				_end_capture(true)
+		get_viewport().set_input_as_handled()
+		return
+	if event.is_action_pressed(&"ui_cancel"):
+		_go_back()
+		get_viewport().set_input_as_handled()
+
+func show_page(page: StringName, push_history := true) -> void:
+	if push_history and not current_page.is_empty():
+		page_stack.append(current_page)
+	current_page = page
+	for child in page_host.get_children():
+		child.queue_free()
+	var content: Control
+	match page:
+		&"main": content = _main_page()
+		&"pause": content = _pause_page()
+		&"campaign": content = _campaign_page()
+		&"modes": content = _modes_page()
+		&"hangar": content = _hangar_page()
+		&"inventory": content = _inventory_page()
+		&"skills": content = _skills_page()
+		&"upgrades": content = _upgrades_page()
+		&"codex": content = _codex_page()
+		&"online": content = _online_page()
+		&"credits": content = _credits_page()
+		&"support": content = _support_page()
+		&"profiles": content = _profiles_page()
+		&"save_recovery": content = _save_recovery_page()
+		&"settings": content = _settings_page()
+		&"accessibility": content = _accessibility_page()
+		&"bindings": content = _bindings_page()
+		&"input_test": content = _input_test_page()
+		_: content = _message_page("Unavailable", "This page has not been registered.")
+	page_host.add_child(content)
+	breadcrumb.text = ("PAUSED / " if is_pause_shell else "COMMAND / ") + String(page).replace("_", " ").to_upper()
+	services.localization.localize_tree(content)
+	_apply_text_scale(content)
+	_wire_ui_feedback(content)
+	call_deferred("_focus_first", content)
+
+func _build_shell() -> void:
+	root = Control.new()
+	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.theme = GalaxHeroTheme.create(float(services.settings.get_setting(&"ui_scale", 1.0)))
+	add_child(root)
+	var key_art := TextureRect.new()
+	key_art.texture = _background_sheet_cell("res://assets_runtime/backgrounds/background_convergence_gold_sheet.png", 1)
+	key_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	key_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	key_art.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	key_art.modulate = Color(0.68, 0.78, 0.96, 0.72)
+	key_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(key_art)
+	var stars := TextureRect.new()
+	stars.texture = _background_sheet_cell("res://assets_runtime/backgrounds/background_convergence_gold_sheet.png", 3)
+	stars.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	stars.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	stars.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	stars.modulate = Color(0.8, 0.92, 1.0, 0.58)
+	stars.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	root.add_child(stars)
+	var backdrop := ColorRect.new()
+	backdrop.color = Color(0.008, 0.025, 0.06, 0.68)
+	backdrop.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	root.add_child(backdrop)
+	var margin := MarginContainer.new()
+	margin.anchor_left = 0.5
+	margin.anchor_right = 0.5
+	margin.anchor_top = 0.0
+	margin.anchor_bottom = 1.0
+	margin.offset_left = -270.0 + 24.0
+	margin.offset_right = 270.0 - 24.0
+	margin.offset_top = 24.0
+	margin.offset_bottom = -24.0
+	root.add_child(margin)
+	var layout := VBoxContainer.new()
+	margin.add_child(layout)
+	var title := Label.new()
+	title.text = "GALAX HERO"
+	title.modulate = Color("fff09a")
+	title.add_theme_font_size_override("font_size", 34)
+	layout.add_child(title)
+	breadcrumb = Label.new()
+	breadcrumb.modulate = Color("72d8ff")
+	layout.add_child(breadcrumb)
+	var separator := HSeparator.new()
+	layout.add_child(separator)
+	page_host = MarginContainer.new()
+	page_host.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	layout.add_child(page_host)
+	prompt_label = Label.new()
+	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	prompt_label.text = _prompt_text()
+	layout.add_child(prompt_label)
+
+func _main_page() -> Control:
+	var box := _page_box("Pilot systems online. Campaign progress, local profiles, and settings save automatically.")
+	var notice := Label.new(); notice.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; notice.text = "Photosensitivity: this game contains moving patterns and flashing combat effects. Flash, motion, particles, shake, speed, and simplified-pattern options are available under Accessibility."; notice.modulate = Color("ffcf70"); box.add_child(notice)
+	_add_nav_button(box, "Continue", _continue_campaign)
+	_add_nav_button(box, "Campaign Map — Operations 1–6", func(): show_page(&"campaign"))
+	_add_nav_button(box, "Modes", func(): show_page(&"modes"))
+	_add_nav_button(box, "Hangar & Progression", func(): show_page(&"hangar"))
+	_add_nav_button(box, "Codex", func(): show_page(&"codex"))
+	_add_nav_button(box, "Profiles", func(): show_page(&"profiles"))
+	_add_nav_button(box, "Online Co-op", func(): show_page(&"online"))
+	_add_nav_button(box, "Settings", func(): show_page(&"settings"))
+	_add_nav_button(box, "Support & Diagnostics", func(): show_page(&"support"))
+	_add_nav_button(box, "Credits", func(): show_page(&"credits"))
+	var quit := UIComponentLibrary.secondary_button("Quit")
+	quit.pressed.connect(_confirm_quit)
+	box.add_child(quit)
+	return _scroll(box)
+
+func _campaign_page() -> Control:
+	if campaign_controller == null:
+		return _message_page("Campaign unavailable", "The campaign controller could not be configured.")
+	campaign_model = CampaignMapModel.new()
+	campaign_model.configure(campaign_controller.campaign)
+	var box := _page_box("Navigate all six operations. Completed stages may be replayed; locked stages require their preceding mission.")
+	var available_ships: Array[ShipDefinition] = []
+	var profile := services.profiles.get_progression_profile()
+	for definition in services.content_database.get_definitions_by_type(&"ship"):
+		var ship := definition as ShipDefinition
+		if ship != null and (ship.stable_id == &"ship.vanguard" or profile.unlocked_content.has(ship.stable_id)): available_ships.append(ship)
+	if available_ships.is_empty():
+		var fallback := services.content_database.get_definition(&"ship.vanguard", &"ship") as ShipDefinition
+		if fallback != null: available_ships.append(fallback)
+	var ship_names := PackedStringArray()
+	var selected_ship_index := 0
+	for index in available_ships.size():
+		ship_names.append(available_ships[index].display_name)
+		if available_ships[index].stable_id == campaign_ship_id: selected_ship_index = index
+	var ship_picker := UIComponentLibrary.drop_down(ship_names, selected_ship_index)
+	ship_picker.name = "CampaignShipPicker"
+	if not available_ships.is_empty(): campaign_ship_id = available_ships[selected_ship_index].stable_id
+	ship_picker.item_selected.connect(func(index): campaign_ship_id = available_ships[index].stable_id)
+	_add_labeled_control(box, "Ship", ship_picker)
+	var player_picker := UIComponentLibrary.drop_down(PackedStringArray(["Solo", "Local Co-op (2 Players)"]), campaign_local_players - 1)
+	player_picker.name = "CampaignPlayerCount"
+	player_picker.item_selected.connect(func(index): campaign_local_players = index + 1; local_companion_ready = false; show_page(&"campaign", false))
+	_add_labeled_control(box, "Players", player_picker)
+	if campaign_local_players == 2: _add_local_coop_setup(box, &"campaign")
+	var map_view := CampaignMapView.new()
+	map_view.name = "FullCampaignMap"
+	map_view.custom_minimum_size = Vector2(460, 180)
+	map_view.configure(campaign_model)
+	map_view.node_confirmed.connect(_request_campaign_node)
+	box.add_child(map_view)
+	var navigation := HBoxContainer.new()
+	var previous := UIComponentLibrary.secondary_button("Previous")
+	previous.pressed.connect(func(): campaign_model.navigate(-1))
+	navigation.add_child(previous)
+	var launch := UIComponentLibrary.primary_button("Launch Selected Stage")
+	launch.disabled = campaign_local_players == 2 and not _local_coop_ready()
+	launch.tooltip_text = "Assign two distinct connected devices and mark Player 2 ready." if launch.disabled else ""
+	launch.pressed.connect(func():
+		var selected := campaign_model.selected_node()
+		if selected.get("state") in [&"available", &"completed"]: _request_campaign_node(StringName(selected.node_id)))
+	navigation.add_child(launch)
+	var next := UIComponentLibrary.secondary_button("Next")
+	next.pressed.connect(func(): campaign_model.navigate(1))
+	navigation.add_child(next)
+	box.add_child(navigation)
+	_add_back_button(box)
+	return box
+
+func _request_campaign_node(node_id: StringName) -> void:
+	var global_stage := campaign_controller.global_stage_for_node(node_id) if campaign_controller != null else 0
+	if global_stage > 0: campaign_stage_requested.emit(global_stage)
+
+func selected_campaign_ship_id() -> StringName:
+	return campaign_ship_id
+
+func selected_campaign_player_count() -> int:
+	return campaign_local_players
+
+func selected_campaign_loadout() -> Dictionary:
+	return campaign_loadout.duplicate(true)
+
+func selected_local_coop_setup() -> Dictionary:
+	return {"player_devices": local_devices.duplicate(), "companion_profile_id": local_companion_profile_id, "companion_guest": local_companion_profile_id.is_empty(), "companion_ship_id": local_companion_ship_id, "ready": _local_coop_ready()}
+
+func selected_mode_options() -> Dictionary:
+	return {"mutators": mode_mutators.duplicate(), "training_options": training_options.duplicate(true), "training_speed": training_speed, "boss_practice_phase": boss_practice_phase}
+
+func _continue_campaign() -> void:
+	if campaign_controller == null: return
+	if OS.has_feature("demo"):
+		campaign_stage_requested.emit(1)
+		return
+	var target := 1
+	for stage in range(1, 61):
+		if campaign_controller.stage_state(stage) == &"available": target = stage; break
+	campaign_stage_requested.emit(target)
+
+func _modes_page() -> Control:
+	if campaign_controller == null: return _message_page("Modes unavailable", "Campaign content could not be configured for mode reuse.")
+	var catalog := ModeCatalog.all()
+	var mode_ids: Array[StringName] = []
+	var mode_names := PackedStringArray()
+	for mode_id in catalog:
+		mode_ids.append(mode_id); mode_names.append((catalog[mode_id] as ModeDefinition).display_name)
+	var selected_index := maxi(0, mode_ids.find(selected_mode_id))
+	selected_mode_id = mode_ids[selected_index]
+	var selected_mode := catalog[selected_mode_id] as ModeDefinition
+	var box := _page_box("Configure a local run. Mode results use local scoreboards and never mutate campaign rewards.")
+	var mode_picker := UIComponentLibrary.drop_down(mode_names, selected_index)
+	mode_picker.item_selected.connect(func(index): selected_mode_id = mode_ids[index]; show_page(&"modes", false))
+	_add_labeled_control(box, "Mode", mode_picker)
+	var summary := Label.new(); summary.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	summary.text = "Lives %s • Continues %s • %s • %s" % ["Unlimited" if selected_mode.starting_lives == 0 else selected_mode.starting_lives, "Unlimited" if selected_mode.continue_limit < 0 else selected_mode.continue_limit, "Checkpoints" if selected_mode.checkpoints_enabled else "No checkpoints", "Local leaderboard" if selected_mode.leaderboard_eligible else "Practice run"]
+	box.add_child(summary)
+	var available_stages: Array[int] = []
+	var stage_names := PackedStringArray()
+	for stage in range(1, 61):
+		if campaign_controller.stage_state(stage) in [&"available", &"completed"]:
+			available_stages.append(stage); stage_names.append("%02d — %s" % [stage, campaign_controller.mission_for_stage(stage).display_name])
+	if available_stages.is_empty(): available_stages.append(1); stage_names.append("01 — First Contact")
+	var stage_index := maxi(0, available_stages.find(mode_stage)); mode_stage = available_stages[stage_index]
+	var stage_picker := UIComponentLibrary.drop_down(stage_names, stage_index)
+	stage_picker.item_selected.connect(func(index): mode_stage = available_stages[index])
+	_add_labeled_control(box, "Stage / encounter set", stage_picker)
+	var difficulty := UIComponentLibrary.slider(0, 100, mode_difficulty, 5)
+	difficulty.value_changed.connect(func(value): mode_difficulty = int(value))
+	_add_labeled_control(box, "Difficulty", difficulty)
+	var seed_edit := LineEdit.new(); seed_edit.text = str(mode_seed); seed_edit.placeholder_text = "0 = stage default"; seed_edit.custom_minimum_size.x = 180
+	seed_edit.text_changed.connect(func(value): mode_seed = int(value) if value.is_valid_int() else 0)
+	_add_labeled_control(box, "Seed", seed_edit)
+	var players := UIComponentLibrary.drop_down(PackedStringArray(["Solo", "Local Co-op"]), mode_players - 1)
+	players.disabled = not selected_mode.multiplayer_allowed
+	if players.disabled: mode_players = 1; players.select(0)
+	players.item_selected.connect(func(index): mode_players = index + 1; local_companion_ready = false; show_page(&"modes", false))
+	_add_labeled_control(box, "Players", players)
+	if mode_players == 2: _add_local_coop_setup(box, &"modes")
+	var rules := Label.new(); rules.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; rules.text = _format_dictionary(selected_mode.rules); box.add_child(rules)
+	if selected_mode_id in [&"daily_challenge", &"weekly_challenge"]:
+		var challenge := ChallengeService.new().definition_for(&"weekly" if selected_mode_id == &"weekly_challenge" else &"daily", int(Time.get_unix_time_from_system()), String(ProjectSettings.get_setting("application/config/content_revision", "dev")))
+		mode_seed = int(challenge.seed)
+		var challenge_names := PackedStringArray()
+		for value in challenge.mutators: challenge_names.append(String(value).replace("_", " ").capitalize())
+		var challenge_label := Label.new(); challenge_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; challenge_label.text = "%s • Seed %d • Mutators: %s" % [String(challenge.challenge_id), mode_seed, ", ".join(challenge_names)]; box.add_child(challenge_label)
+	elif selected_mode_id == &"mutator":
+		var mutator_title := Label.new(); mutator_title.text = "MUTATORS"; mutator_title.add_theme_font_size_override("font_size", 19); box.add_child(mutator_title)
+		for mutator_id in selected_mode.rules.selectable_mutators:
+			var toggle := UIComponentLibrary.check_box(String(mutator_id).replace("_", " ").capitalize(), StringName(mutator_id) in mode_mutators)
+			toggle.toggled.connect(_set_mode_mutator.bind(StringName(mutator_id)))
+			box.add_child(toggle)
+	elif selected_mode_id == &"training":
+		var training_title := Label.new(); training_title.text = "TRAINING LAB"; training_title.add_theme_font_size_override("font_size", 19); box.add_child(training_title)
+		for option in TrainingController.OPTIONS:
+			var toggle := UIComponentLibrary.check_box(String(option).replace("_", " ").capitalize(), bool(training_options.get(option, false)))
+			toggle.toggled.connect(func(value): training_options[option] = value)
+			box.add_child(toggle)
+		var speed := UIComponentLibrary.slider(0.25, 2.0, training_speed, 0.25); speed.value_changed.connect(func(value): training_speed = value); _add_labeled_control(box, "Simulation speed", speed)
+	elif selected_mode_id == &"boss_practice":
+		var phases := PackedStringArray(["Opening phase", "Phase 2", "Final phase"])
+		var phase_picker := UIComponentLibrary.drop_down(phases, boss_practice_phase); phase_picker.item_selected.connect(func(index): boss_practice_phase = index); _add_labeled_control(box, "Starting phase", phase_picker)
+	var launch := UIComponentLibrary.primary_button("Launch %s" % selected_mode.display_name)
+	launch.disabled = mode_players == 2 and not _local_coop_ready()
+	launch.tooltip_text = "Assign two distinct connected devices and mark Player 2 ready." if launch.disabled else ""
+	launch.pressed.connect(func(): mode_requested.emit(selected_mode_id, mode_stage, mode_difficulty, mode_seed, mode_players, campaign_ship_id, campaign_loadout.duplicate(true)))
+	box.add_child(launch)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _hangar_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	if profile == null: return _message_page("Hangar unavailable", "Select a valid profile first.")
+	var box := _page_box("%s • Level %d • %d credits • %d stat points • %d skill points" % [profile.display_name, profile.level, profile.currency, profile.statistic_points, profile.skill_points])
+	var ships := _available_definitions(&"ship", profile)
+	_add_definition_picker(box, "Ship", ships, campaign_ship_id, func(id: StringName): campaign_ship_id = id; _persist_hangar(profile))
+	var weapons := _available_definitions(&"weapon", profile)
+	_add_definition_picker(box, "Primary", weapons, StringName(campaign_loadout.get(&"primary", &"weapon.pulse_cannon")), func(id: StringName): _set_loadout(profile, &"primary", id))
+	_add_definition_picker(box, "Secondary", weapons, StringName(campaign_loadout.get(&"secondary", &"weapon.spread_cannon")), func(id: StringName): _set_loadout(profile, &"secondary", id))
+	_add_definition_picker(box, "Heavy", weapons, StringName(campaign_loadout.get(&"heavy", &"weapon.missile_launcher")), func(id: StringName): _set_loadout(profile, &"heavy", id))
+	_add_definition_picker(box, "Spell", _available_definitions(&"spell", profile), StringName(campaign_loadout.get(&"spell", &"spell.aegis")), func(id: StringName): _set_loadout(profile, &"spell", id))
+	_add_definition_picker(box, "Melee", _available_definitions(&"melee", profile), StringName(campaign_loadout.get(&"melee", &"melee.energy_blade")), func(id: StringName): _set_loadout(profile, &"melee", id))
+	_add_definition_picker(box, "Super", _available_definitions(&"super_mode", profile), StringName(campaign_loadout.get(&"super", &"super.overdrive")), func(id: StringName): _set_loadout(profile, &"super", id))
+	var wingmen := _available_definitions(&"wingman", profile)
+	if not wingmen.is_empty(): _add_definition_picker(box, "Wingman", wingmen, StringName(campaign_loadout.get(&"wingman", wingmen[0].stable_id)), func(id: StringName): _set_loadout(profile, &"wingman", id))
+	var stat_title := Label.new(); stat_title.text = "STAT ALLOCATION"; stat_title.add_theme_font_size_override("font_size", 20); box.add_child(stat_title)
+	for stat in [&"power", &"defense", &"mobility", &"systems", &"command"]:
+		var row := HBoxContainer.new(); var label := Label.new(); label.text = "%s  %d/%d" % [String(stat).capitalize(), int(profile.allocated_stats.get(stat, 0)), ProgressionProfile.MAX_STAT_RANK]; label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(label)
+		var add := UIComponentLibrary.secondary_button("+1"); add.disabled = profile.statistic_points <= 0 or int(profile.allocated_stats.get(stat, 0)) >= ProgressionProfile.MAX_STAT_RANK; add.pressed.connect(func(): if profile.allocate_stat(stat): _persist_hangar(profile); show_page(&"hangar", false)); row.add_child(add); box.add_child(row)
+	_add_nav_button(box, "Inventory & Equipment", func(): show_page(&"inventory"))
+	_add_nav_button(box, "Skill Trees", func(): show_page(&"skills"))
+	_add_nav_button(box, "Weapon & Spell Upgrades", func(): show_page(&"upgrades"))
+	_add_back_button(box)
+	return _scroll(box)
+
+func _inventory_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	var definitions: Array[EquipmentDefinition] = []
+	for content in services.content_database.get_definitions_by_type(&"equipment"):
+		if content is EquipmentDefinition: definitions.append(content)
+	var manager := InventoryManager.new(profile, definitions)
+	var box := _page_box("Equipment is persistent. Favorite, locked, or equipped items cannot be sold or dismantled.")
+	if profile.inventory.is_empty():
+		var empty := Label.new(); empty.text = "No equipment acquired yet. Mission rewards will appear here."; box.add_child(empty)
+	for item in manager.sorted_items(&"rarity"):
+		var definition := services.content_database.get_definition(StringName(item.definition_id), &"equipment") as EquipmentDefinition
+		if definition == null: continue
+		var row := HBoxContainer.new(); var label := Label.new(); label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; label.text = "%s • %s\n%s" % [definition.display_name, String(definition.slot).capitalize(), _format_dictionary(definition.modifiers)]; row.add_child(label)
+		var equip := UIComponentLibrary.secondary_button("EQUIP"); equip.disabled = profile.equipped.get(definition.slot) == item.instance_id; equip.pressed.connect(func(): if manager.equip(StringName(item.instance_id), definition.slot, campaign_ship_id): _persist_hangar(profile); show_page(&"inventory", false)); row.add_child(equip)
+		var favorite := UIComponentLibrary.icon_button("★" if bool(item.favorite) else "☆", "Toggle favorite"); favorite.pressed.connect(func(): manager.set_favorite(StringName(item.instance_id), not bool(item.favorite)); _persist_hangar(profile); show_page(&"inventory", false)); row.add_child(favorite)
+		var sell := UIComponentLibrary.secondary_button("SELL %d" % definition.sell_value); sell.disabled = bool(item.favorite) or bool(item.locked) or item.instance_id in profile.equipped.values(); sell.pressed.connect(func(): manager.sell(StringName(item.instance_id)); _persist_hangar(profile); show_page(&"inventory", false)); row.add_child(sell); box.add_child(row)
+	var presets := HBoxContainer.new(); var save_preset := UIComponentLibrary.secondary_button("Save Equipment Preset"); save_preset.pressed.connect(func(): manager.save_preset(&"preset.quick"); _persist_hangar(profile)); presets.add_child(save_preset); var load_preset := UIComponentLibrary.secondary_button("Load Equipment Preset"); load_preset.disabled = not profile.loadout_presets.has(&"preset.quick"); load_preset.pressed.connect(func(): manager.load_preset(&"preset.quick", campaign_ship_id); _persist_hangar(profile); show_page(&"inventory", false)); presets.add_child(load_preset); box.add_child(presets)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _skills_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	var definitions: Array[SkillNodeDefinition] = []
+	for content in services.content_database.get_definitions_by_type(&"skill_node"):
+		if content is SkillNodeDefinition: definitions.append(content)
+	definitions.sort_custom(func(a: SkillNodeDefinition, b: SkillNodeDefinition): return String(a.tree) < String(b.tree) or (a.tree == b.tree and String(a.stable_id) < String(b.stable_id)))
+	var manager := SkillTreeManager.new(profile, definitions)
+	var box := _page_box("Skill points: %d. Prerequisites, ranks, and exclusive choices are enforced by the profile." % profile.skill_points)
+	for node in definitions:
+		var row := HBoxContainer.new(); var label := Label.new(); label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; label.text = "%s / %s • Rank %d/%d • Cost %d\n%s" % [String(node.tree).capitalize(), node.display_name, int(profile.skill_trees.get(node.stable_id, 0)), node.maximum_rank, node.cost, node.description]; label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; row.add_child(label)
+		var buy := UIComponentLibrary.secondary_button("PURCHASE"); buy.disabled = not manager.can_purchase(node.stable_id); buy.pressed.connect(func(): if manager.purchase(node.stable_id): _persist_hangar(profile); show_page(&"skills", false)); row.add_child(buy); box.add_child(row)
+	var respec := UIComponentLibrary.secondary_button("Respec — 250 credits"); respec.disabled = manager.total_spent() <= 0 or profile.currency < 250; respec.pressed.connect(_confirm_respec.bind(manager, profile)); box.add_child(respec)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _upgrades_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	var box := _page_box("Permanent upgrades consume credits and apply to future campaign runs.")
+	for type in [&"weapon", &"spell"]:
+		for content in _available_definitions(type, profile):
+			var current := int((profile.spell_levels if type == &"spell" else profile.weapon_levels).get(content.stable_id, 1))
+			var cost := current * 200
+			var row := HBoxContainer.new(); var label := Label.new(); label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; label.text = "%s • Level %d/%d" % [content.display_name, current, ProgressionProfile.MAX_ABILITY_LEVEL]; row.add_child(label)
+			var upgrade := UIComponentLibrary.secondary_button("UPGRADE %d" % cost); upgrade.disabled = current >= ProgressionProfile.MAX_ABILITY_LEVEL or profile.currency < cost; upgrade.pressed.connect(func(): if profile.upgrade_ability(content.stable_id, type == &"spell", cost): _persist_hangar(profile); show_page(&"upgrades", false)); row.add_child(upgrade); box.add_child(row)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _codex_page() -> Control:
+	var profile := services.profiles.get_progression_profile()
+	var entries := services.content_database.get_definitions_by_type(&"codex_entry")
+	var box := _page_box("Recovered intelligence is stored by category. Locked records reveal only their category.")
+	if entries.is_empty(): var empty := Label.new(); empty.text = "No codex records are installed."; box.add_child(empty)
+	for content in entries:
+		var entry := content as CodexEntryDefinition
+		var unlocked := entry.stable_id in profile.codex_unlocks or entry.unlock_rule.is_empty()
+		var label := Label.new(); label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; label.text = "%s / %s\n%s" % [String(entry.category).capitalize(), entry.display_name if unlocked else "LOCKED RECORD", entry.body if unlocked else "Complete related campaign objectives to decrypt this record."]; box.add_child(label)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _online_page() -> Control:
+	var box := _page_box("Online co-op is a post-launch gated update and is not part of the 1.0 shipping promise.")
+	var message := Label.new(); message.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; message.text = "The host-authoritative test lab remains in the codebase, but public matchmaking and invitations stay disabled until complete missions pass real-machine latency, loss, reconnect, attribution, save, boss, reward, and 60-minute soak gates on two PCs and two networks."; box.add_child(message)
+	var status := UIComponentLibrary.secondary_button("ONLINE RELEASE GATE: CLOSED"); status.disabled = true; box.add_child(status)
+	_add_back_button(box)
+	return box
+
+func _credits_page() -> Control:
+	var box := _page_box("GALAX HERO\nCreated and published by the project owner.")
+	var text := Label.new(); text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART; text.text = "Built with Godot Engine 4.7.1. Approved runtime art and audio are selected from the owner's licensed local asset library. Exact source, license, hash, approval, and attribution records ship from the asset manifest and THIRD_PARTY_NOTICES.md.\n\nQuality, accessibility, localization, and playtest contributors should be appended here before release."; box.add_child(text)
+	_add_back_button(box)
+	return box
+
+func _support_page() -> Control:
+	var box := _page_box("Diagnostics are created only when you request them and are never uploaded automatically.")
+	var privacy := Label.new()
+	privacy.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	privacy.text = "The report includes build/content/protocol versions, non-identifying OS/render information, frame and actor counts, save status, warnings with local paths redacted, and network quality counters when active. It excludes pilot names, save contents, account tokens, IP addresses, and personal files."
+	box.add_child(privacy)
+	var locations := Label.new()
+	locations.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	locations.text = "Saves: user://profiles\nLogs: user://logs\nDiagnostic exports: user://diagnostics"
+	box.add_child(locations)
+	var status := Label.new()
+	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status.text = "No diagnostics exported this session."
+	box.add_child(status)
+	var export := UIComponentLibrary.primary_button("Export Privacy-Safe Diagnostics")
+	export.pressed.connect(func():
+		var path := services.diagnostics.export_privacy_safe_report(services.saves.status)
+		if path.is_empty():
+			status.text = "Export failed. Check the current log for details."
+		else:
+			status.text = "Exported: %s" % path
+			OS.shell_show_in_file_manager(ProjectSettings.globalize_path(path)))
+	box.add_child(export)
+	var known := Label.new()
+	known.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	known.text = "Known release gates: online co-op remains disabled for 1.0; public builds require a verified signature and clean-machine certification."
+	box.add_child(known)
+	_add_back_button(box)
+	return box
+
+func _pause_page() -> Control:
+	var box := _page_box("Mission paused")
+	_add_nav_button(box, "Resume", func(): resume_requested.emit())
+	_add_nav_button(box, "Settings", func(): show_page(&"settings"))
+	_add_nav_button(box, "Input Test", func(): show_page(&"input_test"))
+	return box
+
+func _profiles_page() -> Control:
+	var box := _page_box("Create, select, duplicate, rename, or delete a local pilot. Save operations retain two recovery generations.")
+	for summary in services.profiles.profile_summaries():
+		var row := HBoxContainer.new()
+		var hours := int(summary.playtime_seconds) / 3600
+		var minutes := (int(summary.playtime_seconds) % 3600) / 60
+		var progress: Dictionary = summary.campaign_progress
+		var body := "Level %d • %02d:%02d • Campaign %d%%\nLast: %s • NG+ %d" % [summary.level, hours, minutes, int(progress.get("percent", 0)), String(summary.last_played_stage) if not String(summary.last_played_stage).is_empty() else "—", summary.new_game_plus_cycle]
+		row.add_child(UIComponentLibrary.profile_card(summary.display_name, body))
+		var select := UIComponentLibrary.primary_button("SELECT" if summary.profile_id not in services.profiles.selected_profile_ids else "SELECTED")
+		select.disabled = summary.profile_id in services.profiles.selected_profile_ids
+		select.pressed.connect(func(): services.profiles.select_profiles([StringName(summary.profile_id)]); show_page(&"profiles", false))
+		row.add_child(select)
+		var duplicate := UIComponentLibrary.icon_button("COPY", "Duplicate profile")
+		duplicate.pressed.connect(func(): services.profiles.duplicate_profile(StringName(summary.profile_id)); show_page(&"profiles", false))
+		row.add_child(duplicate)
+		var rename := UIComponentLibrary.icon_button("RENAME", "Assign a generated pilot name")
+		rename.pressed.connect(func(): _profile_name_sequence += 1; services.profiles.rename_profile(StringName(summary.profile_id), "Pilot %d" % _profile_name_sequence); show_page(&"profiles", false))
+		row.add_child(rename)
+		var remove := UIComponentLibrary.icon_button("DELETE", "Delete this profile")
+		remove.disabled = services.profiles.progression_profiles.size() <= 1
+		remove.pressed.connect(_confirm_profile_delete.bind(StringName(summary.profile_id)))
+		row.add_child(remove)
+		box.add_child(row)
+	var create := UIComponentLibrary.primary_button("Create New Pilot")
+	create.disabled = services.profiles.progression_profiles.size() >= ProfileService.MAX_PROFILES
+	create.pressed.connect(func(): _profile_name_sequence += 1; services.profiles.create_profile("Pilot %d" % _profile_name_sequence); show_page(&"profiles", false))
+	box.add_child(create)
+	if services.saves.status == &"corrupt" or services.saves.status == &"recovered":
+		_add_nav_button(box, "Save Recovery Details", func(): show_page(&"save_recovery"))
+	_add_back_button(box)
+	return _scroll(box)
+
+func _save_recovery_page() -> Control:
+	var panel := SaveRecoveryPanel.new()
+	panel.configure(services.saves, services.saves.last_recovery_report)
+	panel.dismissed.connect(func(): show_page(&"profiles", false))
+	return panel
+
+func _confirm_profile_delete(profile_id: StringName) -> void:
+	var profile := services.profiles.get_progression_profile(profile_id, false)
+	if profile == null: return
+	var dialog := UIComponentLibrary.confirmation_dialog("Delete %s?" % profile.display_name, "The profile and checkpoint files will be permanently removed. Other profiles are unaffected.")
+	root.add_child(dialog)
+	dialog.confirmed.connect(func(): services.profiles.delete_profile(profile_id); show_page(&"profiles", false))
+	dialog.popup_centered()
+
+func _settings_page() -> Control:
+	var box := _page_box("Settings save automatically.")
+	var locale_values := ["en", "qps_ploc", "qps_rtl"]
+	var locale_names := PackedStringArray(["English", "Pseudolocale (Expanded)", "Pseudolocale (RTL Mirror)"])
+	var locale_index := maxi(0, locale_values.find(String(services.settings.get_setting(&"locale", "en"))))
+	var locale_picker := UIComponentLibrary.drop_down(locale_names, locale_index)
+	locale_picker.item_selected.connect(func(index): services.settings.set_setting(&"locale", locale_values[index]); show_page(&"settings", false))
+	_add_labeled_control(box, "Language / layout test", locale_picker)
+	_add_nav_button(box, "Accessibility", func(): show_page(&"accessibility"))
+	_add_nav_button(box, "Controls & Rebinding", func(): show_page(&"bindings"))
+	_add_nav_button(box, "Input Test", func(): show_page(&"input_test"))
+	_add_slider_setting(box, "Master volume", &"master_volume", 0.0, 1.0, 0.05)
+	_add_slider_setting(box, "Music volume", &"music_volume", 0.0, 1.0, 0.05)
+	_add_slider_setting(box, "Weapons volume", &"weapons_volume", 0.0, 1.0, 0.05)
+	_add_slider_setting(box, "Explosions volume", &"explosions_volume", 0.0, 1.0, 0.05)
+	_add_slider_setting(box, "Dialogue volume", &"dialogue_volume", 0.0, 1.0, 0.05)
+	_add_toggle_setting(box, "Mute all audio", &"audio_muted")
+	var ranges := PackedStringArray(["Full", "Night"])
+	var range_picker := UIComponentLibrary.drop_down(ranges, 1 if String(services.settings.get_setting(&"dynamic_range", "full")) == "night" else 0)
+	range_picker.item_selected.connect(func(index): services.settings.set_setting(&"dynamic_range", ranges[index].to_lower()))
+	_add_labeled_control(box, "Dynamic range", range_picker)
+	var window_modes := PackedStringArray(["Windowed", "Fullscreen", "Borderless"])
+	var window_values := ["windowed", "fullscreen", "borderless"]
+	var window_index := maxi(0, window_values.find(String(services.settings.get_setting(&"window_mode", "windowed"))))
+	var window_picker := UIComponentLibrary.drop_down(window_modes, window_index)
+	window_picker.item_selected.connect(func(index): services.settings.set_setting(&"window_mode", window_values[index]))
+	_add_labeled_control(box, "Display mode", window_picker)
+	_add_toggle_setting(box, "VSync", &"vsync_enabled")
+	var frame_rates := PackedStringArray(["60 FPS", "120 FPS", "144 FPS", "Unlimited"])
+	var frame_values := [60, 120, 144, 0]
+	var frame_index := maxi(0, frame_values.find(int(services.settings.get_setting(&"frame_rate_limit", 60))))
+	var frame_picker := UIComponentLibrary.drop_down(frame_rates, frame_index)
+	frame_picker.item_selected.connect(func(index): services.settings.set_setting(&"frame_rate_limit", frame_values[index]))
+	_add_labeled_control(box, "Frame-rate limit", frame_picker)
+	_add_slider_setting(box, "Controller dead zone", &"controller_dead_zone", 0.05, 0.75, 0.05)
+	_add_slider_setting(box, "Aim sensitivity", &"aim_sensitivity", 0.25, 2.0, 0.05)
+	_add_slider_setting(box, "Analog response curve", &"analog_response_curve", 0.5, 2.0, 0.05)
+	_add_toggle_setting(box, "Analog movement", &"analog_movement")
+	_add_toggle_setting(box, "Always show player hitbox", &"always_show_hitbox")
+	_add_toggle_setting(box, "Vibration", &"vibration_enabled")
+	_add_slider_setting(box, "Vibration strength", &"vibration_strength", 0.0, 1.0, 0.05)
+	var glyphs := PackedStringArray(["Auto", "Xbox", "PlayStation", "Nintendo"])
+	var glyph_setting := String(services.settings.get_setting(&"glyph_family", "auto"))
+	var glyph_index := ["auto", "xbox", "playstation", "nintendo"].find(glyph_setting)
+	var glyph_picker := UIComponentLibrary.drop_down(glyphs, maxi(0, glyph_index))
+	glyph_picker.item_selected.connect(func(index): services.settings.set_setting(&"glyph_family", glyphs[index].to_lower()))
+	_add_labeled_control(box, "Prompt glyphs", glyph_picker)
+	for category in ["primary_weapon", "heavy_weapon", "player_damage", "shield_break", "melee", "spell", "boss_impact", "environmental_hazard"]:
+		_add_vibration_category(box, category)
+	var restore := UIComponentLibrary.secondary_button("Restore Defaults")
+	restore.pressed.connect(func(): services.settings.restore_defaults(); services.input.restore_default_bindings(); show_page(&"settings", false))
+	box.add_child(restore)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _accessibility_page() -> Control:
+	var split := HBoxContainer.new()
+	var box := _page_box("Changes apply to the live preview and save immediately.")
+	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var modes := PackedStringArray(["Off", "Protanopia", "Deuteranopia", "Tritanopia"])
+	var colorblind := UIComponentLibrary.segmented_control(modes, modes.find(String(services.settings.get_setting(&"colorblind_filter", "off")).capitalize()))
+	_add_labeled_control(box, "Colorblind filter", colorblind)
+	colorblind.item_selected.connect(func(index): services.settings.set_setting(&"colorblind_filter", modes[index].to_lower()))
+	var hostile_colors := PackedStringArray(["Red", "Orange", "Magenta"])
+	var hostile_values := ["ff566d", "ff9f43", "ff5ee7"]
+	var hostile_index := maxi(0, hostile_values.find(String(services.settings.get_setting(&"hostile_bullet_color", hostile_values[0]))))
+	var hostile_picker := UIComponentLibrary.drop_down(hostile_colors, hostile_index)
+	hostile_picker.item_selected.connect(func(index): services.settings.set_setting(&"hostile_bullet_color", hostile_values[index]))
+	_add_labeled_control(box, "Hostile bullet color", hostile_picker)
+	var friendly_colors := PackedStringArray(["Cyan", "Green", "White"])
+	var friendly_values := ["62dcff", "66ff9a", "ffffff"]
+	var friendly_index := maxi(0, friendly_values.find(String(services.settings.get_setting(&"friendly_bullet_color", friendly_values[0]))))
+	var friendly_picker := UIComponentLibrary.drop_down(friendly_colors, friendly_index)
+	friendly_picker.item_selected.connect(func(index): services.settings.set_setting(&"friendly_bullet_color", friendly_values[index]))
+	_add_labeled_control(box, "Friendly bullet color", friendly_picker)
+	_add_toggle_setting(box, "Projectile outline", &"projectile_outline")
+	_add_toggle_setting(box, "Player outline", &"player_outline")
+	_add_slider_setting(box, "Screen shake", &"screen_shake_scale", 0, 1, 0.1)
+	_add_slider_setting(box, "Flash reduction", &"flash_reduction", 0, 1, 0.1)
+	_add_slider_setting(box, "Particle density", &"particle_density", 0, 1, 0.1)
+	_add_slider_setting(box, "Background motion reduction", &"background_motion_reduction", 0, 1, 0.1)
+	_add_slider_setting(box, "UI scale", &"ui_scale", 0.75, 1.5, 0.05)
+	_add_slider_setting(box, "Text scale", &"text_scale", 0.75, 1.75, 0.05)
+	_add_toggle_setting(box, "Subtitles", &"subtitles_enabled")
+	_add_toggle_setting(box, "Subtitle background", &"subtitle_background")
+	_add_slider_setting(box, "Subtitle background opacity", &"subtitle_background_opacity", 0.25, 1.0, 0.05)
+	_add_slider_setting(box, "Aim assistance", &"aim_assistance", 0, 1, 0.1)
+	_add_slider_setting(box, "Game speed assistance", &"game_speed_assistance", 0.5, 1, 0.05)
+	for pair in [["Auto-fire", &"auto_fire"], ["Story auto-bomb", &"story_auto_bomb"], ["Toggle focus", &"focus_toggle"], ["Toggle shield", &"shield_toggle"], ["System damage", &"system_damage_enabled"], ["Simplified patterns", &"simplified_patterns"], ["Invulnerability assist", &"invulnerability_assist"]]:
+		_add_toggle_setting(box, pair[0], pair[1])
+	_add_back_button(box)
+	var preview := AccessibilityPreview.new()
+	preview.configure(services.settings)
+	preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	split.add_child(_scroll(box))
+	split.add_child(preview)
+	return split
+
+func _bindings_page() -> Control:
+	var box := _page_box("Select a binding, then press a key, mouse button, controller button, or axis. Conflicts are replaced; Enter and Escape remain emergency bindings.")
+	for action in GameInputService.ACTION_NAMES:
+		var row := UIComponentLibrary.key_binding_row(String(action).replace("_", " ").capitalize(), services.input.get_prompt(action))
+		var button := row.get_node("BindingButton") as Button
+		button.pressed.connect(_begin_capture.bind(action, button))
+		box.add_child(row)
+	var restore := UIComponentLibrary.secondary_button("Restore Default Bindings")
+	restore.pressed.connect(func(): services.input.restore_default_bindings(); show_page(&"bindings", false))
+	box.add_child(restore)
+	_add_back_button(box)
+	return _scroll(box)
+
+func _input_test_page() -> Control:
+	var box := _page_box("Move sticks, press controls, and connect or disconnect controllers.")
+	var device := Label.new()
+	device.name = "DeviceReadout"
+	device.text = "Last device: %s • glyphs: %s" % [services.input.last_device_kind, services.input.get_glyph_family()]
+	box.add_child(device)
+	var movement := Label.new()
+	movement.name = "MovementReadout"
+	movement.text = "Movement: 0, 0 • Aim: 0, 0"
+	box.add_child(movement)
+	var controllers := Label.new()
+	controllers.name = "ControllerReadout"
+	controllers.text = "Connected controllers: %s" % Input.get_connected_joypads()
+	box.add_child(controllers)
+	var updater := Timer.new()
+	updater.wait_time = 0.05
+	updater.autostart = true
+	updater.timeout.connect(func():
+		if is_instance_valid(movement): movement.text = "Movement: %s • Aim: %s" % [services.input.get_move_vector(0), services.input.get_aim_vector(0)]
+		if is_instance_valid(device): device.text = "Last device: %s • glyphs: %s" % [services.input.last_device_kind, services.input.get_glyph_family()]
+		if is_instance_valid(controllers): controllers.text = "Connected controllers: %s" % Input.get_connected_joypads())
+	box.add_child(updater)
+	_add_back_button(box)
+	return box
+
+func _message_page(title: String, message: String) -> Control:
+	var box := _page_box(title)
+	var label := Label.new(); label.text = message; box.add_child(label)
+	_add_back_button(box)
+	return box
+
+func _page_box(description: String) -> VBoxContainer:
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 10)
+	var label := Label.new()
+	label.text = description
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	box.add_child(label)
+	return box
+
+func _scroll(content: Control) -> ScrollContainer:
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(content)
+	return scroll
+
+func apply_ui_scale(value: float) -> void:
+	if root == null: return
+	root.scale = Vector2.ONE
+	root.theme = GalaxHeroTheme.create(value)
+	if not current_page.is_empty(): show_page(current_page, false)
+
+func _wire_ui_feedback(node: Node) -> void:
+	if node is BaseButton:
+		var button := node as BaseButton
+		if not button.has_meta(&"audio_feedback_wired"):
+			button.set_meta(&"audio_feedback_wired", true)
+			button.focus_entered.connect(func(): services.audio.play_ui_cue(&"navigate"))
+			button.mouse_entered.connect(func(): services.audio.play_ui_cue(&"navigate"))
+			button.pressed.connect(func(): services.audio.play_ui_cue(&"confirm"))
+	for child in node.get_children(): _wire_ui_feedback(child)
+
+func _background_sheet_cell(path: String, row: int) -> Texture2D:
+	if not ResourceLoader.exists(path): return null
+	var source := load(path) as Texture2D
+	if source == null: return null
+	var cell_size := source.get_width()
+	var atlas := AtlasTexture.new()
+	atlas.atlas = source
+	atlas.region = Rect2(0, clampi(row, 0, maxi(0, int(source.get_height() / cell_size) - 1)) * cell_size, cell_size, cell_size)
+	return atlas
+
+func _add_nav_button(box: VBoxContainer, text: String, callback: Callable) -> void:
+	var button := UIComponentLibrary.primary_button(text)
+	button.pressed.connect(callback)
+	box.add_child(button)
+
+func _add_back_button(box: VBoxContainer) -> void:
+	var button := UIComponentLibrary.secondary_button("Back")
+	button.pressed.connect(_go_back)
+	box.add_child(button)
+
+func _add_toggle_setting(box: VBoxContainer, text: String, key: StringName) -> void:
+	var control := UIComponentLibrary.check_box(text, bool(services.settings.get_setting(key, false)))
+	control.toggled.connect(func(value): services.settings.set_setting(key, value))
+	box.add_child(control)
+
+func _add_vibration_category(box: VBoxContainer, category: String) -> void:
+	var categories: Dictionary = services.settings.get_setting(&"vibration_categories", {})
+	var control := UIComponentLibrary.check_box("Vibration: %s" % category.replace("_", " ").capitalize(), bool(categories.get(category, true)))
+	control.toggled.connect(func(value):
+		var changed: Dictionary = services.settings.get_setting(&"vibration_categories", {}).duplicate(true)
+		changed[category] = value
+		services.settings.set_setting(&"vibration_categories", changed))
+	box.add_child(control)
+
+func _add_slider_setting(box: VBoxContainer, text: String, key: StringName, minimum: float, maximum: float, step: float) -> void:
+	var control := UIComponentLibrary.slider(minimum, maximum, float(services.settings.get_setting(key, minimum)), step)
+	control.value_changed.connect(func(value): services.settings.set_setting(key, value))
+	_add_labeled_control(box, text, control)
+
+func _add_labeled_control(box: VBoxContainer, text: String, control: Control) -> void:
+	var row := HBoxContainer.new()
+	var label := Label.new(); label.text = text; label.size_flags_horizontal = Control.SIZE_EXPAND_FILL; row.add_child(label)
+	row.add_child(control)
+	box.add_child(row)
+
+func _available_definitions(content_type: StringName, profile: ProgressionProfile) -> Array[ContentDefinition]:
+	var result: Array[ContentDefinition] = []
+	var starting_ids := [&"ship.vanguard", &"ship.bastion", &"weapon.pulse_cannon", &"weapon.spread_cannon", &"weapon.missile_launcher", &"weapon.rail", &"spell.aegis", &"melee.energy_blade", &"super.overdrive"]
+	for content in services.content_database.get_definitions_by_type(content_type):
+		if content.stable_id in starting_ids or content.stable_id in profile.unlocked_content: result.append(content)
+	if result.is_empty() and content_type != &"wingman": result = services.content_database.get_definitions_by_type(content_type)
+	result.sort_custom(func(a: ContentDefinition, b: ContentDefinition): return a.display_name.naturalnocasecmp_to(b.display_name) < 0)
+	return result
+
+func _add_definition_picker(box: VBoxContainer, title: String, definitions: Array[ContentDefinition], selected_id: StringName, callback: Callable) -> void:
+	if definitions.is_empty(): return
+	var names := PackedStringArray(); var selected_index := 0
+	for index in definitions.size():
+		names.append(definitions[index].display_name)
+		if definitions[index].stable_id == selected_id: selected_index = index
+	var picker := UIComponentLibrary.drop_down(names, selected_index)
+	picker.item_selected.connect(func(index): callback.call(definitions[index].stable_id))
+	_add_labeled_control(box, title, picker)
+
+func _set_loadout(profile: ProgressionProfile, slot: StringName, content_id: StringName) -> void:
+	campaign_loadout[slot] = content_id
+	_persist_hangar(profile)
+
+func _persist_hangar(profile: ProgressionProfile) -> void:
+	if profile == null: return
+	profile.profile_settings.campaign_ship_id = campaign_ship_id
+	profile.profile_settings.campaign_loadout = campaign_loadout.duplicate(true)
+	services.profiles.persist_profile(profile.profile_id)
+
+func _load_selected_profile_preferences() -> void:
+	campaign_ship_id = &"ship.vanguard"
+	campaign_loadout = DEFAULT_CAMPAIGN_LOADOUT.duplicate(true)
+	var selected_profile := services.profiles.get_progression_profile() if services != null and services.profiles != null else null
+	if selected_profile == null:
+		return
+	campaign_ship_id = StringName(selected_profile.profile_settings.get("campaign_ship_id", campaign_ship_id))
+	var saved_loadout = selected_profile.profile_settings.get("campaign_loadout", {})
+	if saved_loadout is Dictionary:
+		campaign_loadout.merge(saved_loadout, true)
+
+func _format_dictionary(values: Dictionary) -> String:
+	if values.is_empty(): return "Standard rules"
+	var parts := PackedStringArray()
+	for key in values:
+		var value = values[key]
+		parts.append("%s: %s" % [String(key).replace("_", " ").capitalize(), str(value).replace("_", " ")])
+	return " • ".join(parts)
+
+func _set_mode_mutator(enabled: bool, mutator_id: StringName) -> void:
+	if enabled and mutator_id not in mode_mutators: mode_mutators.append(mutator_id)
+	elif not enabled: mode_mutators.erase(mutator_id)
+
+func _add_local_coop_setup(box: VBoxContainer, return_page: StringName) -> void:
+	_validate_local_devices()
+	var heading := Label.new(); heading.text = "LOCAL CO-OP ROSTER"; heading.add_theme_font_size_override("font_size", 19); box.add_child(heading)
+	var device_values: Array[int] = [GameInputService.UNASSIGNED_DEVICE, GameInputService.DEVICE_KEYBOARD_MOUSE]
+	var device_names := PackedStringArray(["Not assigned", "Keyboard & Mouse"])
+	for device_id in Input.get_connected_joypads():
+		device_values.append(device_id)
+		var device_name := Input.get_joy_name(device_id)
+		device_names.append("Controller %d — %s" % [device_id + 1, device_name if not device_name.is_empty() else "Gamepad"])
+	for slot in 2:
+		var selected_index := maxi(0, device_values.find(local_devices[slot]))
+		var picker := UIComponentLibrary.drop_down(device_names, selected_index)
+		picker.item_selected.connect(func(index):
+			local_devices[slot] = device_values[index]
+			if local_devices[slot] != GameInputService.UNASSIGNED_DEVICE and local_devices[slot] == local_devices[1 - slot]: local_devices[1 - slot] = GameInputService.UNASSIGNED_DEVICE
+			local_companion_ready = false
+			show_page(return_page, false))
+		_add_labeled_control(box, "Player %d device" % (slot + 1), picker)
+
+	var profile_values: Array[StringName] = [&""]
+	var profile_names := PackedStringArray(["Guest — session progress only"])
+	var host_profile := services.profiles.get_progression_profile()
+	for summary in services.profiles.profile_summaries():
+		var profile_id := StringName(summary.profile_id)
+		if host_profile != null and profile_id == host_profile.profile_id: continue
+		profile_values.append(profile_id); profile_names.append("Local profile — %s" % summary.display_name)
+	var profile_index := maxi(0, profile_values.find(local_companion_profile_id))
+	local_companion_profile_id = profile_values[profile_index]
+	var profile_picker := UIComponentLibrary.drop_down(profile_names, profile_index)
+	profile_picker.item_selected.connect(func(index): local_companion_profile_id = profile_values[index]; local_companion_ready = false; show_page(return_page, false))
+	_add_labeled_control(box, "Player 2 progress", profile_picker)
+
+	if host_profile != null:
+		var ships := _available_definitions(&"ship", host_profile)
+		if not ships.is_empty():
+			if local_companion_ship_id == campaign_ship_id or not ships.any(func(ship): return ship.stable_id == local_companion_ship_id):
+				for ship in ships:
+					if ship.stable_id != campaign_ship_id: local_companion_ship_id = ship.stable_id; break
+			_add_definition_picker(box, "Player 2 ship", ships.filter(func(ship): return ship.stable_id != campaign_ship_id), local_companion_ship_id, func(id: StringName): local_companion_ship_id = id; local_companion_ready = false; show_page(return_page, false))
+
+	var can_ready := _local_devices_valid() and local_companion_ship_id != campaign_ship_id
+	var ready := UIComponentLibrary.check_box("Player 2 ready", local_companion_ready)
+	ready.disabled = not can_ready
+	ready.toggled.connect(func(value): local_companion_ready = value)
+	box.add_child(ready)
+	var status := Label.new(); status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	status.text = "READY — host owns pause and route choices; shared rewards are claimed once." if _local_coop_ready() else "Connect and assign two distinct devices, select Player 2 progress/ship, then mark ready."
+	status.modulate = Color("71ff9a") if _local_coop_ready() else Color("ffcf70")
+	box.add_child(status)
+
+func _validate_local_devices() -> void:
+	for slot in 2:
+		var device := local_devices[slot]
+		if device >= 0 and device not in Input.get_connected_joypads(): local_devices[slot] = GameInputService.UNASSIGNED_DEVICE; local_companion_ready = false
+	if local_devices[1] == GameInputService.UNASSIGNED_DEVICE:
+		for device in Input.get_connected_joypads():
+			if device != local_devices[0]: local_devices[1] = device; break
+
+func _local_devices_valid() -> bool:
+	if local_devices.size() != 2 or GameInputService.UNASSIGNED_DEVICE in local_devices or local_devices[0] == local_devices[1]: return false
+	for device in local_devices:
+		if device >= 0 and device not in Input.get_connected_joypads(): return false
+	return true
+
+func _local_coop_ready() -> bool:
+	return local_companion_ready and _local_devices_valid() and not local_companion_ship_id.is_empty() and local_companion_ship_id != campaign_ship_id
+
+func _confirm_respec(manager: SkillTreeManager, profile: ProgressionProfile) -> void:
+	var dialog := UIComponentLibrary.confirmation_dialog("Respec all skills?", "Refund all spent skill points for 250 credits. Equipment and permanent weapon/spell levels are unchanged.")
+	root.add_child(dialog)
+	dialog.confirmed.connect(func():
+		var result := manager.respec(true, false, 250)
+		if bool(result.get("success", false)): _persist_hangar(profile); show_page(&"skills", false))
+	dialog.popup_centered()
+
+func _go_back() -> void:
+	if not page_stack.is_empty():
+		show_page(page_stack.pop_back(), false)
+	elif is_pause_shell:
+		resume_requested.emit()
+
+func _focus_first(scope: Control) -> void:
+	var controls: Array[Control] = []
+	_collect_focusable(scope, controls)
+	UIComponentLibrary.link_focus_chain(controls)
+	if not controls.is_empty():
+		controls[0].grab_focus()
+
+func _collect_focusable(node: Node, result: Array[Control]) -> void:
+	if node is Control and node.focus_mode == Control.FOCUS_ALL and node.is_visible_in_tree():
+		result.append(node)
+	for child in node.get_children():
+		_collect_focusable(child, result)
+
+func _apply_text_scale(node: Node) -> void:
+	if node is Control:
+		var control := node as Control
+		if not control.has_meta(&"base_font_size"): control.set_meta(&"base_font_size", control.get_theme_font_size("font_size"))
+		control.add_theme_font_size_override("font_size", maxi(10, int(round(float(control.get_meta(&"base_font_size")) * float(services.settings.get_setting(&"text_scale", 1.0))))))
+	for child in node.get_children(): _apply_text_scale(child)
+
+func _begin_capture(action: StringName, button: Button) -> void:
+	_capture_action = action
+	_capture_button = button
+	button.text = "Press a control… (Cancel to stop)"
+
+func _end_capture(changed: bool) -> void:
+	if is_instance_valid(_capture_button):
+		_capture_button.text = services.input.get_prompt(_capture_action) if changed else "Cancelled"
+	_capture_action = &""
+	_capture_button = null
+
+func _assign_picker(item: int, player_index: int, picker: OptionButton) -> void:
+	var device := GameInputService.DEVICE_KEYBOARD_MOUSE if item == 0 else GameInputService.UNASSIGNED_DEVICE if item == 1 else Input.get_connected_joypads()[item - 2]
+	if not services.input.assign_device(player_index, device):
+		picker.select(1)
+		var warning := UIComponentLibrary.warning_dialog("Device already assigned", "A device may control only one local player.")
+		root.add_child(warning)
+		warning.popup_centered()
+
+func _confirm_quit() -> void:
+	var dialog := UIComponentLibrary.confirmation_dialog("Quit Galax Hero?", "Unsaved mission progress will be lost.")
+	root.add_child(dialog)
+	dialog.confirmed.connect(func(): get_tree().quit())
+	dialog.popup_centered()
+
+func _on_active_device_changed(_kind: StringName, _device: int, _glyph: StringName) -> void:
+	prompt_label.text = _prompt_text()
+
+func _on_controller_connection_changed(_device: int, _connected: bool) -> void:
+	prompt_label.text = _prompt_text()
+	_validate_local_devices()
+	if current_page in [&"campaign", &"modes"]: show_page(current_page, false)
+
+func _prompt_text() -> String:
+	return "%s Confirm    %s Back" % [services.input.get_prompt(&"ui_confirm") if services else "Enter", services.input.get_prompt(&"ui_cancel") if services else "Esc"]

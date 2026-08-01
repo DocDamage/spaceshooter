@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/mission_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/mission_recipe/operation1_stage10.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"mission.operation1_stage10"
+display_name = "Frontier Shield"
+dependency_ids = Array[StringName]([&"ship.vanguard", &"recipe.operation1_stage10", &"boss.vanguard_gatekeeper", &"boss.xenarch_command_carrier"])
+content_version = "1.0.0"
+player_ship_id = &"ship.vanguard"
+enemy_ids = Array[StringName]([&"enemy.interceptor", &"enemy.reaver", &"enemy.lancer", &"enemy.guardian", &"enemy.bomber", &"enemy.commander"])
+default_seed = 151001
+segment_count = 12
+stage_number = 10
+environment_tags = Array[StringName]([&"orbital", &"alien_command"])
+enemy_factions = Array[StringName]([&"faction.alien_vanguard"])
+recipe = ExtResource("2")
+miniboss_id = &"boss.vanguard_gatekeeper"
+boss_id = &"boss.xenarch_command_carrier"
+mission_rewards = {"credits": 1800, "xp": 1400, "equipment_id": &"equipment.vector_thrusters"}
+dialogue_hooks = {"briefing": &"dialogue.operation1_campaign_briefing", "stage_entry": &"dialogue.operation1_finale", "results": &"dialogue.operation1_campaign_results"}

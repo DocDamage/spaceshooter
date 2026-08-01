@@ -1,0 +1,38 @@
+{
+  "source": "C:\\Users\\dferr\\OneDrive\\Desktop\\space shooter\\assets\\boss-spaceship-game-sprites\\SCML\\Boss_01\\Boss_01.scml",
+  "animations": [
+    "Idle_01",
+    "Idle_02",
+    "Flight",
+    "Attack_01",
+    "Attack_02",
+    "Attack_03",
+    "Attack_04",
+    "Death"
+  ],
+  "referenced_frames": [
+    "boss_01/Exhaust.png",
+    "boss_01/Explosion_01.png",
+    "boss_01/Explosion_02.png",
+    "boss_01/Laser_01.png",
+    "boss_01/Laser_02.png",
+    "boss_01/Laser_03.png",
+    "boss_01/Shot_01.png",
+    "boss_01/Missile_Effect.png",
+    "boss_01/Missile.png",
+    "boss_01/Shot_02.png",
+    "boss_01/Shot_03.png",
+    "boss_01/Shot_04.png",
+    "boss_01/Boss_Full.png",
+    "boss_01/Canon_L.png",
+    "boss_01/Canon_R.png",
+    "boss_01/Engine.png",
+    "boss_01/Jaw.png",
+    "boss_01/Part_01.png",
+    "boss_01/Part_02.png",
+    "boss_01/Part_03.png",
+    "boss_01/Skull.png",
+    "boss_01/Wings.png",
+    "boss_01/Ship_Exhaust.png"
+  ]
+}

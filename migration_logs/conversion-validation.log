@@ -1,0 +1,1796 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+Starting checking if project conversion can be done.
+Checking for conversion - 1/141 file - "default_env.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(3), ProceduralSky -> Sky  -  LINE """ [sub_resource type="ProceduralSky" id=1] """
+Checking for conversion - 2/141 file - "project.godot" with size - 13 KB
+    Checking file took      0.001 ms.
+		Line(268), window/size/width -> window/size/viewport_width  -  LINE """ window/size/width=224 """
+		Line(269), window/size/height -> window/size/viewport_height  -  LINE """ window/size/height=400 """
+		Line(387), vram_compression/import_etc2 -> textures/vram_compression/import_etc2_astc  -  LINE """ vram_compression/import_etc2=false """
+		Line(388), environment/default_environment -> environment/defaults/default_environment  -  LINE """ environment/default_environment="res://default_env.tres" """
+		Line(326), 16777220 -> 4194308  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777220,"unicode":0,"echo":false,"script":null) """
+		Line(332), 16777221 -> 4194309  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777221,"unicode":0,"echo":false,"script":null) """
+		Line(303), "button_index":14 -> "button_index":13  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":14,"pressure":0.0,"pressed":false,"script":null) """
+		Line(309), "button_index":15 -> "button_index":14  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":15,"pressure":0.0,"pressed":false,"script":null) """
+		Line(315), "button_index":12 -> "button_index":11  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":12,"pressure":0.0,"pressed":false,"script":null) """
+		Line(321), "button_index":13 -> "button_index":12  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":13,"pressure":0.0,"pressed":false,"script":null) """
+		Line(327), "button_index":10 -> "button_index":4  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":10,"pressure":0.0,"pressed":false,"script":null) """
+		Line(333), "button_index":11 -> "button_index":6  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":11,"pressure":0.0,"pressed":false,"script":null) """
+		Line(339), "button_index":4 -> "button_index":9  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":4,"pressure":0.0,"pressed":false,"script":null) """
+		Line(340), InputEventJoypadButton -> InputEventJoypadMotion  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":6,"pressure":0.0,"pressed":false,"script":null) """
+		Line(340), ,"button_index":6,"pressure":0.0,"pressed":false -> ,"axis":4  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":6,"pressure":0.0,"pressed":false,"script":null) """
+		Line(346), "button_index":5 -> "button_index":10  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":5,"pressure":0.0,"pressed":false,"script":null) """
+		Line(347), InputEventJoypadButton -> InputEventJoypadMotion  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":7,"pressure":0.0,"pressed":false,"script":null) """
+		Line(347), ,"button_index":7,"pressure":0.0,"pressed":false -> ,"axis":5  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":7,"pressure":0.0,"pressed":false,"script":null) """
+		Line(354), "button_index":2 -> "button_index":2  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":2,"pressure":0.0,"pressed":false,"script":null) """
+		Line(361), "button_index":0 -> "button_index":0  -  LINE """ , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":0,"pressure":0.0,"pressed":false,"script":null) """
+		Line(302), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"unicode":0,"echo":false,"script":null) """
+		Line(302), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"unicode":0,"echo":false,"script":null) """
+		Line(302), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"unicode":0,"echo":false,"script":null) """
+		Line(302), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"unicode":0,"echo":false,"script":null) """
+		Line(302), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":65,"unicode":0,"echo":false,"script":null) """
+		Line(308), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"unicode":0,"echo":false,"script":null) """
+		Line(308), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"unicode":0,"echo":false,"script":null) """
+		Line(308), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"unicode":0,"echo":false,"script":null) """
+		Line(308), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"unicode":0,"echo":false,"script":null) """
+		Line(308), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":68,"unicode":0,"echo":false,"script":null) """
+		Line(314), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":87,"unicode":0,"echo":false,"script":null) """
+		Line(314), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":87,"unicode":0,"echo":false,"script":null) """
+		Line(314), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":87,"unicode":0,"echo":false,"script":null) """
+		Line(314), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":87,"unicode":0,"echo":false,"script":null) """
+		Line(314), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":87,"unicode":0,"echo":false,"script":null) """
+		Line(320), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":83,"unicode":0,"echo":false,"script":null) """
+		Line(320), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":83,"unicode":0,"echo":false,"script":null) """
+		Line(320), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":83,"unicode":0,"echo":false,"script":null) """
+		Line(320), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":83,"unicode":0,"echo":false,"script":null) """
+		Line(320), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":83,"unicode":0,"echo":false,"script":null) """
+		Line(326), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777220,"unicode":0,"echo":false,"script":null) """
+		Line(326), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777220,"unicode":0,"echo":false,"script":null) """
+		Line(326), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777220,"unicode":0,"echo":false,"script":null) """
+		Line(326), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777220,"unicode":0,"echo":false,"script":null) """
+		Line(326), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777220,"unicode":0,"echo":false,"script":null) """
+		Line(332), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777221,"unicode":0,"echo":false,"script":null) """
+		Line(332), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777221,"unicode":0,"echo":false,"script":null) """
+		Line(332), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777221,"unicode":0,"echo":false,"script":null) """
+		Line(332), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777221,"unicode":0,"echo":false,"script":null) """
+		Line(332), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":16777221,"unicode":0,"echo":false,"script":null) """
+		Line(338), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":81,"unicode":0,"echo":false,"script":null) """
+		Line(338), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":81,"unicode":0,"echo":false,"script":null) """
+		Line(338), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":81,"unicode":0,"echo":false,"script":null) """
+		Line(338), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":81,"unicode":0,"echo":false,"script":null) """
+		Line(338), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":81,"unicode":0,"echo":false,"script":null) """
+		Line(345), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"unicode":0,"echo":false,"script":null) """
+		Line(345), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"unicode":0,"echo":false,"script":null) """
+		Line(345), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"unicode":0,"echo":false,"script":null) """
+		Line(345), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"unicode":0,"echo":false,"script":null) """
+		Line(345), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":69,"unicode":0,"echo":false,"script":null) """
+		Line(352), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":74,"unicode":0,"echo":false,"script":null) """
+		Line(352), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":74,"unicode":0,"echo":false,"script":null) """
+		Line(352), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":74,"unicode":0,"echo":false,"script":null) """
+		Line(352), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":74,"unicode":0,"echo":false,"script":null) """
+		Line(352), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":74,"unicode":0,"echo":false,"script":null) """
+		Line(353), ,"alt": -> ,"alt_pressed":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":46,"unicode":0,"echo":false,"script":null) """
+		Line(353), ,"shift": -> ,"shift_pressed":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":46,"unicode":0,"echo":false,"script":null) """
+		Line(353), ,"control": -> ,"ctrl_pressed":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":46,"unicode":0,"echo":false,"script":null) """
+		Line(353), ,"meta": -> ,"meta_pressed":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":46,"unicode":0,"echo":false,"script":null) """
+		Line(353), ,"scancode": -> ,"keycode":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":46,"unicode":0,"echo":false,"script":null) """
+		Line(359), ,"alt": -> ,"alt_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":75,"unicode":0,"echo":false,"script":null) """
+		Line(359), ,"shift": -> ,"shift_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":75,"unicode":0,"echo":false,"script":null) """
+		Line(359), ,"control": -> ,"ctrl_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":75,"unicode":0,"echo":false,"script":null) """
+		Line(359), ,"meta": -> ,"meta_pressed":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":75,"unicode":0,"echo":false,"script":null) """
+		Line(359), ,"scancode": -> ,"keycode":  -  LINE """ "events": [ Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":75,"unicode":0,"echo":false,"script":null) """
+		Line(360), ,"alt": -> ,"alt_pressed":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":47,"unicode":0,"echo":false,"script":null) """
+		Line(360), ,"shift": -> ,"shift_pressed":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":47,"unicode":0,"echo":false,"script":null) """
+		Line(360), ,"control": -> ,"ctrl_pressed":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":47,"unicode":0,"echo":false,"script":null) """
+		Line(360), ,"meta": -> ,"meta_pressed":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":47,"unicode":0,"echo":false,"script":null) """
+		Line(360), ,"scancode": -> ,"keycode":  -  LINE """ , Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":0,"alt":false,"shift":false,"control":false,"meta":false,"command":false,"pressed":false,"scancode":47,"unicode":0,"echo":false,"script":null) """
+Checking for conversion - 3/141 file - "Scenes/test_scene/test_scene.gd" with size - 0 KB
+    Checking file took      0.002 ms.
+Checking for conversion - 4/141 file - "Scenes/test_scene/test_scene.tscn" with size - 3 KB
+    Checking file took      0.004 ms.
+		Line(34), margin_left -> offset_left  -  LINE """ margin_left = 8.0 """
+		Line(35), margin_top -> offset_top  -  LINE """ margin_top = 144.0 """
+		Line(36), margin_right -> offset_right  -  LINE """ margin_right = 216.0 """
+		Line(37), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 272.0 """
+		Line(46), margin_left -> offset_left  -  LINE """ margin_left = 8.0 """
+		Line(47), margin_top -> offset_top  -  LINE """ margin_top = -56.0 """
+		Line(48), margin_right -> offset_right  -  LINE """ margin_right = -8.0 """
+		Line(49), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 56.0 """
+		Line(55), margin_right -> offset_right  -  LINE """ margin_right = 208.0 """
+		Line(56), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 81.0 """
+		Line(69), margin_left -> offset_left  -  LINE """ margin_left = 68.0 """
+		Line(70), margin_top -> offset_top  -  LINE """ margin_top = 85.0 """
+		Line(71), margin_right -> offset_right  -  LINE """ margin_right = 140.0 """
+		Line(72), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 112.0 """
+Checking for conversion - 5/141 file - "Scenes/SplashScreen/SplashScreen.gd" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(13), change_scene -> change_scene_to_file  -  LINE """ get_tree().change_scene("res://Scenes/Levels/just-some-crazy-level.tscn") """
+		Line(17), change_scene -> change_scene_to_file  -  LINE """ get_tree().change_scene("res://Scenes/Levels/CalmStage.tscn") """
+Checking for conversion - 6/141 file - "Scenes/SplashScreen/SplashScreen.tscn" with size - 12 KB
+    Checking file took      0.012 ms.
+		Line(6), DynamicFont -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/SkyFly8BitOutline.tres" type="DynamicFont" id=4] """
+		Line(7), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/LevelBackground/test-blue-bg.png" type="Texture" id=5] """
+		Line(8), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/GUI/Info.png" type="Texture" id=6] """
+		Line(9), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/GUI/InfoPressed.png" type="Texture" id=7] """
+		Line(16), rect_position -> position  -  LINE """ tracks/0/path = NodePath(".:rect_position") """
+		Line(63), margin_left -> offset_left  -  LINE """ margin_left = -112.0 """
+		Line(64), margin_top -> offset_top  -  LINE """ margin_top = -1080.0 """
+		Line(65), margin_right -> offset_right  -  LINE """ margin_right = 336.0 """
+		Line(66), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 3016.0 """
+		Line(67), rect_scale -> scale  -  LINE """ rect_scale = Vector2( 0.5, 0.5 ) """
+		Line(68), rect_pivot_offset -> pivot_offset  -  LINE """ rect_pivot_offset = Vector2( 224, 2048 ) """
+		Line(81), margin_left -> offset_left  -  LINE """ margin_left = -112.0 """
+		Line(82), margin_top -> offset_top  -  LINE """ margin_top = 24.0 """
+		Line(83), margin_right -> offset_right  -  LINE """ margin_right = 112.0 """
+		Line(84), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 49.0 """
+		Line(98), margin_top -> offset_top  -  LINE """ margin_top = -32.0 """
+		Line(99), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = -7.0 """
+		Line(113), margin_left -> offset_left  -  LINE """ margin_left = 184.0 """
+		Line(114), margin_top -> offset_top  -  LINE """ margin_top = -10.0 """
+		Line(115), margin_right -> offset_right  -  LINE """ margin_right = -2.0 """
+		Line(116), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 1.0 """
+		Line(129), margin_left -> offset_left  -  LINE """ margin_left = -92.0 """
+		Line(130), margin_top -> offset_top  -  LINE """ margin_top = -136.0 """
+		Line(131), margin_right -> offset_right  -  LINE """ margin_right = 92.0 """
+		Line(132), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = -49.0 """
+		Line(140), margin_top -> offset_top  -  LINE """ margin_top = 14.0 """
+		Line(141), margin_right -> offset_right  -  LINE """ margin_right = 184.0 """
+		Line(142), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 25.0 """
+		Line(151), margin_top -> offset_top  -  LINE """ margin_top = 29.0 """
+		Line(152), margin_right -> offset_right  -  LINE """ margin_right = 184.0 """
+		Line(153), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 56.0 """
+		Line(161), margin_top -> offset_top  -  LINE """ margin_top = 60.0 """
+		Line(162), margin_right -> offset_right  -  LINE """ margin_right = 184.0 """
+		Line(163), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 87.0 """
+		Line(171), margin_left -> offset_left  -  LINE """ margin_left = 192.0 """
+		Line(172), margin_top -> offset_top  -  LINE """ margin_top = 8.0 """
+		Line(173), margin_right -> offset_right  -  LINE """ margin_right = 218.0 """
+		Line(174), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 32.0 """
+		Line(177), enabled_focus_mode -> focus_mode  -  LINE """ enabled_focus_mode = 0 """
+		Line(197), margin_left -> offset_left  -  LINE """ margin_left = 16.0 """
+		Line(198), margin_top -> offset_top  -  LINE """ margin_top = 32.0 """
+		Line(199), margin_right -> offset_right  -  LINE """ margin_right = -16.0 """
+		Line(200), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = -32.0 """
+		Line(208), margin_left -> offset_left  -  LINE """ margin_left = -16.0 """
+		Line(209), margin_top -> offset_top  -  LINE """ margin_top = -88.0 """
+		Line(210), margin_right -> offset_right  -  LINE """ margin_right = 208.0 """
+		Line(211), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 416.0 """
+		Line(226), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 11.0 """
+		Line(236), margin_left -> offset_left  -  LINE """ margin_left = 8.0 """
+		Line(237), margin_top -> offset_top  -  LINE """ margin_top = 24.0 """
+		Line(238), margin_right -> offset_right  -  LINE """ margin_right = -8.0 """
+		Line(239), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = -8.0 """
+		Line(246), margin_right -> offset_right  -  LINE """ margin_right = 176.0 """
+		Line(247), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 1417.0 """
+		Line(252), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(253), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 12.0 """
+		Line(261), margin_top -> offset_top  -  LINE """ margin_top = 28.0 """
+		Line(262), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(263), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 263.0 """
+		Line(273), margin_top -> offset_top  -  LINE """ margin_top = 279.0 """
+		Line(274), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(275), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 291.0 """
+		Line(283), margin_top -> offset_top  -  LINE """ margin_top = 307.0 """
+		Line(284), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(285), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 822.0 """
+		Line(298), margin_top -> offset_top  -  LINE """ margin_top = 838.0 """
+		Line(299), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(300), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 850.0 """
+		Line(308), margin_top -> offset_top  -  LINE """ margin_top = 866.0 """
+		Line(309), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(310), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 1115.0 """
+		Line(320), margin_left -> offset_left  -  LINE """ margin_left = 26.0 """
+		Line(321), margin_top -> offset_top  -  LINE """ margin_top = 1131.0 """
+		Line(322), margin_right -> offset_right  -  LINE """ margin_right = 146.0 """
+		Line(323), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 1158.0 """
+		Line(332), margin_top -> offset_top  -  LINE """ margin_top = 1174.0 """
+		Line(333), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(334), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 1186.0 """
+		Line(342), margin_top -> offset_top  -  LINE """ margin_top = 1202.0 """
+		Line(343), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(344), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 1269.0 """
+		Line(352), margin_top -> offset_top  -  LINE """ margin_top = 1285.0 """
+		Line(353), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(354), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 1293.0 """
+		Line(360), margin_top -> offset_top  -  LINE """ margin_top = 1309.0 """
+		Line(361), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(362), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 1390.0 """
+		Line(370), margin_top -> offset_top  -  LINE """ margin_top = 1406.0 """
+		Line(371), margin_right -> offset_right  -  LINE """ margin_right = 172.0 """
+		Line(372), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 1417.0 """
+		Line(22), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 30 ), """
+		Line(23), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( -2, -2 ), """
+		Line(34), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 1.5, 29, 30 ), """
+		Line(35), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1, 1 ), """
+		Line(85), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 4 ) """
+		Line(154), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color = Color( 0, 0.631373, 1, 1 ) """
+		Line(164), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color = Color( 0.756863, 0.101961, 0.101961, 1 ) """
+		Line(249), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/separation = 16 """
+		Line(256), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 4 ) """
+		Line(266), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(278), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 4 ) """
+		Line(288), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(303), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 4 ) """
+		Line(313), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(337), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 4 ) """
+		Line(347), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(365), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(375), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+Checking for conversion - 7/141 file - "Scenes/Levels/CalmStage.tscn" with size - 23 KB
+    Checking file took      0.021 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/LevelBackground/test-blue-bg.png" type="Texture" id=2] """
+		Line(627), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" type="Sprite" parent="Background" index="1"] """
+		Line(635), Sprite -> Sprite2D  -  LINE """ [node name="levelEnd" parent="Background/Sprite" index="0" instance=ExtResource( 4 )] """
+Checking for conversion - 8/141 file - "Scenes/Levels/just-some-crazy-level.tscn" with size - 74 KB
+    Checking file took      0.065 ms.
+		Line(9), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/LevelBackground/test-hd-background.png" type="Texture" id=7] """
+		Line(1996), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" type="Sprite" parent="Background" index="1"] """
+		Line(2004), Sprite -> Sprite2D  -  LINE """ [node name="EndLevel" parent="Background/Sprite" index="0" instance=ExtResource( 3 )] """
+Checking for conversion - 9/141 file - "Scenes/Levels/Core/Level.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.004 ms.
+		Line(34), AudioStreamOGGVorbis -> AudioStreamOggVorbis  -  LINE """ export (AudioStreamOGGVorbis) var level_music """
+		Line (1) - FULL LINES - """ export (String) var level_name = "None Star" """  =====>  """ export var level_name: String = "None Star" """
+		Line (1) - FULL LINES - """ export (AudioStreamOGGVorbis) var level_music """  =====>  """ export var level_music: AudioStreamOGGVorbis """
+		Line (1) - FULL LINES - """ export (float) var lv_scroll_speed = 20.0 """  =====>  """ export var lv_scroll_speed: float = 20.0 """
+		Line (1) - FULL LINES - """ export (float) var bg_scroll_speed = 5.0 """  =====>  """ export var bg_scroll_speed: float = 5.0 """
+		Line (1) - FULL LINES - """ export (int) var enemy_lv = 1 """  =====>  """ export var enemy_lv: int = 1 """
+		Line (1) - FULL LINES - """ export (bool) var autostart_stage_enter_pose = true """  =====>  """ export var autostart_stage_enter_pose: bool = true """
+		Line (1) - FULL LINES - """ var pship = TEST_PLAYER_SHIP.instance() """  =====>  """ var pship = TEST_PLAYER_SHIP.instantiate() """
+		Line(32), export -> @export  -  LINE """ @export var level_name: String = "None Star" """
+		Line(34), export -> @export  -  LINE """ @export var level_music: AudioStreamOGGVorbis """
+		Line(36), export -> @export  -  LINE """ @export var lv_scroll_speed: float = 20.0 """
+		Line(38), export -> @export  -  LINE """ @export var bg_scroll_speed: float = 5.0 """
+		Line(40), export -> @export  -  LINE """ @export var enemy_lv: int = 1 """
+		Line(42), export -> @export  -  LINE """ @export var autostart_stage_enter_pose: bool = true """
+Checking for conversion - 10/141 file - "Scenes/Levels/Core/Level.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(22), pause_mode -> process_mode  -  LINE """ pause_mode = 2 """
+Checking for conversion - 11/141 file - "Lib/ScriptTemplate.gd" with size - 1 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 12/141 file - "Lib/Util/NumberSplit/NumberSplit.gd" with size - 2 KB
+    Checking file took      0.003 ms.
+		Line(44), PoolIntArray -> PackedInt32Array  -  LINE """ static func isplit(value : int, split_count : int, rand_factor : float = 0) -> PoolIntArray: """
+		Line(45), PoolIntArray -> PackedInt32Array  -  LINE """ var pool_int : PoolIntArray """
+Checking for conversion - 13/141 file - "Lib/Util/DateTime/DateTime.gd" with size - 6 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.008 ms.
+		Line (1) - FULL LINES - """ export var year : int setget set_year, get_year """  =====>  """ export var year : int: get = get_year, set = set_year """
+		Line (1) - FULL LINES - """ export var month : int setget set_month, get_month """  =====>  """ export var month : int: get = get_month, set = set_month """
+		Line (1) - FULL LINES - """ export var weekday : int setget set_weekday, get_weekday """  =====>  """ export var weekday : int: get = get_weekday, set = set_weekday """
+		Line (1) - FULL LINES - """ export var day : int setget set_day, get_day """  =====>  """ export var day : int: get = get_day, set = set_day """
+		Line (1) - FULL LINES - """ export var hour : int setget set_hour, get_hour """  =====>  """ export var hour : int: get = get_hour, set = set_hour """
+		Line (1) - FULL LINES - """ export var minute : int setget set_minute, get_minute """  =====>  """ export var minute : int: get = get_minute, set = set_minute """
+		Line (1) - FULL LINES - """ export var second : int setget set_second, get_second """  =====>  """ export var second : int: get = get_second, set = set_second """
+		Line (1) - FULL LINES - """ export var dst : bool setget set_dst, get_dst """  =====>  """ export var dst : bool: get = get_dst, set = set_dst """
+		Line (1) - FULL LINES - """ #it from OS singleton by calling `OS.get_datetime()`. """  =====>  """ #it from OS singleton by calling `Time.get_datetime_dict_from_system()`. """
+		Line (1) - FULL LINES - """ func get_minute_as_text(var minute : int, var add_zero_prefix : bool = true) -> String: """  =====>  """ func get_minute_as_text(minute : int, add_zero_prefix : bool = true) -> String: """
+		Line (1) - FULL LINES - """ func get_second_as_text(var second : int, var add_zero_prefix : bool = true) -> String: """  =====>  """ func get_second_as_text(second : int, add_zero_prefix : bool = true) -> String: """
+		Line(25), export -> @export  -  LINE """ @export var year : int: get = get_year, set = set_year """
+		Line(27), export -> @export  -  LINE """ @export var month : int: get = get_month, set = set_month """
+		Line(29), export -> @export  -  LINE """ @export var weekday : int: get = get_weekday, set = set_weekday """
+		Line(31), export -> @export  -  LINE """ @export var day : int: get = get_day, set = set_day """
+		Line(33), export -> @export  -  LINE """ @export var hour : int: get = get_hour, set = set_hour """
+		Line(35), export -> @export  -  LINE """ @export var minute : int: get = get_minute, set = set_minute """
+		Line(37), export -> @export  -  LINE """ @export var second : int: get = get_second, set = set_second """
+		Line(39), export -> @export  -  LINE """ @export var dst : bool: get = get_dst, set = set_dst """
+Checking for conversion - 14/141 file - "Lib/Singleton/AudioCenter/AudioCenter.gd" with size - 4 KB
+    Checking file took      0.003 ms.
+		Line(60), Path -> Path3D  -  LINE """ var current_bgm : String #Path """
+		Line(77), AudioStreamOGGVorbis -> AudioStreamOggVorbis  -  LINE """ func play_bgm(var what_bgm : AudioStreamOGGVorbis) -> void: """
+		Line (1) - FULL LINES - """ func play_bgm(var what_bgm : AudioStreamOGGVorbis) -> void: """  =====>  """ func play_bgm(what_bgm : AudioStreamOGGVorbis) -> void: """
+		Line (1) - FULL LINES - """ func fade_out_bgm(var stop_bgm_after_faded : bool = false) -> void: """  =====>  """ func fade_out_bgm(stop_bgm_after_faded : bool = false) -> void: """
+Checking for conversion - 15/141 file - "Lib/Singleton/AudioCenter/AudioCenter.tscn" with size - 5 KB
+    Checking file took      0.006 ms.
+		Line(112), pause_mode -> process_mode  -  LINE """ pause_mode = 2 """
+		Line(31), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(32), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(46), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 1 ), """
+		Line(47), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(61), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 2 ), """
+		Line(62), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(76), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 2 ), """
+		Line(77), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(88), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 2 ), """
+		Line(89), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(105), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(106), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+Checking for conversion - 16/141 file - "Lib/Instanceable/SpriteCycling/SpriteCycling.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.003 ms.
+		Line(1), Sprite -> Sprite2D  -  LINE """ # Sprite Cycling """
+		Line(9), Sprite -> Sprite2D  -  LINE """ Sprite Cycling turns all children within the root node """
+		Line (1) - FULL LINES - """ export (NodePath) var root_node = "./.." """  =====>  """ export var root_node: NodePath = "./.." """
+		Line (1) - FULL LINES - """ export(bool) var active = true setget set_active, is_active """  =====>  """ export var active: bool = true: get = is_active, set = set_active """
+		Line (1) - FULL LINES - """ export(Array, int) var frames_per_iterate = [0] """  =====>  """ export var frames_per_iterate = [0] # (Array, int) """
+		Line (1) - FULL LINES - """ func _move_pointer(var which_pointer : int, var which_array : Array): """  =====>  """ func _move_pointer(which_pointer : int, which_array : Array): """
+		Line(27), export -> @export  -  LINE """ @export var root_node: NodePath = "./.." """
+		Line(30), export -> @export  -  LINE """ @export var active: bool = true: get = is_active, set = set_active """
+		Line(36), export -> @export  -  LINE """ @export var frames_per_iterate = [0] # (Array, int) """
+Checking for conversion - 17/141 file - "Lib/Instanceable/SpriteCycling/SpriteCycling.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 18/141 file - "Lib/Instanceable/SineBehavior2D/SineBehavior2D.gd" with size - 6 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.017 ms.
+		Line(91), _get_configuration_warning -> _get_configuration_warnings  -  LINE """ func _get_configuration_warning() -> String: """
+		Line(115), rand_range -> randf_range  -  LINE """ period -= period * rand_range(0, period_random) """
+		Line(116), rand_range -> randf_range  -  LINE """ period_offset -= period_offset * rand_range(0, period_offset_random) """
+		Line(117), rand_range -> randf_range  -  LINE """ magnitude -= magnitude * rand_range(0, magnitude_random) """
+		Line (1) - FULL LINES - """ export (NodePath) var root_node = "./.." setget set_root_node """  =====>  """ export var root_node: NodePath = "./..": set = set_root_node """
+		Line (1) - FULL LINES - """ export(bool) var active = true setget set_active, is_active """  =====>  """ export var active: bool = true: get = is_active, set = set_active """
+		Line (1) - FULL LINES - """ export(ProcessType) var process_mode = 0 setget set_process_mode """  =====>  """ export var process_mode: ProcessType = 0: set = set_process_mode """
+		Line (1) - FULL LINES - """ export(MovementType) var movement = 0 """  =====>  """ export var movement: MovementType = 0 """
+		Line (1) - FULL LINES - """ export(Curve) var wave : Curve setget set_wave """  =====>  """ export var wave: Curve: set = set_wave """
+		Line (1) - FULL LINES - """ export(float) var period = 2 setget set_period """  =====>  """ export var period: float = 2: set = set_period """
+		Line (1) - FULL LINES - """ export(float, 0, 1) var period_random = 0 """  =====>  """ export var period_random = 0 # (float, 0, 1) """
+		Line (1) - FULL LINES - """ export(float) var period_offset = 0 """  =====>  """ export var period_offset: float = 0 """
+		Line (1) - FULL LINES - """ export(float, 0, 1) var period_offset_random = 0 """  =====>  """ export var period_offset_random = 0 # (float, 0, 1) """
+		Line (1) - FULL LINES - """ export(float) var magnitude = 64 setget set_magnitude """  =====>  """ export var magnitude: float = 64: set = set_magnitude """
+		Line (1) - FULL LINES - """ export(float, 0, 1) var magnitude_random = 0 """  =====>  """ export var magnitude_random = 0 # (float, 0, 1) """
+		Line (1) - FULL LINES - """ return warning.join("\n") """  =====>  """ return "\n".join(warning) """
+		Line (1) - FULL LINES - """ func set_root_node(var value : NodePath) -> void: """  =====>  """ func set_root_node(value : NodePath) -> void: """
+		Line (1) - FULL LINES - """ func set_active(var value : bool) -> void: """  =====>  """ func set_active(value : bool) -> void: """
+		Line (1) - FULL LINES - """ func set_process_mode(var value : int) -> void: """  =====>  """ func set_process_mode(value : int) -> void: """
+		Line (1) - FULL LINES - """ func set_cycle_position(var value : float) -> void: """  =====>  """ func set_cycle_position(value : float) -> void: """
+		Line (1) - FULL LINES - """ func set_magnitude(var value : float) -> void: """  =====>  """ func set_magnitude(value : float) -> void: """
+		Line (1) - FULL LINES - """ func set_movement(var value : int) -> void: """  =====>  """ func set_movement(value : int) -> void: """
+		Line (1) - FULL LINES - """ func set_period(var value : float) -> void: """  =====>  """ func set_period(value : float) -> void: """
+		Line (1) - FULL LINES - """ func set_wave(var resource : Curve) -> void: """  =====>  """ func set_wave(resource : Curve) -> void: """
+		Line(39), export -> @export  -  LINE """ @export var root_node: NodePath = "./..": set = set_root_node """
+		Line(43), export -> @export  -  LINE """ @export var active: bool = true: get = is_active, set = set_active """
+		Line(50), export -> @export  -  LINE """ @export var process_mode: ProcessType = 0: set = set_process_mode """
+		Line(53), export -> @export  -  LINE """ @export var movement: MovementType = 0 """
+		Line(56), export -> @export  -  LINE """ @export var wave: Curve: set = set_wave """
+		Line(59), export -> @export  -  LINE """ @export var period: float = 2: set = set_period """
+		Line(63), export -> @export  -  LINE """ @export var period_random = 0 # (float, 0, 1) """
+		Line(68), export -> @export  -  LINE """ @export var period_offset: float = 0 """
+		Line(73), export -> @export  -  LINE """ @export var period_offset_random = 0 # (float, 0, 1) """
+		Line(77), export -> @export  -  LINE """ @export var magnitude: float = 64: set = set_magnitude """
+		Line(82), export -> @export  -  LINE """ @export var magnitude_random = 0 # (float, 0, 1) """
+		Line(182), rect_position -> position  -  LINE """ _fetched_root_node.rect_position.x = _init_position.x + calculated_interpolate_wave """
+		Line(184), rect_position -> position  -  LINE """ _fetched_root_node.rect_position.y = _init_position.y + calculated_interpolate_wave """
+		Line(186), rect_rotation -> rotation  -  LINE """ _fetched_root_node.rect_rotation = calculated_interpolate_wave """
+		Line(92), PoolStringArray -> PackedStringArray  -  LINE """ var warning : PoolStringArray """
+Checking for conversion - 19/141 file - "Lib/Instanceable/SineBehavior2D/SineBehavior2D.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 20/141 file - "Lib/Instanceable/ShakeBehavior/ShakeBehavior.gd" with size - 8 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.009 ms.
+		Line(221), rand_range -> randf_range  -  LINE """ rand_range(-calculated_interpolate_magnitude, calculated_interpolate_magnitude), """
+		Line(222), rand_range -> randf_range  -  LINE """ rand_range(-calculated_interpolate_magnitude, calculated_interpolate_magnitude) """
+		Line (1) - FULL LINES - """ export (NodePath) var root_node = "./.." setget set_root_node, get_root_node """  =====>  """ export var root_node: NodePath = "./..": get = get_root_node, set = set_root_node """
+		Line (1) - FULL LINES - """ export (PROCESS_TYPE) var process_mode = 0 """  =====>  """ export var process_mode: PROCESS_TYPE = 0 """
+		Line (1) - FULL LINES - """ export (bool) var initial_active = false """  =====>  """ export var initial_active: bool = false """
+		Line (1) - FULL LINES - """ export (float) var shake_duration = 0.3 setget set_shake_duration, get_shake_duration """  =====>  """ export var shake_duration: float = 0.3: get = get_shake_duration, set = set_shake_duration """
+		Line (1) - FULL LINES - """ export (float) var shake_magnitude = 8 setget set_shake_magnitude, get_shake_magnitude """  =====>  """ export var shake_magnitude: float = 8: get = get_shake_magnitude, set = set_shake_magnitude """
+		Line (1) - FULL LINES - """ export (float) var shake_frequency = 60 setget set_shake_frequency, get_shake_frequency """  =====>  """ export var shake_frequency: float = 60: get = get_shake_frequency, set = set_shake_frequency """
+		Line (1) - FULL LINES - """ export (bool) var infinite_duration = false """  =====>  """ export var infinite_duration: bool = false """
+		Line (1) - FULL LINES - """ export (Curve) var shake_curve : Curve setget set_curve, get_shake_curve """  =====>  """ export var shake_curve: Curve: get = get_shake_curve, set = set_curve """
+		Line (1) - FULL LINES - """ export (Vector2) var shake_offset setget set_shake_offset, get_shake_offset """  =====>  """ export var shake_offset: Vector2: get = get_shake_offset, set = set_shake_offset """
+		Line (1) - FULL LINES - """ export (String) var vector_property_to_set = "position" """  =====>  """ export var vector_property_to_set: String = "position" """
+		Line (1) - FULL LINES - """ func start_shake(var force_start : bool = false) -> void: """  =====>  """ func start_shake(force_start : bool = false) -> void: """
+		Line(4), tool -> @tool  -  LINE """ @tool #For configure warnings """
+		Line(59), export -> @export  -  LINE """ @export var root_node: NodePath = "./..": get = get_root_node, set = set_root_node """
+		Line(66), export -> @export  -  LINE """ @export var process_mode: PROCESS_TYPE = 0 """
+		Line(70), export -> @export  -  LINE """ @export var initial_active: bool = false """
+		Line(73), export -> @export  -  LINE """ @export var shake_duration: float = 0.3: get = get_shake_duration, set = set_shake_duration """
+		Line(76), export -> @export  -  LINE """ @export var shake_magnitude: float = 8: get = get_shake_magnitude, set = set_shake_magnitude """
+		Line(80), export -> @export  -  LINE """ @export var shake_frequency: float = 60: get = get_shake_frequency, set = set_shake_frequency """
+		Line(83), export -> @export  -  LINE """ @export var infinite_duration: bool = false """
+		Line(86), export -> @export  -  LINE """ @export var shake_curve: Curve: get = get_shake_curve, set = set_curve """
+		Line(89), export -> @export  -  LINE """ @export var shake_offset: Vector2: get = get_shake_offset, set = set_shake_offset """
+		Line(93), export -> @export  -  LINE """ @export var vector_property_to_set: String = "position" """
+Checking for conversion - 21/141 file - "Lib/Instanceable/ShakeBehavior/ShakeBehavior.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 22/141 file - "Lib/Instanceable/BulletBehavior/BulletBehavior.gd" with size - 7 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.011 ms.
+		Line(109), KinematicBody2D -> CharacterBody2D  -  LINE """ #Move and collide for a KinematicBody2D node. This is only for """
+		Line(110), KinematicBody2D -> CharacterBody2D  -  LINE """ #KinematicBody2D and will stop if it collides, which emits signal """
+		Line(211), KinematicBody2D -> CharacterBody2D  -  LINE """ #If the root node is a KinematicBody2D, we will call """
+		Line(214), KinematicBody2D -> CharacterBody2D  -  LINE """ if _fetched_root_node is KinematicBody2D and kbody_move_and_collide == true: """
+		Line(138), _get_configuration_warning -> _get_configuration_warnings  -  LINE """ func _get_configuration_warning() -> String: """
+		Line(186), deg2rad -> deg_to_rad  -  LINE """ vec_angle = Vector2(cos(deg2rad(angle_in_degrees)), sin(deg2rad(angle_in_degrees))) """
+		Line (1) - FULL LINES - """ export (NodePath) var root_node = "./.." setget set_root_node, get_root_node """  =====>  """ export var root_node: NodePath = "./..": get = get_root_node, set = set_root_node """
+		Line (1) - FULL LINES - """ export (bool) var active = true """  =====>  """ export var active: bool = true """
+		Line (1) - FULL LINES - """ export(PROCESS_TYPE) var process_mode = 0 """  =====>  """ export var process_mode: PROCESS_TYPE = 0 """
+		Line (1) - FULL LINES - """ export (float) var speed = 120 """  =====>  """ export var speed: float = 120 """
+		Line (1) - FULL LINES - """ export (bool) var speed_limit = false """  =====>  """ export var speed_limit: bool = false """
+		Line (1) - FULL LINES - """ export (float) var min_speed = 0 """  =====>  """ export var min_speed: float = 0 """
+		Line (1) - FULL LINES - """ export (float) var max_speed = 150 """  =====>  """ export var max_speed: float = 150 """
+		Line (1) - FULL LINES - """ export (float) var acceleration = 0 """  =====>  """ export var acceleration: float = 0 """
+		Line (1) - FULL LINES - """ export (float) var gravity = 0 """  =====>  """ export var gravity: float = 0 """
+		Line (1) - FULL LINES - """ export (float, 0, 9000, 0.1) var max_fall_speed = 900 """  =====>  """ export var max_fall_speed = 900 # (float, 0, 9000, 0.1) """
+		Line (1) - FULL LINES - """ export (float) var angle_in_degrees = 0.0 """  =====>  """ export var angle_in_degrees: float = 0.0 """
+		Line (1) - FULL LINES - """ export (bool) var kbody_move_and_collide """  =====>  """ export var kbody_move_and_collide: bool """
+		Line (1) - FULL LINES - """ export (bool) var allow_negative_speed = false """  =====>  """ export var allow_negative_speed: bool = false """
+		Line (1) - FULL LINES - """ export (float) var signal_on_distance_travelled = 500 """  =====>  """ export var signal_on_distance_travelled: float = 500 """
+		Line(4), tool -> @tool  -  LINE """ @tool #Used for notifying configuration warnings. """
+		Line(62), export -> @export  -  LINE """ @export var root_node: NodePath = "./..": get = get_root_node, set = set_root_node """
+		Line(66), export -> @export  -  LINE """ @export var active: bool = true """
+		Line(73), export -> @export  -  LINE """ @export var process_mode: PROCESS_TYPE = 0 """
+		Line(76), export -> @export  -  LINE """ @export var speed: float = 120 """
+		Line(79), export -> @export  -  LINE """ @export var speed_limit: bool = false """
+		Line(82), export -> @export  -  LINE """ @export var min_speed: float = 0 """
+		Line(85), export -> @export  -  LINE """ @export var max_speed: float = 150 """
+		Line(90), export -> @export  -  LINE """ @export var acceleration: float = 0 """
+		Line(96), export -> @export  -  LINE """ @export var gravity: float = 0 """
+		Line(102), export -> @export  -  LINE """ @export var max_fall_speed = 900 # (float, 0, 9000, 0.1) """
+		Line(107), export -> @export  -  LINE """ @export var angle_in_degrees: float = 0.0 """
+		Line(112), export -> @export  -  LINE """ @export var kbody_move_and_collide: bool """
+		Line(115), export -> @export  -  LINE """ @export var allow_negative_speed: bool = false """
+		Line(119), export -> @export  -  LINE """ @export var signal_on_distance_travelled: float = 500 """
+Checking for conversion - 23/141 file - "Lib/Instanceable/BulletBehavior/BulletBehavior.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 24/141 file - "Lib/Instanceable/BrightnessShader/Brightness.shader" with size - 0 KB
+    Checking file took      0.000 ms.
+	File extension will be renamed from "shader" to "gdshader".
+Checking for conversion - 25/141 file - "Lib/Instanceable/BrightnessShader/BrightnessShader.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.003 ms.
+		Line(61), set_shader_param -> set_shader_parameter  -  LINE """ s_material.set_shader_param("bright_amount", brightness) """
+		Line (1) - FULL LINES - """ export (float) var brightness = 0 setget set_brightness """  =====>  """ export var brightness: float = 0: set = set_brightness """
+		Line(33), export -> @export  -  LINE """ @export var brightness: float = 0: set = set_brightness """
+		Line(10), .shader -> .gdshader  -  LINE """ It uses a shader resource of Brightness.shader """
+		Line(27), .shader -> .gdshader  -  LINE """ const BRIGHTNESS_SHADER = preload("res://Lib/Instanceable/BrightnessShader/Brightness.shader") """
+Checking for conversion - 26/141 file - "Lib/Instanceable/BrightnessShader/BrightnessShader.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 27/141 file - "Lib/Instanceable/BgColorSetter/BgColorSetter.gd" with size - 1 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.003 ms.
+		Line(54), VisualServer -> RenderingServer  -  LINE """ VisualServer.set_default_clear_color(bg_color) """
+		Line (1) - FULL LINES - """ export (Color) var bg_color """  =====>  """ export var bg_color: Color """
+		Line (1) - FULL LINES - """ export (bool) var autostart = true """  =====>  """ export var autostart: bool = true """
+		Line(27), export -> @export  -  LINE """ @export var bg_color: Color """
+		Line(29), export -> @export  -  LINE """ @export var autostart: bool = true """
+Checking for conversion - 28/141 file - "Lib/Instanceable/BgColorSetter/BgColorSetter.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 29/141 file - "Lib/Instanceable/8DirectionBehavior/8DirectionBehavior.gd" with size - 4 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.007 ms.
+		Line (1) - FULL LINES - """ export (NodePath) var root_node = "./.." setget set_root_node, get_root_node """  =====>  """ export var root_node: NodePath = "./..": get = get_root_node, set = set_root_node """
+		Line (1) - FULL LINES - """ export (ProcessType) var process_mode = 0 """  =====>  """ export var process_mode: ProcessType = 0 """
+		Line (1) - FULL LINES - """ export (bool) var active = true """  =====>  """ export var active: bool = true """
+		Line (1) - FULL LINES - """ export (float) var speed = 300.0 """  =====>  """ export var speed: float = 300.0 """
+		Line (1) - FULL LINES - """ export (DirectionType) var directions = DirectionType.EIGHT_DIRECTIONS """  =====>  """ export var directions: DirectionType = DirectionType.EIGHT_DIRECTIONS """
+		Line (1) - FULL LINES - """ export (String) var default_control_left = "game_left" """  =====>  """ export var default_control_left: String = "game_left" """
+		Line (1) - FULL LINES - """ export (String) var default_control_right = "game_right" """  =====>  """ export var default_control_right: String = "game_right" """
+		Line (1) - FULL LINES - """ export (String) var default_control_up = "game_up" """  =====>  """ export var default_control_up: String = "game_up" """
+		Line (1) - FULL LINES - """ export (String) var default_control_down = "game_down" """  =====>  """ export var default_control_down: String = "game_down" """
+		Line (1) - FULL LINES - """ export (bool) var ignore_inputs = false """  =====>  """ export var ignore_inputs: bool = false """
+		Line (1) - FULL LINES - """ export (String) var vector_property_to_set = "position" """  =====>  """ export var vector_property_to_set: String = "position" """
+		Line(40), export -> @export  -  LINE """ @export var root_node: NodePath = "./..": get = get_root_node, set = set_root_node """
+		Line(47), export -> @export  -  LINE """ @export var process_mode: ProcessType = 0 """
+		Line(50), export -> @export  -  LINE """ @export var active: bool = true """
+		Line(54), export -> @export  -  LINE """ @export var speed: float = 300.0 """
+		Line(59), export -> @export  -  LINE """ @export var directions: DirectionType = DirectionType.EIGHT_DIRECTIONS """
+		Line(62), export -> @export  -  LINE """ @export var default_control_left: String = "game_left" """
+		Line(65), export -> @export  -  LINE """ @export var default_control_right: String = "game_right" """
+		Line(68), export -> @export  -  LINE """ @export var default_control_up: String = "game_up" """
+		Line(71), export -> @export  -  LINE """ @export var default_control_down: String = "game_down" """
+		Line(76), export -> @export  -  LINE """ @export var ignore_inputs: bool = false """
+		Line(80), export -> @export  -  LINE """ @export var vector_property_to_set: String = "position" """
+Checking for conversion - 30/141 file - "Lib/Instanceable/8DirectionBehavior/8DirectionBehavior.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 31/141 file - "GlobalClass/ExtendedButton.gd" with size - 1 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.002 ms.
+		Line (1) - FULL LINES - """ export (OnPressedSfx) var press_sfx """  =====>  """ export var press_sfx: OnPressedSfx """
+		Line(33), export -> @export  -  LINE """ @export var press_sfx: OnPressedSfx """
+Checking for conversion - 32/141 file - "GameObject/PlayerWeapon/PulseCannon.gd" with size - 4 KB
+    Checking file took      0.003 ms.
+Checking for conversion - 33/141 file - "GameObject/PlayerWeapon/PulseCannon.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 34/141 file - "GameObject/PlayerWeapon/Core/PlayerWeapon.gd" with size - 3 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.005 ms.
+		Line (1) - FULL LINES - """ export (bool) var can_fire = false setget set_can_fire """  =====>  """ export var can_fire: bool = false: set = set_can_fire """
+		Line (1) - FULL LINES - """ BattleServer.connect("enemy_killed", self, "_on_BattleServer_enemy_killed") """  =====>  """ BattleServer.connect("enemy_killed", Callable(self, "_on_BattleServer_enemy_killed")) """
+		Line(38), export -> @export  -  LINE """ @export var can_fire: bool = false: set = set_can_fire """
+Checking for conversion - 35/141 file - "GameObject/PlayerWeapon/Core/PlayerWeapon.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 36/141 file - "GameObject/PlayerSuperpower/test-player-superpower.gd" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 37/141 file - "GameObject/PlayerSuperpower/test-player-superpower.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 38/141 file - "GameObject/PlayerSuperpower/Core/PlayerSuperpower.gd" with size - 3 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.005 ms.
+		Line (1) - FULL LINES - """ export (bool) var can_fire = false setget set_can_fire """  =====>  """ export var can_fire: bool = false: set = set_can_fire """
+		Line (1) - FULL LINES - """ var current_power_pts : int setget set_current_power_pts """  =====>  """ var current_power_pts : int: set = set_current_power_pts """
+		Line (1) - FULL LINES - """ BattleServer.connect("enemy_hit", self, "_on_BattleServer_enemy_hit_by_player_proj") """  =====>  """ BattleServer.connect("enemy_hit", Callable(self, "_on_BattleServer_enemy_hit_by_player_proj")) """
+		Line (1) - FULL LINES - """ LevelGUI.superpower_btn.connect("button_down", self, "_on_LevelGUI_superpower_button_down") """  =====>  """ LevelGUI.superpower_btn.connect("button_down", Callable(self, "_on_LevelGUI_superpower_button_down")) """
+		Line(37), export -> @export  -  LINE """ @export var can_fire: bool = false: set = set_can_fire """
+Checking for conversion - 39/141 file - "GameObject/PlayerSuperpower/Core/PlayerSuperpower.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 40/141 file - "GameObject/PlayerShip/test-player-ship.tscn" with size - 1 KB
+    Checking file took      0.001 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/PlayerShips/Scout.png" type="Texture" id=2] """
+		Line(37), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+		Line(15), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.7 ), """
+		Line(16), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(27), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.6 ), """
+		Line(28), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+Checking for conversion - 41/141 file - "GameObject/PlayerShip/Core/PlayerShip.gd" with size - 14 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.014 ms.
+		Line (1) - FULL LINES - """ export (bool) var can_control = false setget set_can_control """  =====>  """ export var can_control: bool = false: set = set_can_control """
+		Line (1) - FULL LINES - """ var weap = TEMP_CUSTOM_WEAPON.instance() """  =====>  """ var weap = TEMP_CUSTOM_WEAPON.instantiate() """
+		Line (1) - FULL LINES - """ var shield = TEMP_CUSTOM_SHIELD.instance() """  =====>  """ var shield = TEMP_CUSTOM_SHIELD.instantiate() """
+		Line (1) - FULL LINES - """ shield.connect("power_updated", self, "_on_shield_updated") """  =====>  """ shield.connect("power_updated", Callable(self, "_on_shield_updated")) """
+		Line (1) - FULL LINES - """ var satellite1 = TEMP_CUSTOM_SATELLITE.instance() """  =====>  """ var satellite1 = TEMP_CUSTOM_SATELLITE.instantiate() """
+		Line (1) - FULL LINES - """ var satellite2 = TEMP_CUSTOM_SATELLITE.instance() """  =====>  """ var satellite2 = TEMP_CUSTOM_SATELLITE.instantiate() """
+		Line (1) - FULL LINES - """ var superpower = TEMP_CUSTOM_SUPERPOWER.instance() """  =====>  """ var superpower = TEMP_CUSTOM_SUPERPOWER.instantiate() """
+		Line (1) - FULL LINES - """ superpower.connect("updated", self, "_on_superpower_updated") """  =====>  """ superpower.connect("updated", Callable(self, "_on_superpower_updated")) """
+		Line (1) - FULL LINES - """ var module1 = TEMP_CUSTOM_MODULE.instance() """  =====>  """ var module1 = TEMP_CUSTOM_MODULE.instantiate() """
+		Line (1) - FULL LINES - """ var module2 = TEMP_CUSTOM_MODULE.instance() """  =====>  """ var module2 = TEMP_CUSTOM_MODULE.instantiate() """
+		Line (1) - FULL LINES - """ var module3 = TEMP_CUSTOM_MODULE.instance() """  =====>  """ var module3 = TEMP_CUSTOM_MODULE.instantiate() """
+		Line (1) - FULL LINES - """ var module4 = TEMP_CUSTOM_MODULE.instance() """  =====>  """ var module4 = TEMP_CUSTOM_MODULE.instantiate() """
+		Line (1) - FULL LINES - """ BattleServer.connect("enemy_killed", self, "_on_BattleServer_enemy_killed") """  =====>  """ BattleServer.connect("enemy_killed", Callable(self, "_on_BattleServer_enemy_killed")) """
+		Line (1) - FULL LINES - """ LevelServer.connect("level_completed", self, "_on_LevelServer_level_completed") """  =====>  """ LevelServer.connect("level_completed", Callable(self, "_on_LevelServer_level_completed")) """
+		Line(36), export -> @export  -  LINE """ @export var can_control: bool = false: set = set_can_control """
+Checking for conversion - 42/141 file - "GameObject/PlayerShip/Core/PlayerShip.tscn" with size - 4 KB
+    Checking file took      0.004 ms.
+		Line(21), Sprite -> Sprite2D  -  LINE """ tracks/0/path = NodePath("Sprite:visible") """
+		Line(39), Sprite -> Sprite2D  -  LINE """ tracks/0/path = NodePath("Sprite:visible") """
+		Line(72), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" type="Sprite" parent="." index="2"] """
+		Line(27), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(28), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(45), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.03 ), """
+		Line(46), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+Checking for conversion - 43/141 file - "GameObject/PlayerShip/Core/PlayerShipTouchController.gd" with size - 4 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.005 ms.
+		Line (1) - FULL LINES - """ export (NodePath) var target_node2d """  =====>  """ export var target_node2d: NodePath """
+		Line (1) - FULL LINES - """ export (bool) var active = true setget set_active """  =====>  """ export var active: bool = true: set = set_active """
+		Line (1) - FULL LINES - """ export (ControlMode) var control_mode = ControlMode.RELATIVE """  =====>  """ export var control_mode: ControlMode = ControlMode.RELATIVE """
+		Line (1) - FULL LINES - """ export (float, 0.2, 3.0) var drag_rel_sensitivity = 1.2 """  =====>  """ export var drag_rel_sensitivity = 1.2 # (float, 0.2, 3.0) """
+		Line (1) - FULL LINES - """ var current_position : Vector2 setget set_current_position """  =====>  """ var current_position : Vector2: set = set_current_position """
+		Line (1) - FULL LINES - """ LevelGUI.playfield_input.connect("gui_input", self, "_on_gui_input_node") """  =====>  """ LevelGUI.playfield_input.connect("gui_input", Callable(self, "_on_gui_input_node")) """
+		Line(37), export -> @export  -  LINE """ @export var target_node2d: NodePath """
+		Line(39), export -> @export  -  LINE """ @export var active: bool = true: set = set_active """
+		Line(41), export -> @export  -  LINE """ @export var control_mode: ControlMode = ControlMode.RELATIVE """
+		Line(43), export -> @export  -  LINE """ @export var drag_rel_sensitivity = 1.2 # (float, 0.2, 3.0) """
+Checking for conversion - 44/141 file - "GameObject/PlayerShip/Core/PlayerShipTouchController.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 45/141 file - "GameObject/PlayerShield/test-shield.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 46/141 file - "GameObject/PlayerShield/Core/PlayerShield.gd" with size - 5 KB
+    Checking file took      0.006 ms.
+		Line(177), stepify -> snapped  -  LINE """ current_power_percent = stepify( """
+		Line (1) - FULL LINES - """ var previous_absorbed_damage : int setget set_previous_absorbed_damage """  =====>  """ var previous_absorbed_damage : int: set = set_previous_absorbed_damage """
+Checking for conversion - 47/141 file - "GameObject/PlayerShield/Core/PlayerShield.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 48/141 file - "GameObject/PlayerSatellite/test-satellite.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/AnimatedButtonPanelFocus.tres" type="Texture" id=2] """
+		Line(12), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" type="Sprite" parent="." index="0"] """
+Checking for conversion - 49/141 file - "GameObject/PlayerSatellite/Core/PlayerSatellite.gd" with size - 3 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.004 ms.
+		Line (1) - FULL LINES - """ export (bool) var can_fire = false setget set_can_fire """  =====>  """ export var can_fire: bool = false: set = set_can_fire """
+		Line (1) - FULL LINES - """ BattleServer.connect("enemy_killed", self, "_on_BattleServer_enemy_killed") """  =====>  """ BattleServer.connect("enemy_killed", Callable(self, "_on_BattleServer_enemy_killed")) """
+		Line(30), export -> @export  -  LINE """ @export var can_fire: bool = false: set = set_can_fire """
+Checking for conversion - 50/141 file - "GameObject/PlayerSatellite/Core/PlayerSatellite.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 51/141 file - "GameObject/PlayerProjectileTurret/PlayerProjectileTurret.gd" with size - 3 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.004 ms.
+		Line(88), can_instance -> can_instantiate  -  LINE """ if not custom_player_proj_obj.can_instance(): """
+		Line (1) - FULL LINES - """ export (NodePath) var root_node : NodePath = "./.." """  =====>  """ export var root_node: NodePath = "./.." """
+		Line (1) - FULL LINES - """ export (PackedScene) var player_projectile_obj """  =====>  """ export var player_projectile_obj: PackedScene """
+		Line (1) - FULL LINES - """ export (Vector2) var spawn_offset """  =====>  """ export var spawn_offset: Vector2 """
+		Line (1) - FULL LINES - """ export (SpawnTarget) var spawn_target """  =====>  """ export var spawn_target: SpawnTarget """
+		Line (1) - FULL LINES - """ func spawn_player_proj(var entity_source, var custom_player_proj_obj : PackedScene = player_projectile_obj) -> PlayerProjectile: """  =====>  """ func spawn_player_proj(entity_source, custom_player_proj_obj : PackedScene = player_projectile_obj) -> PlayerProjectile: """
+		Line (1) - FULL LINES - """ func _do_spawn_player_proj(var entity_source : Entity, var custom_player_proj_obj : PackedScene): """  =====>  """ func _do_spawn_player_proj(entity_source : Entity, custom_player_proj_obj : PackedScene): """
+		Line (1) - FULL LINES - """ var inst_proj_obj = custom_player_proj_obj.instance() """  =====>  """ var inst_proj_obj = custom_player_proj_obj.instantiate() """
+		Line(48), export -> @export  -  LINE """ @export var root_node: NodePath = "./.." """
+		Line(50), export -> @export  -  LINE """ @export var player_projectile_obj: PackedScene """
+		Line(53), export -> @export  -  LINE """ @export var spawn_offset: Vector2 """
+		Line(55), export -> @export  -  LINE """ @export var spawn_target: SpawnTarget """
+Checking for conversion - 52/141 file - "GameObject/PlayerProjectileTurret/PlayerProjectileTurret.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 53/141 file - "GameObject/PlayerProjectile/Debris.gd" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(19), rand_range -> randf_range  -  LINE """ var _duration = rand_range(DURATION_MIN, DURATION_MAX) """
+		Line(20), rand_range -> randf_range  -  LINE """ var _speed = rand_range(PROJECTILE_SPEED_MIN, PROJECTILE_SPEED_MAX) """
+		Line(24), rand_range -> randf_range  -  LINE """ bullet_behavior.angle_in_degrees = rand_range(0, 360) """
+Checking for conversion - 54/141 file - "GameObject/PlayerProjectile/Debris.tscn" with size - 2 KB
+    Checking file took      0.003 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/PlayerProjectile/Debris.png" type="Texture" id=2] """
+		Line(42), Sprite -> Sprite2D  -  LINE """ tracks/2/path = NodePath("Sprite:visible") """
+		Line(63), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+		Line(22), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(23), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(34), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0.5 ), """
+		Line(35), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(48), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(49), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+Checking for conversion - 55/141 file - "GameObject/PlayerProjectile/PulseBeam.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/PlayerProjectile/PulseCannon.png" type="Texture" id=1] """
+		Line(16), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+Checking for conversion - 56/141 file - "GameObject/PlayerProjectile/test-player-projectile.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/EnemyBullet.png" type="Texture" id=2] """
+		Line(14), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+Checking for conversion - 57/141 file - "GameObject/PlayerProjectile/Core/PlayerProjectile.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.003 ms.
+		Line (1) - FULL LINES - """ export (PackedScene) var hit_effect """  =====>  """ export var hit_effect: PackedScene """
+		Line (1) - FULL LINES - """ export (bool) var destroy_on_hit = true """  =====>  """ export var destroy_on_hit: bool = true """
+		Line (1) - FULL LINES - """ export (bool) var hit_multiple = false """  =====>  """ export var hit_multiple: bool = false """
+		Line (1) - FULL LINES - """ export (bool) var can_reset_hit = true """  =====>  """ export var can_reset_hit: bool = true """
+		Line (1) - FULL LINES - """ var eff = hit_effect.instance() """  =====>  """ var eff = hit_effect.instantiate() """
+		Line(28), export -> @export  -  LINE """ @export var hit_effect: PackedScene """
+		Line(30), export -> @export  -  LINE """ @export var destroy_on_hit: bool = true """
+		Line(31), export -> @export  -  LINE """ @export var hit_multiple: bool = false """
+		Line(32), export -> @export  -  LINE """ @export var can_reset_hit: bool = true """
+Checking for conversion - 58/141 file - "GameObject/PlayerProjectile/Core/PlayerProjectile.tscn" with size - 1 KB
+    Checking file took      0.002 ms.
+		Line(15), VisibilityNotifier2D -> VisibleOnScreenNotifier2D  -  LINE """ [node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="." index="0"] """
+		Line(23), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" type="Sprite" parent="." index="2"] """
+		Line(32), VisibilityNotifier2D -> VisibleOnScreenNotifier2D  -  LINE """ [connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"] """
+Checking for conversion - 59/141 file - "GameObject/PlayerModule/NanofiberStructure.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 60/141 file - "GameObject/PlayerModule/Core/PlayerModule.gd" with size - 1 KB
+    Checking file took      0.002 ms.
+Checking for conversion - 61/141 file - "GameObject/PlayerModule/Core/PlayerModule.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 62/141 file - "GameObject/PlayerEquipmentCore/PlayerEquipmentCore.gd" with size - 1 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.002 ms.
+		Line (1) - FULL LINES - """ export (Resource) var equip_database setget ,get_equip_database """  =====>  """ export var equip_database: Resource: get = get_equip_database """
+		Line(28), export -> @export  -  LINE """ @export var equip_database: Resource: get = get_equip_database """
+Checking for conversion - 63/141 file - "GameObject/PlayerEquipmentCore/PlayerEquipmentCore.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 64/141 file - "GameObject/PickupsTurret/PickupsTurret.gd" with size - 1 KB
+    Checking file took      0.002 ms.
+		Line (1) - FULL LINES - """ var pickups_obj = PICKUPS_MAIN_CURR_OBJ.instance() """  =====>  """ var pickups_obj = PICKUPS_MAIN_CURR_OBJ.instantiate() """
+Checking for conversion - 65/141 file - "GameObject/PickupsTurret/PickupsTurret.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 66/141 file - "GameObject/PickupsCollector/PickupsCollector.gd" with size - 1 KB
+    Checking file took      0.002 ms.
+Checking for conversion - 67/141 file - "GameObject/PickupsCollector/PickupsCollector.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 68/141 file - "GameObject/Pickups/PickupsItem.gd" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 69/141 file - "GameObject/Pickups/PickupsItem.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 70/141 file - "GameObject/Pickups/PickupsMainCurrency.gd" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 71/141 file - "GameObject/Pickups/PickupsMainCurrency.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Collectibles/AnimatedCredits.tres" type="Texture" id=2] """
+		Line(10), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="1"] """
+Checking for conversion - 72/141 file - "GameObject/Pickups/Core/Pickups.gd" with size - 3 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.004 ms.
+		Line(112), rand_range -> randf_range  -  LINE """ bullet_bhv.angle_in_degrees = rand_range(MIN_INITIAL_DEGREE, MAX_INITIAL_DEGREE) """
+		Line(122), linear_interpolate -> lerp  -  LINE """ global_position = last_collected_gpos.linear_interpolate( """
+		Line (1) - FULL LINES - """ export (bool) var auto_set_bullet_angle = true """  =====>  """ export var auto_set_bullet_angle: bool = true """
+		Line (1) - FULL LINES - """ export (int) var main_currency_add """  =====>  """ export var main_currency_add: int """
+		Line (1) - FULL LINES - """ export (Resource) var item_add """  =====>  """ export var item_add: Resource """
+		Line(33), export -> @export  -  LINE """ @export var auto_set_bullet_angle: bool = true """
+		Line(35), export -> @export  -  LINE """ @export var main_currency_add: int """
+		Line(37), export -> @export  -  LINE """ @export var item_add: Resource """
+Checking for conversion - 73/141 file - "GameObject/Pickups/Core/Pickups.tscn" with size - 3 KB
+    Checking file took      0.003 ms.
+		Line(16), Sprite -> Sprite2D  -  LINE """ tracks/0/path = NodePath("Sprite:visible") """
+		Line(63), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" type="Sprite" parent="."] """
+		Line(65), VisibilityNotifier2D -> VisibleOnScreenNotifier2D  -  LINE """ [node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="."] """
+		Line(107), VisibilityNotifier2D -> VisibleOnScreenNotifier2D  -  LINE """ [connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"] """
+		Line(22), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(23), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(34), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0.5 ), """
+		Line(35), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(48), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(49), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+Checking for conversion - 74/141 file - "GameObject/LevelBulletBhv/LevelBulletBhv.gd" with size - 0 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.001 ms.
+		Line (1) - FULL LINES - """ export (SpeedSetting) var speed_setting """  =====>  """ export var speed_setting: SpeedSetting """
+		Line(11), export -> @export  -  LINE """ @export var speed_setting: SpeedSetting """
+Checking for conversion - 75/141 file - "GameObject/LevelBulletBhv/LevelBulletBhv.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 76/141 file - "GameObject/InvincibleState/InvincibleState.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.003 ms.
+		Line (1) - FULL LINES - """ export (float) var invinc_time = 1.0 setget set_invinc_time, get_invinc_time """  =====>  """ export var invinc_time: float = 1.0: get = get_invinc_time, set = set_invinc_time """
+		Line (1) - FULL LINES - """ export (bool) var autostart = false """  =====>  """ export var autostart: bool = false """
+		Line (1) - FULL LINES - """ onready var timer := $Timer as Timer setget ,get_timer """  =====>  """ onready var timer := $Timer as Timer: get = get_timer """
+		Line (1) - FULL LINES - """ func start_invincibility(var custom_time : float = -1): """  =====>  """ func start_invincibility(custom_time : float = -1): """
+		Line(32), export -> @export  -  LINE """ @export var invinc_time: float = 1.0: get = get_invinc_time, set = set_invinc_time """
+		Line(34), export -> @export  -  LINE """ @export var autostart: bool = false """
+Checking for conversion - 77/141 file - "GameObject/InvincibleState/InvincibleState.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 78/141 file - "GameObject/ExperienceSystem/ExperienceSystem.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.004 ms.
+		Line (1) - FULL LINES - """ export (int) var exp_drop_base = 40 """  =====>  """ export var exp_drop_base: int = 40 """
+		Line (1) - FULL LINES - """ export (int) var max_level = 300 """  =====>  """ export var max_level: int = 300 """
+		Line (1) - FULL LINES - """ export (float) var required_exp_base = 35 """  =====>  """ export var required_exp_base: float = 35 """
+		Line (1) - FULL LINES - """ export (float) var growth_rate = 1.3 """  =====>  """ export var growth_rate: float = 1.3 """
+		Line (1) - FULL LINES - """ export (float) var growth_rate_expo = 3.2 """  =====>  """ export var growth_rate_expo: float = 3.2 """
+		Line (1) - FULL LINES - """ var current_level : int = 1 setget set_current_level """  =====>  """ var current_level : int = 1: set = set_current_level """
+		Line (1) - FULL LINES - """ var current_next_exp : int setget set_current_next_exp """  =====>  """ var current_next_exp : int: set = set_current_next_exp """
+		Line(34), export -> @export  -  LINE """ @export var exp_drop_base: int = 40 """
+		Line(36), export -> @export  -  LINE """ @export var max_level: int = 300 """
+		Line(38), export -> @export  -  LINE """ @export var required_exp_base: float = 35 """
+		Line(40), export -> @export  -  LINE """ @export var growth_rate: float = 1.3 """
+		Line(42), export -> @export  -  LINE """ @export var growth_rate_expo: float = 3.2 """
+Checking for conversion - 79/141 file - "GameObject/ExperienceSystem/ExperienceSystem.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 80/141 file - "GameObject/Entity/Entity.gd" with size - 5 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.007 ms.
+		Line(104), rand_range -> randf_range  -  LINE """ var is_critical = rand_range(0, 1) < attacker_entity.crit_rate + attacker_entity.crit_rate_bonus """
+		Line(107), rand_range -> randf_range  -  LINE """ total_damage *= rand_range(0.9, 1.1) """
+		Line (1) - FULL LINES - """ export (int) var lv = 1 """  =====>  """ export var lv: int = 1 """
+		Line (1) - FULL LINES - """ export (float) var base_hp = 40 """  =====>  """ export var base_hp: float = 40 """
+		Line (1) - FULL LINES - """ export (float) var base_atk = 15 """  =====>  """ export var base_atk: float = 15 """
+		Line (1) - FULL LINES - """ export (float) var base_def = 10 """  =====>  """ export var base_def: float = 10 """
+		Line (1) - FULL LINES - """ export (float, 0, 1) var crit_rate = 0.01 """  =====>  """ export var crit_rate = 0.01 # (float, 0, 1) """
+		Line (1) - FULL LINES - """ export (float) var crit_damage_rate = 2.0 """  =====>  """ export var crit_damage_rate: float = 2.0 """
+		Line (1) - FULL LINES - """ export (bool) var can_hit = true """  =====>  """ export var can_hit: bool = true """
+		Line (1) - FULL LINES - """ export (bool) var can_damage = true """  =====>  """ export var can_damage: bool = true """
+		Line (1) - FULL LINES - """ export (bool) var is_targetable = true """  =====>  """ export var is_targetable: bool = true """
+		Line (1) - FULL LINES - """ var previous_attacker : Entity setget set_previous_attacker """  =====>  """ var previous_attacker : Entity: set = set_previous_attacker """
+		Line (1) - FULL LINES - """ var previous_damage_taken : int setget set_previous_damage_taken """  =====>  """ var previous_damage_taken : int: set = set_previous_damage_taken """
+		Line (1) - FULL LINES - """ var previous_is_crit_taken : bool setget set_previous_is_crit_taken """  =====>  """ var previous_is_crit_taken : bool: set = set_previous_is_crit_taken """
+		Line (1) - FULL LINES - """ var dead : bool = false setget set_dead, is_dead """  =====>  """ var dead : bool = false: get = is_dead, set = set_dead """
+		Line (1) - FULL LINES - """ func set_level_from_entity(var entity_source : Entity) -> void: """  =====>  """ func set_level_from_entity(entity_source : Entity) -> void: """
+		Line(36), export -> @export  -  LINE """ @export var lv: int = 1 """
+		Line(37), export -> @export  -  LINE """ @export var base_hp: float = 40 """
+		Line(38), export -> @export  -  LINE """ @export var base_atk: float = 15 """
+		Line(39), export -> @export  -  LINE """ @export var base_def: float = 10 """
+		Line(40), export -> @export  -  LINE """ @export var crit_rate = 0.01 # (float, 0, 1) """
+		Line(41), export -> @export  -  LINE """ @export var crit_damage_rate: float = 2.0 """
+		Line(42), export -> @export  -  LINE """ @export var can_hit: bool = true """
+		Line(43), export -> @export  -  LINE """ @export var can_damage: bool = true """
+		Line(44), export -> @export  -  LINE """ @export var is_targetable: bool = true """
+Checking for conversion - 81/141 file - "GameObject/Entity/Entity.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 82/141 file - "GameObject/EnemyTurret/EnemyTurret.gd" with size - 4 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.005 ms.
+		Line(101), can_instance -> can_instantiate  -  LINE """ if not custom_enemy_obj.can_instance(): """
+		Line (1) - FULL LINES - """ export (NodePath) var root_node : NodePath = "./.." """  =====>  """ export var root_node: NodePath = "./.." """
+		Line (1) - FULL LINES - """ export (PackedScene) var enemy_obj """  =====>  """ export var enemy_obj: PackedScene """
+		Line (1) - FULL LINES - """ export (Vector2) var spawn_offset """  =====>  """ export var spawn_offset: Vector2 """
+		Line (1) - FULL LINES - """ func spawn_enemy(var entity_source, var custom_enemy_obj : PackedScene = enemy_obj) -> EnemyCore: """  =====>  """ func spawn_enemy(entity_source, custom_enemy_obj : PackedScene = enemy_obj) -> EnemyCore: """
+		Line (1) - FULL LINES - """ func spawn_enemy_proj(var entity_source, var custom_enemy_obj : PackedScene = enemy_obj) -> EnemyProjectileCore: """  =====>  """ func spawn_enemy_proj(entity_source, custom_enemy_obj : PackedScene = enemy_obj) -> EnemyProjectileCore: """
+		Line (1) - FULL LINES - """ func _do_spawn_enemy(var entity_source : Entity, var custom_enemy_obj : PackedScene): """  =====>  """ func _do_spawn_enemy(entity_source : Entity, custom_enemy_obj : PackedScene): """
+		Line (1) - FULL LINES - """ var inst_enemy_obj = custom_enemy_obj.instance() """  =====>  """ var inst_enemy_obj = custom_enemy_obj.instantiate() """
+		Line(41), export -> @export  -  LINE """ @export var root_node: NodePath = "./.." """
+		Line(46), export -> @export  -  LINE """ @export var enemy_obj: PackedScene """
+		Line(49), export -> @export  -  LINE """ @export var spawn_offset: Vector2 """
+Checking for conversion - 83/141 file - "GameObject/EnemyTurret/EnemyTurret.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 84/141 file - "GameObject/EnemySpawner/EnemySpawner.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.004 ms.
+		Line (1) - FULL LINES - """ var enmy = enemy_to_spawn.instance() as EnemyCore """  =====>  """ var enmy = enemy_to_spawn.instantiate() as EnemyCore """
+		Line(35), export -> @export  -  LINE """ @export var enemy_to_spawn : PackedScene """
+		Line(39), export -> @export  -  LINE """ @export var spawn_offset := Vector2(0, -16) """
+Checking for conversion - 85/141 file - "GameObject/EnemySpawner/EnemySpawner.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 86/141 file - "GameObject/EnemyProjectile/EnemyBullet.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/EnemyBullet.png" type="Texture" id=2] """
+		Line(14), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+Checking for conversion - 87/141 file - "GameObject/EnemyProjectile/EnemyWeakBullet.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/AnimatedWeakBullet.tres" type="Texture" id=2] """
+		Line(17), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+Checking for conversion - 88/141 file - "GameObject/EnemyProjectile/Core/EnemyProjectileCore.gd" with size - 1 KB
+    Checking file took      0.002 ms.
+Checking for conversion - 89/141 file - "GameObject/EnemyProjectile/Core/EnemyProjectileCore.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 90/141 file - "GameObject/EnemyCore/Droplet.gd" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(20), rad2deg -> rad_to_deg  -  LINE """ blt.bullet_behavior.angle_in_degrees = rad2deg(blt.get_angle_to(get_player().global_position)) """
+Checking for conversion - 91/141 file - "GameObject/EnemyCore/Droplet.tscn" with size - 1 KB
+    Checking file took      0.002 ms.
+		Line(6), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/Die.png" type="Texture" id=4] """
+		Line(33), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="4"] """
+Checking for conversion - 92/141 file - "GameObject/EnemyCore/Explodang.gd" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 93/141 file - "GameObject/EnemyCore/Explodang.tscn" with size - 1 KB
+    Checking file took      0.001 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/Die.png" type="Texture" id=2] """
+		Line(29), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="3"] """
+Checking for conversion - 94/141 file - "GameObject/EnemyCore/test-brisker-enemy.gd" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(8), rad2deg -> rad_to_deg  -  LINE """ proj.bullet_behavior.angle_in_degrees = rad2deg(proj.get_angle_to(get_player().global_position)) """
+		Line(11), rand_range -> randf_range  -  LINE """ $ShootTimer.wait_time = rand_range(1, 5) """
+Checking for conversion - 95/141 file - "GameObject/EnemyCore/test-brisker-enemy.tscn" with size - 1 KB
+    Checking file took      0.001 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/test-brisker-enemy.png" type="Texture" id=1] """
+		Line(27), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="3"] """
+Checking for conversion - 96/141 file - "GameObject/EnemyCore/test-counter-enemy.gd" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(4), rand_range -> randf_range  -  LINE """ $BulletBehavior.angle_in_degrees += rand_range(-45, 45) """
+		Line(8), rad2deg -> rad_to_deg  -  LINE """ proj.bullet_behavior.angle_in_degrees = rad2deg(proj.get_angle_to(get_player().global_position)) """
+Checking for conversion - 97/141 file - "GameObject/EnemyCore/test-counter-enemy.tscn" with size - 1 KB
+    Checking file took      0.001 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/test-counter-enemy.png" type="Texture" id=1] """
+		Line(26), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="3"] """
+Checking for conversion - 98/141 file - "GameObject/EnemyCore/test-dash-enemy.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/test-dash-enemy.png" type="Texture" id=1] """
+		Line(23), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+Checking for conversion - 99/141 file - "GameObject/EnemyCore/test-enemy-static.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/test-static-enemy.png" type="Texture" id=1] """
+		Line(16), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+Checking for conversion - 100/141 file - "GameObject/EnemyCore/test-explosive-enemy.tscn" with size - 1 KB
+    Checking file took      0.002 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/test-explosive-enemy.png" type="Texture" id=2] """
+		Line(41), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+		Line(45), Sprite -> Sprite2D  -  LINE """ [node name="AnimationPlayer" type="AnimationPlayer" parent="Sprite" index="1"] """
+		Line(17), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.1, 0.2, 0.3, 0.4, 0.5 ), """
+		Line(18), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1 ), """
+Checking for conversion - 101/141 file - "GameObject/EnemyCore/test-moving-enemy.gd" with size - 1 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 102/141 file - "GameObject/EnemyCore/test-moving-enemy.tscn" with size - 1 KB
+    Checking file took      0.001 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/test-moving-enemy.png" type="Texture" id=2] """
+		Line(37), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="3"] """
+Checking for conversion - 103/141 file - "GameObject/EnemyCore/test-weak-enemy.gd" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(4), rand_range -> randf_range  -  LINE """ $BulletBehavior.angle_in_degrees += rand_range(-45, 45) """
+Checking for conversion - 104/141 file - "GameObject/EnemyCore/test-weak-enemy.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/test-weak-enemy.png" type="Texture" id=2] """
+		Line(21), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" parent="." index="2"] """
+Checking for conversion - 105/141 file - "GameObject/EnemyCore/NonEnemyObject/LevelEndObject.gd" with size - 2 KB
+    Checking file took      0.002 ms.
+		Line (1) - FULL LINES - """ BattleServer.connect("enemy_killed", self, "_on_BattleServer_enemy_killed") """  =====>  """ BattleServer.connect("enemy_killed", Callable(self, "_on_BattleServer_enemy_killed")) """
+		Line (1) - FULL LINES - """ BattleServer.connect("player_dead", self, "_on_BattleServer_player_dead") """  =====>  """ BattleServer.connect("player_dead", Callable(self, "_on_BattleServer_player_dead")) """
+Checking for conversion - 106/141 file - "GameObject/EnemyCore/NonEnemyObject/LevelEndObject.tscn" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 107/141 file - "GameObject/EnemyCore/Core/EnemyCore.gd" with size - 6 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.008 ms.
+		Line(172), rand_range -> randf_range  -  LINE """ AudioCenter.sfx_combat_enemy_dead1.pitch_scale = rand_range(0.8, 1.2) """
+		Line(175), rand_range -> randf_range  -  LINE """ AudioCenter.sfx_combat_enemy_dead2.pitch_scale = rand_range(0.8, 1.2) """
+		Line(227), rand_range -> randf_range  -  LINE """ if rand_range(0, 1) > credits_drop_chance: """
+		Line (1) - FULL LINES - """ export (int) var experience = 10 """  =====>  """ export var experience: int = 10 """
+		Line (1) - FULL LINES - """ export (int) var credits_base = 3 """  =====>  """ export var credits_base: int = 3 """
+		Line (1) - FULL LINES - """ export (float) var credits_drop_chance = 0.35 """  =====>  """ export var credits_drop_chance: float = 0.35 """
+		Line (1) - FULL LINES - """ export (int) var credits_drop_count = 1 """  =====>  """ export var credits_drop_count: int = 1 """
+		Line (1) - FULL LINES - """ export (int) var debris_count = 3 """  =====>  """ export var debris_count: int = 3 """
+		Line (1) - FULL LINES - """ export (int) var debris_damage = 10 """  =====>  """ export var debris_damage: int = 10 """
+		Line (1) - FULL LINES - """ export (DeathSfx) var death_sound """  =====>  """ export var death_sound: DeathSfx """
+		Line (1) - FULL LINES - """ export (bool) var destroy_on_collide = false """  =====>  """ export var destroy_on_collide: bool = false """
+		Line (1) - FULL LINES - """ export (bool) var apply_invinc_on_collide_player = true """  =====>  """ export var apply_invinc_on_collide_player: bool = true """
+		Line (1) - FULL LINES - """ export (bool) var is_collider = true """  =====>  """ export var is_collider: bool = true """
+		Line (1) - FULL LINES - """ export (bool) var can_take_collision_damage = true """  =====>  """ export var can_take_collision_damage: bool = true """
+		Line (1) - FULL LINES - """ export (bool) var destroy_outside_screen = true """  =====>  """ export var destroy_outside_screen: bool = true """
+		Line (1) - FULL LINES - """ export (bool) var is_battleserver_countable = true """  =====>  """ export var is_battleserver_countable: bool = true """
+		Line (1) - FULL LINES - """ var ex_eff = EXPLOSION_EFF.instance() """  =====>  """ var ex_eff = EXPLOSION_EFF.instantiate() """
+		Line (1) - FULL LINES - """ var deb = debris_obj.instance() """  =====>  """ var deb = debris_obj.instantiate() """
+		Line(40), export -> @export  -  LINE """ @export var experience: int = 10 """
+		Line(42), export -> @export  -  LINE """ @export var credits_base: int = 3 """
+		Line(44), export -> @export  -  LINE """ @export var credits_drop_chance: float = 0.35 """
+		Line(46), export -> @export  -  LINE """ @export var credits_drop_count: int = 1 """
+		Line(48), export -> @export  -  LINE """ @export var debris_count: int = 3 """
+		Line(50), export -> @export  -  LINE """ @export var debris_damage: int = 10 """
+		Line(52), export -> @export  -  LINE """ @export var death_sound: DeathSfx """
+		Line(54), export -> @export  -  LINE """ @export var destroy_on_collide: bool = false """
+		Line(56), export -> @export  -  LINE """ @export var apply_invinc_on_collide_player: bool = true """
+		Line(59), export -> @export  -  LINE """ @export var is_collider: bool = true """
+		Line(61), export -> @export  -  LINE """ @export var can_take_collision_damage: bool = true """
+		Line(63), export -> @export  -  LINE """ @export var destroy_outside_screen: bool = true """
+		Line(68), export -> @export  -  LINE """ @export var is_battleserver_countable: bool = true """
+Checking for conversion - 108/141 file - "GameObject/EnemyCore/Core/EnemyCore.tscn" with size - 2 KB
+    Checking file took      0.003 ms.
+		Line(17), Sprite -> Sprite2D  -  LINE """ tracks/0/path = NodePath("Sprite/BrightnessShader:brightness") """
+		Line(40), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" type="Sprite" parent="." index="2"] """
+		Line(42), Sprite -> Sprite2D  -  LINE """ [node name="BrightnessShader" parent="Sprite" index="0" instance=ExtResource( 4 )] """
+		Line(60), VisibilityNotifier2D -> VisibleOnScreenNotifier2D  -  LINE """ [node name="VisibilityNotifier2D" type="VisibilityNotifier2D" parent="." index="7"] """
+		Line(67), VisibilityNotifier2D -> VisibleOnScreenNotifier2D  -  LINE """ [connection signal="screen_exited" from="VisibilityNotifier2D" to="." method="_on_VisibilityNotifier2D_screen_exited"] """
+		Line(23), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.09 ), """
+		Line(24), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+Checking for conversion - 109/141 file - "GameObject/Effect/ExplosionEffect.tscn" with size - 1 KB
+    Checking file took      0.002 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Effect/ExplosionEffect.png" type="Texture" id=1] """
+		Line(9), Sprite -> Sprite2D  -  LINE """ tracks/0/path = NodePath("Sprite:frame") """
+		Line(37), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" type="Sprite" parent="."] """
+		Line(15), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35 ), """
+		Line(16), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1, 1 ), """
+		Line(27), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0.4 ), """
+		Line(28), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+Checking for conversion - 110/141 file - "GameObject/Effect/SmallExplosionEffect.tscn" with size - 1 KB
+    Checking file took      0.002 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Effect/MiniExplosionEffect.png" type="Texture" id=1] """
+		Line(9), Sprite -> Sprite2D  -  LINE """ tracks/0/path = NodePath("Sprite:frame") """
+		Line(37), Sprite -> Sprite2D  -  LINE """ [node name="Sprite" type="Sprite" parent="."] """
+		Line(15), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.04, 0.08, 0.12, 0.16, 0.2, 0.24 ), """
+		Line(16), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1, 1, 1, 1, 1 ), """
+		Line(27), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0.28 ), """
+		Line(28), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+Checking for conversion - 111/141 file - "GameObject/DamagePopupTurret/DamagePopupTurret.gd" with size - 2 KB
+    Checking file took      0.003 ms.
+		Line (1) - FULL LINES - """ var dp = DMG_POPUP.instance() """  =====>  """ var dp = DMG_POPUP.instantiate() """
+Checking for conversion - 112/141 file - "GameObject/DamagePopupTurret/DamagePopupTurret.tscn" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 113/141 file - "GameObject/DamagePopup/DamagePopup.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.003 ms.
+		Line(63), rand_range -> randf_range  -  LINE """ $TextNode/BulletBehavior.angle_in_degrees = rand_range(0, 360) """
+		Line(102), add_color_override -> add_theme_color_override  -  LINE """ $TextNode/Label.add_color_override("font_color", DAMAGE_COLORS.get(dmg_type)) """
+		Line (1) - FULL LINES - """ export (int) var number setget set_number """  =====>  """ export var number: int: set = set_number """
+		Line (1) - FULL LINES - """ export (DamageType) var dmg_type setget set_dmg_type """  =====>  """ export var dmg_type: DamageType: set = set_dmg_type """
+		Line(55), export -> @export  -  LINE """ @export var number: int: set = set_number """
+		Line(56), export -> @export  -  LINE """ @export var dmg_type: DamageType: set = set_dmg_type """
+Checking for conversion - 114/141 file - "GameObject/DamagePopup/DamagePopup.tscn" with size - 2 KB
+    Checking file took      0.002 ms.
+		Line(4), DynamicFont -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/RpgDigit.tres" type="DynamicFont" id=2] """
+		Line(60), margin_left -> offset_left  -  LINE """ margin_left = -22.0 """
+		Line(61), margin_top -> offset_top  -  LINE """ margin_top = -7.0 """
+		Line(62), margin_right -> offset_right  -  LINE """ margin_right = 22.0 """
+		Line(63), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 7.0 """
+		Line(65), rect_pivot_offset -> pivot_offset  -  LINE """ rect_pivot_offset = Vector2( 22, 7 ) """
+		Line(18), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.3 ), """
+		Line(19), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(30), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.05, 1, 1.2 ), """
+		Line(31), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1, 1 ), """
+		Line(42), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 1.2 ), """
+		Line(43), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(66), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 2 ) """
+Checking for conversion - 115/141 file - "GameDatabase/Item/Item.gd" with size - 1 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.002 ms.
+		Line (1) - FULL LINES - """ export (String) var item_name """  =====>  """ export var item_name: String """
+		Line (1) - FULL LINES - """ export (String, MULTILINE) var desc """  =====>  """ export var desc # (String, MULTILINE) """
+		Line (1) - FULL LINES - """ export (int) var price """  =====>  """ export var price: int """
+		Line (1) - FULL LINES - """ export (bool) var can_be_sold = true """  =====>  """ export var can_be_sold: bool = true """
+		Line(28), export -> @export  -  LINE """ @export var item_name: String """
+		Line(30), export -> @export  -  LINE """ @export var desc # (String, MULTILINE) """
+		Line(32), export -> @export  -  LINE """ @export var price: int """
+		Line(34), export -> @export  -  LINE """ @export var can_be_sold: bool = true """
+Checking for conversion - 116/141 file - "GameDatabase/Item/Equipment/Equipment.gd" with size - 1 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.004 ms.
+		Line (1) - FULL LINES - """ export (EquipmentType) var equip_type """  =====>  """ export var equip_type: EquipmentType """
+		Line (1) - FULL LINES - """ export (int) var rare_price """  =====>  """ export var rare_price: int """
+		Line (1) - FULL LINES - """ export (float) var atk_bonus """  =====>  """ export var atk_bonus: float """
+		Line (1) - FULL LINES - """ export (float) var def_bonus """  =====>  """ export var def_bonus: float """
+		Line (1) - FULL LINES - """ export (int) var hp_bonus """  =====>  """ export var hp_bonus: int """
+		Line (1) - FULL LINES - """ export (float) var crit_rate_bonus """  =====>  """ export var crit_rate_bonus: float """
+		Line (1) - FULL LINES - """ export (float) var crit_damage_rate_bonus """  =====>  """ export var crit_damage_rate_bonus: float """
+		Line (1) - FULL LINES - """ export (float) var rage_bonus """  =====>  """ export var rage_bonus: float """
+		Line (1) - FULL LINES - """ export (float) var invis_length_bonus """  =====>  """ export var invis_length_bonus: float """
+		Line(33), export -> @export  -  LINE """ @export var equip_type: EquipmentType """
+		Line(35), export -> @export  -  LINE """ @export var rare_price: int """
+		Line(37), export -> @export  -  LINE """ @export var atk_bonus: float """
+		Line(39), export -> @export  -  LINE """ @export var def_bonus: float """
+		Line(41), export -> @export  -  LINE """ @export var hp_bonus: int """
+		Line(43), export -> @export  -  LINE """ @export var crit_rate_bonus: float """
+		Line(45), export -> @export  -  LINE """ @export var crit_damage_rate_bonus: float """
+		Line(47), export -> @export  -  LINE """ @export var rage_bonus: float """
+		Line(49), export -> @export  -  LINE """ @export var invis_length_bonus: float """
+Checking for conversion - 117/141 file - "GameDatabase/Item/Equipment/Weapons/PulseCannon.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(21), PoolIntArray -> PackedInt32Array  -  LINE """ experience_table = PoolIntArray( 30, 150, 400, 650, 1000, 1350, 1750, 2300, 3000, 3800, 4700, 5700, 6850, 8000, 10000, 12500, 16500, 22000, 30000 ) """
+		Line(22), PoolIntArray -> PackedInt32Array  -  LINE """ beam_upgrades = PoolIntArray( 1, 2, 4, 7, 10, 15, 20 ) """
+Checking for conversion - 118/141 file - "GameDatabase/Item/Equipment/Weapons/Weapon.gd" with size - 1 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.002 ms.
+		Line (1) - FULL LINES - """ export (float) var fire_rate = 1.00 """  =====>  """ export var fire_rate: float = 1.00 """
+		Line (1) - FULL LINES - """ export (PoolIntArray) var experience_table = DEFAULT_EXP_TABLE """  =====>  """ export var experience_table: PoolIntArray = DEFAULT_EXP_TABLE """
+		Line (1) - FULL LINES - """ export (PoolIntArray) var beam_upgrades = DEFAULT_BEAM_UPGRADES """  =====>  """ export var beam_upgrades: PoolIntArray = DEFAULT_BEAM_UPGRADES """
+		Line(37), export -> @export  -  LINE """ @export var fire_rate: float = 1.00 """
+		Line(39), export -> @export  -  LINE """ @export var experience_table: PoolIntArray = DEFAULT_EXP_TABLE """
+		Line(41), export -> @export  -  LINE """ @export var beam_upgrades: PoolIntArray = DEFAULT_BEAM_UPGRADES """
+		Line(39), PoolIntArray -> PackedInt32Array  -  LINE """ @export var experience_table: PoolIntArray = DEFAULT_EXP_TABLE """
+		Line(41), PoolIntArray -> PackedInt32Array  -  LINE """ @export var beam_upgrades: PoolIntArray = DEFAULT_BEAM_UPGRADES """
+Checking for conversion - 119/141 file - "GameDatabase/Item/Equipment/Superpowers/Superpower.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.002 ms.
+		Line (1) - FULL LINES - """ export (int) var hits_to_charge = 100 """  =====>  """ export var hits_to_charge: int = 100 """
+		Line(45), export -> @export  -  LINE """ @export var hits_to_charge: int = 100 """
+Checking for conversion - 120/141 file - "GameDatabase/Item/Equipment/Superpowers/test-superpower.tres" with size - 0 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 121/141 file - "GameDatabase/Item/Equipment/Shields/Shield.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.003 ms.
+		Line (1) - FULL LINES - """ export (float) var strength = 0.10 """  =====>  """ export var strength: float = 0.10 """
+		Line (1) - FULL LINES - """ export (float) var recovery = 0.01 """  =====>  """ export var recovery: float = 0.01 """
+		Line (1) - FULL LINES - """ export (float) var recover_interval = 1.0 """  =====>  """ export var recover_interval: float = 1.0 """
+		Line (1) - FULL LINES - """ export (float) var interrupt_recovery_timer = 2.0 """  =====>  """ export var interrupt_recovery_timer: float = 2.0 """
+		Line (1) - FULL LINES - """ export (bool) var can_interrupt = true """  =====>  """ export var can_interrupt: bool = true """
+		Line (1) - FULL LINES - """ export (bool) var block_collisions = false """  =====>  """ export var block_collisions: bool = false """
+		Line(44), export -> @export  -  LINE """ @export var strength: float = 0.10 """
+		Line(46), export -> @export  -  LINE """ @export var recovery: float = 0.01 """
+		Line(48), export -> @export  -  LINE """ @export var recover_interval: float = 1.0 """
+		Line(50), export -> @export  -  LINE """ @export var interrupt_recovery_timer: float = 2.0 """
+		Line(52), export -> @export  -  LINE """ @export var can_interrupt: bool = true """
+		Line(54), export -> @export  -  LINE """ @export var block_collisions: bool = false """
+Checking for conversion - 122/141 file - "GameDatabase/Item/Equipment/Shields/test-shield.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 123/141 file - "GameDatabase/Item/Equipment/Satellites/Satellite.gd" with size - 1 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.003 ms.
+		Line (1) - FULL LINES - """ export (float) var atk_strength = 0.0 """  =====>  """ export var atk_strength: float = 0.0 """
+		Line (1) - FULL LINES - """ export (float) var max_atk_strength = 0.0 """  =====>  """ export var max_atk_strength: float = 0.0 """
+		Line (1) - FULL LINES - """ export (float) var fire_rate = 0.0 """  =====>  """ export var fire_rate: float = 0.0 """
+		Line (1) - FULL LINES - """ export (float) var max_fire_rate = 0.0 """  =====>  """ export var max_fire_rate: float = 0.0 """
+		Line (1) - FULL LINES - """ export (int) var total_exp = 3200 """  =====>  """ export var total_exp: int = 3200 """
+		Line(28), export -> @export  -  LINE """ @export var atk_strength: float = 0.0 """
+		Line(30), export -> @export  -  LINE """ @export var max_atk_strength: float = 0.0 """
+		Line(32), export -> @export  -  LINE """ @export var fire_rate: float = 0.0 """
+		Line(34), export -> @export  -  LINE """ @export var max_fire_rate: float = 0.0 """
+		Line(36), export -> @export  -  LINE """ @export var total_exp: int = 3200 """
+Checking for conversion - 124/141 file - "GameDatabase/Item/Equipment/Satellites/test-satellite.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 125/141 file - "GameDatabase/Item/Equipment/Modules/Module.gd" with size - 2 KB
+ERROR: PCRE2 Error: unknown substring
+   at: sub (modules/regex/regex.cpp:352)
+    Checking file took      0.003 ms.
+		Line (1) - FULL LINES - """ export (Array, Resource) var upgrade_change_equips setget _set_upgrade_change_equips, get_upgrade_change_equips """  =====>  """ export var upgrade_change_equips : get = get_upgrade_change_equips, set = _set_upgrade_change_equips # (Array, Resource) """
+		Line (1) - FULL LINES - """ if not upgrade_change_equips.empty() and upgrade_change_equips.back() == null: """  =====>  """ if not upgrade_change_equips.is_empty() and upgrade_change_equips.back() == null: """
+		Line(4), tool -> @tool  -  LINE """ @tool """
+		Line(31), export -> @export  -  LINE """ @export var upgrade_change_equips : get = get_upgrade_change_equips, set = _set_upgrade_change_equips # (Array, Resource) """
+Checking for conversion - 126/141 file - "GameDatabase/Item/Equipment/Modules/Nanofiber.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 127/141 file - "Autoload/BattleServer.gd" with size - 1 KB
+    Checking file took      0.002 ms.
+Checking for conversion - 128/141 file - "Autoload/Currency.gd" with size - 1 KB
+    Checking file took      0.002 ms.
+		Line (1) - FULL LINES - """ var total_main_currency : int setget set_total_main_currency """  =====>  """ var total_main_currency : int: set = set_total_main_currency """
+		Line (1) - FULL LINES - """ var total_rare_currency : int setget set_total_rare_currency """  =====>  """ var total_rare_currency : int: set = set_total_rare_currency """
+Checking for conversion - 129/141 file - "Autoload/EnemySpawnerData.gd" with size - 0 KB
+    Checking file took      0.000 ms.
+Checking for conversion - 130/141 file - "Autoload/GameServer.gd" with size - 1 KB
+    Checking file took      0.001 ms.
+Checking for conversion - 131/141 file - "Autoload/LevelServer.gd" with size - 1 KB
+    Checking file took      0.002 ms.
+Checking for conversion - 132/141 file - "Autoload/LevelGUI/LevelGUI.gd" with size - 6 KB
+    Checking file took      0.006 ms.
+		Line (1) - FULL LINES - """ BattleServer.connect("player_dead", self, "_on_BattleServer_player_dead") """  =====>  """ BattleServer.connect("player_dead", Callable(self, "_on_BattleServer_player_dead")) """
+		Line (1) - FULL LINES - """ yield(get_tree().create_timer(3.0), "timeout") """  =====>  """ await get_tree().create_timer(3.0).timeout """
+Checking for conversion - 133/141 file - "Autoload/LevelGUI/LevelGUI.tscn" with size - 40 KB
+    Checking file took      0.048 ms.
+		Line(6), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/GUI/PauseIcon.png" type="Texture" id=4] """
+		Line(8), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/GUI/ProgressBar/ProgressCircleUnder.png" type="Texture" id=6] """
+		Line(9), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/GUI/ProgressBar/ProgressCircleBg.png" type="Texture" id=7] """
+		Line(10), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/GUI/ProgressBar/ProgressCircleTop.png" type="Texture" id=8] """
+		Line(12), DynamicFont -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/SkyFly8Bit.tres" type="DynamicFont" id=10] """
+		Line(13), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/GUI/ShieldIcon8x8.png" type="Texture" id=11] """
+		Line(14), DynamicFont -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/SkyFly8BitOutline.tres" type="DynamicFont" id=12] """
+		Line(15), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/EnemyBullet.png" type="Texture" id=13] """
+		Line(16), DynamicFont -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/Font.tres" type="DynamicFont" id=14] """
+		Line(24), ShortCut -> Shortcut  -  LINE """ [sub_resource type="ShortCut" id=3] """
+		Line(967), TextureProgress -> TextureProgressBar  -  LINE """ [node name="LevelBar" type="TextureProgress" parent="MarginContainer/Control/PlayerHpBar/VBox/LvHpSuper"] """
+		Line(590), change_scene -> change_scene_to_file  -  LINE """ get_tree().change_scene(\"res://Scenes/SplashScreen/SplashScreen.tscn\") """
+		Line(55), rect_scale -> scale  -  LINE """ tracks/2/path = NodePath(".:rect_scale") """
+		Line(82), rect_scale -> scale  -  LINE """ tracks/0/path = NodePath(".:rect_scale") """
+		Line(164), rect_scale -> scale  -  LINE """ tracks/0/path = NodePath("Label:rect_scale") """
+		Line(413), rect_position -> position  -  LINE """ tracks/2/path = NodePath("LevelClear/Label:rect_position") """
+		Line(512), rect_position -> position  -  LINE """ tracks/2/path = NodePath("LevelFail/Label:rect_position") """
+		Line(654), margin_right -> offset_right  -  LINE """ tracks/0/path = NodePath("MarginContainer:custom_constants/margin_right") """
+		Line(666), margin_top -> offset_top  -  LINE """ tracks/1/path = NodePath("MarginContainer:custom_constants/margin_top") """
+		Line(678), margin_left -> offset_left  -  LINE """ tracks/2/path = NodePath("MarginContainer:custom_constants/margin_left") """
+		Line(690), margin_bottom -> offset_bottom  -  LINE """ tracks/3/path = NodePath("MarginContainer:custom_constants/margin_bottom") """
+		Line(717), margin_right -> offset_right  -  LINE """ tracks/0/path = NodePath("MarginContainer:custom_constants/margin_right") """
+		Line(729), margin_top -> offset_top  -  LINE """ tracks/1/path = NodePath("MarginContainer:custom_constants/margin_top") """
+		Line(741), margin_left -> offset_left  -  LINE """ tracks/2/path = NodePath("MarginContainer:custom_constants/margin_left") """
+		Line(753), margin_bottom -> offset_bottom  -  LINE """ tracks/3/path = NodePath("MarginContainer:custom_constants/margin_bottom") """
+		Line(785), pause_mode -> process_mode  -  LINE """ pause_mode = 2 """
+		Line(802), margin_right -> offset_right  -  LINE """ custom_constants/margin_right = 8 """
+		Line(803), margin_top -> offset_top  -  LINE """ custom_constants/margin_top = 8 """
+		Line(804), margin_left -> offset_left  -  LINE """ custom_constants/margin_left = 8 """
+		Line(805), margin_bottom -> offset_bottom  -  LINE """ custom_constants/margin_bottom = 8 """
+		Line(820), rect_position -> position  -  LINE """ vector_property_to_set = "rect_position" """
+		Line(823), margin_left -> offset_left  -  LINE """ margin_left = 8.0 """
+		Line(824), margin_top -> offset_top  -  LINE """ margin_top = 8.0 """
+		Line(825), margin_right -> offset_right  -  LINE """ margin_right = 216.0 """
+		Line(826), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 392.0 """
+		Line(838), margin_left -> offset_left  -  LINE """ margin_left = -28.0 """
+		Line(839), margin_top -> offset_top  -  LINE """ margin_top = -28.0 """
+		Line(841), enabled_focus_mode -> focus_mode  -  LINE """ enabled_focus_mode = 0 """
+		Line(851), margin_top -> offset_top  -  LINE """ margin_top = -60.0 """
+		Line(852), margin_right -> offset_right  -  LINE """ margin_right = 28.0 """
+		Line(861), pause_mode -> process_mode  -  LINE """ pause_mode = 1 """
+		Line(862), margin_right -> offset_right  -  LINE """ margin_right = 28.0 """
+		Line(863), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 28.0 """
+		Line(864), rect_min_size -> custom_minimum_size  -  LINE """ rect_min_size = Vector2( 28, 28 ) """
+		Line(865), rect_pivot_offset -> pivot_offset  -  LINE """ rect_pivot_offset = Vector2( 14, 14 ) """
+		Line(871), enabled_focus_mode -> focus_mode  -  LINE """ enabled_focus_mode = 0 """
+		Line(896), margin_left -> offset_left  -  LINE """ margin_left = 1.0 """
+		Line(897), margin_top -> offset_top  -  LINE """ margin_top = 1.0 """
+		Line(898), margin_right -> offset_right  -  LINE """ margin_right = -1.0 """
+		Line(899), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = -1.0 """
+		Line(916), margin_top -> offset_top  -  LINE """ margin_top = 40.0 """
+		Line(917), margin_right -> offset_right  -  LINE """ margin_right = 28.0 """
+		Line(918), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 68.0 """
+		Line(921), enabled_focus_mode -> focus_mode  -  LINE """ enabled_focus_mode = 0 """
+		Line(930), margin_top -> offset_top  -  LINE """ margin_top = 80.0 """
+		Line(931), margin_right -> offset_right  -  LINE """ margin_right = 28.0 """
+		Line(932), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 108.0 """
+		Line(935), enabled_focus_mode -> focus_mode  -  LINE """ enabled_focus_mode = 0 """
+		Line(943), margin_right -> offset_right  -  LINE """ margin_right = 112.0 """
+		Line(944), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 72.0 """
+		Line(951), margin_right -> offset_right  -  LINE """ margin_right = 40.0 """
+		Line(952), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 40.0 """
+		Line(959), margin_right -> offset_right  -  LINE """ margin_right = 94.0 """
+		Line(960), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 32.0 """
+		Line(969), margin_right -> offset_right  -  LINE """ margin_right = 32.0 """
+		Line(970), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 32.0 """
+		Line(990), rect_pivot_offset -> pivot_offset  -  LINE """ rect_pivot_offset = Vector2( 16, 16 ) """
+		Line(1004), margin_left -> offset_left  -  LINE """ margin_left = 40.0 """
+		Line(1005), margin_right -> offset_right  -  LINE """ margin_right = 94.0 """
+		Line(1006), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 32.0 """
+		Line(1007), rect_min_size -> custom_minimum_size  -  LINE """ rect_min_size = Vector2( 54, 0 ) """
+		Line(1017), margin_right -> offset_right  -  LINE """ margin_right = 54.0 """
+		Line(1018), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 11.0 """
+		Line(1025), margin_right -> offset_right  -  LINE """ margin_right = 24.0 """
+		Line(1026), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 11.0 """
+		Line(1031), margin_left -> offset_left  -  LINE """ margin_left = 24.0 """
+		Line(1032), margin_right -> offset_right  -  LINE """ margin_right = 30.0 """
+		Line(1033), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 11.0 """
+		Line(1038), margin_left -> offset_left  -  LINE """ margin_left = 30.0 """
+		Line(1039), margin_right -> offset_right  -  LINE """ margin_right = 54.0 """
+		Line(1040), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 11.0 """
+		Line(1046), margin_top -> offset_top  -  LINE """ margin_top = 11.0 """
+		Line(1047), margin_right -> offset_right  -  LINE """ margin_right = 54.0 """
+		Line(1048), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 16.0 """
+		Line(1055), margin_top -> offset_top  -  LINE """ margin_top = 16.0 """
+		Line(1056), margin_right -> offset_right  -  LINE """ margin_right = 54.0 """
+		Line(1057), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 21.0 """
+		Line(1067), margin_top -> offset_top  -  LINE """ margin_top = 36.0 """
+		Line(1068), margin_right -> offset_right  -  LINE """ margin_right = 33.0 """
+		Line(1069), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 47.0 """
+		Line(1076), margin_right -> offset_right  -  LINE """ margin_right = 8.0 """
+		Line(1077), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 11.0 """
+		Line(1084), margin_left -> offset_left  -  LINE """ margin_left = 9.0 """
+		Line(1085), margin_right -> offset_right  -  LINE """ margin_right = 33.0 """
+		Line(1086), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 11.0 """
+		Line(1092), margin_right -> offset_right  -  LINE """ margin_right = 18.0 """
+		Line(1093), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 11.0 """
+		Line(1094), rect_min_size -> custom_minimum_size  -  LINE """ rect_min_size = Vector2( 18, 0 ) """
+		Line(1100), margin_left -> offset_left  -  LINE """ margin_left = 18.0 """
+		Line(1101), margin_right -> offset_right  -  LINE """ margin_right = 24.0 """
+		Line(1102), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 11.0 """
+		Line(1113), margin_top -> offset_top  -  LINE """ margin_top = 96.0 """
+		Line(1114), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 112.0 """
+		Line(1133), margin_left -> offset_left  -  LINE """ margin_left = -88.0 """
+		Line(1134), margin_top -> offset_top  -  LINE """ margin_top = 16.0 """
+		Line(1135), margin_right -> offset_right  -  LINE """ margin_right = -8.0 """
+		Line(1136), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 27.0 """
+		Line(1148), margin_left -> offset_left  -  LINE """ margin_left = -96.0 """
+		Line(1149), margin_top -> offset_top  -  LINE """ margin_top = 32.0 """
+		Line(1150), margin_right -> offset_right  -  LINE """ margin_right = -7.0 """
+		Line(1151), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 43.0 """
+		Line(1172), margin_left -> offset_left  -  LINE """ margin_left = 88.0 """
+		Line(1173), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1174), margin_right -> offset_right  -  LINE """ margin_right = 94.0 """
+		Line(1175), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1184), margin_left -> offset_left  -  LINE """ margin_left = 94.0 """
+		Line(1185), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1186), margin_right -> offset_right  -  LINE """ margin_right = 99.0 """
+		Line(1187), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1196), margin_left -> offset_left  -  LINE """ margin_left = 99.0 """
+		Line(1197), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1198), margin_right -> offset_right  -  LINE """ margin_right = 104.0 """
+		Line(1199), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1208), margin_left -> offset_left  -  LINE """ margin_left = 104.0 """
+		Line(1209), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1210), margin_right -> offset_right  -  LINE """ margin_right = 108.0 """
+		Line(1211), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1220), margin_left -> offset_left  -  LINE """ margin_left = 108.0 """
+		Line(1221), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1222), margin_right -> offset_right  -  LINE """ margin_right = 113.0 """
+		Line(1223), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1232), margin_left -> offset_left  -  LINE """ margin_left = 113.0 """
+		Line(1233), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1234), margin_right -> offset_right  -  LINE """ margin_right = 116.0 """
+		Line(1235), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1244), margin_left -> offset_left  -  LINE """ margin_left = 116.0 """
+		Line(1245), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1246), margin_right -> offset_right  -  LINE """ margin_right = 121.0 """
+		Line(1247), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1256), margin_left -> offset_left  -  LINE """ margin_left = 121.0 """
+		Line(1257), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1258), margin_right -> offset_right  -  LINE """ margin_right = 125.0 """
+		Line(1259), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1268), margin_left -> offset_left  -  LINE """ margin_left = 125.0 """
+		Line(1269), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1270), margin_right -> offset_right  -  LINE """ margin_right = 131.0 """
+		Line(1271), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1280), margin_left -> offset_left  -  LINE """ margin_left = 131.0 """
+		Line(1281), margin_top -> offset_top  -  LINE """ margin_top = 2.0 """
+		Line(1282), margin_right -> offset_right  -  LINE """ margin_right = 136.0 """
+		Line(1283), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 13.0 """
+		Line(1296), margin_left -> offset_left  -  LINE """ margin_left = -40.0 """
+		Line(1297), margin_top -> offset_top  -  LINE """ margin_top = 48.0 """
+		Line(1298), margin_right -> offset_right  -  LINE """ margin_right = 40.0 """
+		Line(1299), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 59.0 """
+		Line(1342), margin_left -> offset_left  -  LINE """ margin_left = -112.0 """
+		Line(1343), margin_top -> offset_top  -  LINE """ margin_top = -8.0 """
+		Line(1344), margin_right -> offset_right  -  LINE """ margin_right = 112.0 """
+		Line(1345), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 8.0 """
+		Line(1368), margin_left -> offset_left  -  LINE """ margin_left = -112.0 """
+		Line(1369), margin_top -> offset_top  -  LINE """ margin_top = -128.0 """
+		Line(1370), margin_right -> offset_right  -  LINE """ margin_right = 112.0 """
+		Line(1371), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = -72.0 """
+		Line(1390), margin_left -> offset_left  -  LINE """ margin_left = -112.0 """
+		Line(1391), margin_top -> offset_top  -  LINE """ margin_top = 40.0 """
+		Line(1392), margin_right -> offset_right  -  LINE """ margin_right = 112.0 """
+		Line(1393), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 107.0 """
+		Line(1410), margin_left -> offset_left  -  LINE """ margin_left = -56.0 """
+		Line(1411), margin_top -> offset_top  -  LINE """ margin_top = 56.0 """
+		Line(1412), margin_right -> offset_right  -  LINE """ margin_right = 58.0 """
+		Line(1413), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 83.0 """
+		Line(1426), margin_left -> offset_left  -  LINE """ margin_left = -61.0 """
+		Line(1427), margin_top -> offset_top  -  LINE """ margin_top = 112.0 """
+		Line(1428), margin_right -> offset_right  -  LINE """ margin_right = 61.0 """
+		Line(1429), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 139.0 """
+		Line(1442), margin_left -> offset_left  -  LINE """ margin_left = -112.0 """
+		Line(1443), margin_top -> offset_top  -  LINE """ margin_top = -8.0 """
+		Line(1444), margin_right -> offset_right  -  LINE """ margin_right = 112.0 """
+		Line(1445), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 8.0 """
+		Line(1467), margin_left -> offset_left  -  LINE """ margin_left = -112.0 """
+		Line(1468), margin_top -> offset_top  -  LINE """ margin_top = 32.0 """
+		Line(1469), margin_right -> offset_right  -  LINE """ margin_right = 112.0 """
+		Line(1470), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 99.0 """
+		Line(1485), margin_left -> offset_left  -  LINE """ margin_left = -48.0 """
+		Line(1486), margin_top -> offset_top  -  LINE """ margin_top = 96.0 """
+		Line(1487), margin_right -> offset_right  -  LINE """ margin_right = 49.0 """
+		Line(1488), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 123.0 """
+		Line(1500), margin_left -> offset_left  -  LINE """ margin_left = -112.0 """
+		Line(1501), margin_top -> offset_top  -  LINE """ margin_top = 128.0 """
+		Line(1502), margin_right -> offset_right  -  LINE """ margin_right = 112.0 """
+		Line(1503), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 139.0 """
+		Line(1530), margin_left -> offset_left  -  LINE """ margin_left = -112.0 """
+		Line(1531), margin_top -> offset_top  -  LINE """ margin_top = 24.0 """
+		Line(1532), margin_right -> offset_right  -  LINE """ margin_right = 112.0 """
+		Line(1533), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 64.0 """
+		Line(1542), margin_left -> offset_left  -  LINE """ margin_left = -64.0 """
+		Line(1543), margin_top -> offset_top  -  LINE """ margin_top = 32.0 """
+		Line(1544), margin_right -> offset_right  -  LINE """ margin_right = 64.0 """
+		Line(1545), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 46.0 """
+		Line(1557), margin_left -> offset_left  -  LINE """ margin_left = -64.0 """
+		Line(1558), margin_top -> offset_top  -  LINE """ margin_top = 48.0 """
+		Line(1559), margin_right -> offset_right  -  LINE """ margin_right = 64.0 """
+		Line(1560), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 62.0 """
+		Line(1574), margin_left -> offset_left  -  LINE """ margin_left = -61.0 """
+		Line(1575), margin_top -> offset_top  -  LINE """ margin_top = 160.0 """
+		Line(1576), margin_right -> offset_right  -  LINE """ margin_right = 61.0 """
+		Line(1577), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 187.0 """
+		Line(1604), rect_position -> position  -  LINE """ vector_property_to_set = "rect_position" """
+		Line(1619), margin_right -> offset_right  -  LINE """ custom_constants/margin_right = 4 """
+		Line(1620), margin_top -> offset_top  -  LINE """ custom_constants/margin_top = 4 """
+		Line(1621), margin_left -> offset_left  -  LINE """ custom_constants/margin_left = 4 """
+		Line(1622), margin_bottom -> offset_bottom  -  LINE """ custom_constants/margin_bottom = 4 """
+		Line(1629), margin_left -> offset_left  -  LINE """ margin_left = 4.0 """
+		Line(1630), margin_top -> offset_top  -  LINE """ margin_top = 4.0 """
+		Line(1631), margin_right -> offset_right  -  LINE """ margin_right = 220.0 """
+		Line(1632), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 396.0 """
+		Line(1652), margin_left -> offset_left  -  LINE """ margin_left = -40.0 """
+		Line(1653), margin_bottom -> offset_bottom  -  LINE """ margin_bottom = 14.0 """
+		Line(37), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.05, 0.1, 0.15, 0.2, 1 ), """
+		Line(38), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1, 1, 0.5, 1 ), """
+		Line(49), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 1 ), """
+		Line(50), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(61), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.05, 0.15, 0.25, 0.7 ), """
+		Line(62), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1, 0.5, 1 ), """
+		Line(73), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 1 ), """
+		Line(74), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(88), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(89), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(100), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 1 ), """
+		Line(101), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(112), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(113), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(124), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 1 ), """
+		Line(125), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(140), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(141), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(155), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(156), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(170), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.3, 0.6, 1 ), """
+		Line(171), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1, 1, 1 ), """
+		Line(182), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.1, 0.5, 1.6 ), """
+		Line(183), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1, 1 ), """
+		Line(194), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 1.3, 2 ), """
+		Line(195), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1 ), """
+		Line(211), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.15 ), """
+		Line(212), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(225), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(226), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(241), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.1 ), """
+		Line(242), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(255), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(256), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(272), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.15 ), """
+		Line(273), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(286), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(287), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(301), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 2, 2.5 ), """
+		Line(302), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 2.21914, 0.203063 ), """
+		Line(313), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 2.5 ), """
+		Line(314), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(325), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.3, 2.2, 2.5 ), """
+		Line(326), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1, 1, 1 ), """
+		Line(337), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.3 ), """
+		Line(338), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(349), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 1.6 ), """
+		Line(350), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(366), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.2 ), """
+		Line(367), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(395), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(396), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(407), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.4 ), """
+		Line(408), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(419), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.4 ), """
+		Line(420), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(431), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.4 ), """
+		Line(432), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(443), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(444), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(455), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(456), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(467), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(468), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(479), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.3 ), """
+		Line(480), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(494), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(495), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(506), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.4 ), """
+		Line(507), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(518), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.4 ), """
+		Line(519), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(530), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.4 ), """
+		Line(531), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(542), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(543), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(554), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(555), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(566), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.3 ), """
+		Line(567), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(580), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(581), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(605), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.3 ), """
+		Line(606), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(617), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(618), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(631), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.3 ), """
+		Line(632), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1, 1 ), """
+		Line(643), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(644), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(660), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(661), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 2, 0.5 ), """
+		Line(672), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(673), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 2, 0.5 ), """
+		Line(684), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(685), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 2, 0.5 ), """
+		Line(696), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(697), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 2, 0.5 ), """
+		Line(708), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0.5 ), """
+		Line(709), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(723), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(724), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(735), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(736), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(747), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(748), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(759), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0, 0.5 ), """
+		Line(760), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 0.5, 1 ), """
+		Line(771), PoolRealArray -> PackedFloat32Array  -  LINE """ "times": PoolRealArray( 0 ), """
+		Line(772), PoolRealArray -> PackedFloat32Array  -  LINE """ "transitions": PoolRealArray( 1 ), """
+		Line(188), custom_colors/ -> theme_override_colors/  -  LINE """ tracks/2/path = NodePath("Label:custom_colors/font_color") """
+		Line(295), custom_constants/ -> theme_override_constants/  -  LINE """ tracks/0/path = NodePath("TextHBox:custom_constants/separation") """
+		Line(654), custom_constants/ -> theme_override_constants/  -  LINE """ tracks/0/path = NodePath("MarginContainer:custom_constants/margin_right") """
+		Line(666), custom_constants/ -> theme_override_constants/  -  LINE """ tracks/1/path = NodePath("MarginContainer:custom_constants/margin_top") """
+		Line(678), custom_constants/ -> theme_override_constants/  -  LINE """ tracks/2/path = NodePath("MarginContainer:custom_constants/margin_left") """
+		Line(690), custom_constants/ -> theme_override_constants/  -  LINE """ tracks/3/path = NodePath("MarginContainer:custom_constants/margin_bottom") """
+		Line(717), custom_constants/ -> theme_override_constants/  -  LINE """ tracks/0/path = NodePath("MarginContainer:custom_constants/margin_right") """
+		Line(729), custom_constants/ -> theme_override_constants/  -  LINE """ tracks/1/path = NodePath("MarginContainer:custom_constants/margin_top") """
+		Line(741), custom_constants/ -> theme_override_constants/  -  LINE """ tracks/2/path = NodePath("MarginContainer:custom_constants/margin_left") """
+		Line(753), custom_constants/ -> theme_override_constants/  -  LINE """ tracks/3/path = NodePath("MarginContainer:custom_constants/margin_bottom") """
+		Line(802), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/margin_right = 8 """
+		Line(803), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/margin_top = 8 """
+		Line(804), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/margin_left = 8 """
+		Line(805), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/margin_bottom = 8 """
+		Line(854), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/separation = 12 """
+		Line(962), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/separation = 8 """
+		Line(991), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 12 ) """
+		Line(992), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color = Color( 1, 1, 1, 1 ) """
+		Line(1010), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/separation = 0 """
+		Line(1021), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/separation = 0 """
+		Line(1027), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1034), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1041), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1072), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/separation = 1 """
+		Line(1088), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/separation = 0 """
+		Line(1095), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1103), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1137), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1152), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color = Color( 1, 0.584314, 0, 1 ) """
+		Line(1153), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1165), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/separation = 0 """
+		Line(1301), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 10 ) """
+		Line(1302), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1354), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 12 ) """
+		Line(1372), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 14 ) """
+		Line(1394), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 14 ) """
+		Line(1454), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 12 ) """
+		Line(1471), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 14 ) """
+		Line(1504), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 14 ) """
+		Line(1505), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color = Color( 1, 0.682353, 0.0784314, 1 ) """
+		Line(1546), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 14 ) """
+		Line(1547), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1561), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 14 ) """
+		Line(1562), custom_colors/ -> theme_override_colors/  -  LINE """ custom_colors/font_color_shadow = Color( 0, 0, 0, 1 ) """
+		Line(1619), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/margin_right = 4 """
+		Line(1620), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/margin_top = 4 """
+		Line(1621), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/margin_left = 4 """
+		Line(1622), custom_constants/ -> theme_override_constants/  -  LINE """ custom_constants/margin_bottom = 4 """
+		Line(1655), custom_fonts/ -> theme_override_fonts/  -  LINE """ custom_fonts/font = ExtResource( 14 ) """
+Checking for conversion - 134/141 file - "Assets/Theme/ClassicThemeV2/ClassicTheme_V2.tres" with size - 16 KB
+    Checking file took      0.003 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/AnimatedButtonPanelFocus.tres" type="Texture" id=1] """
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ButtonPanel.png" type="Texture" id=2] """
+		Line(5), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ButtonPanelPressed.png" type="Texture" id=3] """
+		Line(6), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/CheckedIcon.png" type="Texture" id=4] """
+		Line(7), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/RadioCheckedIcon.png" type="Texture" id=5] """
+		Line(8), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/RadioUncheckedIcon.png" type="Texture" id=6] """
+		Line(9), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/UncheckedIcon.png" type="Texture" id=7] """
+		Line(10), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/CheckButtonOff.png" type="Texture" id=8] """
+		Line(11), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/CheckButtonOn.png" type="Texture" id=9] """
+		Line(12), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/H_V_Seperator.png" type="Texture" id=10] """
+		Line(13), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ScrollBg.png" type="Texture" id=11] """
+		Line(14), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/GrabberHIcon.png" type="Texture" id=12] """
+		Line(15), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/GrabberHIconDisabled.png" type="Texture" id=13] """
+		Line(16), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/GrabberHIconHighlight.png" type="Texture" id=14] """
+		Line(17), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/GrabberArea.png" type="Texture" id=15] """
+		Line(18), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/SpinBoxUpdownIcon.png" type="Texture" id=16] """
+		Line(19), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/PanelBg.png" type="Texture" id=17] """
+		Line(20), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ProgressBg.png" type="Texture" id=18] """
+		Line(21), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ProgressFg.png" type="Texture" id=19] """
+		Line(22), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/GrabberVIcon.png" type="Texture" id=20] """
+		Line(23), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/GrabberVIconDisabled.png" type="Texture" id=21] """
+		Line(24), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/GrabberVIconHighlight.png" type="Texture" id=22] """
+		Line(25), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/Xbtn.png" type="Texture" id=23] """
+		Line(26), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/WindowDialogBg.png" type="Texture" id=24] """
+		Line(27), DynamicFont -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/Font.tres" type="DynamicFont" id=25] """
+		Line(29), StreamTexture -> CompressedTexture2D  -  LINE """ [sub_resource type="StreamTexture" id=1] """
+		Line(63), StreamTexture -> CompressedTexture2D  -  LINE """ [sub_resource type="StreamTexture" id=4] """
+		Line(386), ToolButton -> Button  -  LINE """ ToolButton/colors/font_color = Color( 1, 1, 1, 1 ) """
+		Line(387), ToolButton -> Button  -  LINE """ ToolButton/colors/font_color_disabled = Color( 0.47451, 0.47451, 0.47451, 1 ) """
+		Line(388), ToolButton -> Button  -  LINE """ ToolButton/colors/font_color_hover = Color( 1, 1, 1, 1 ) """
+		Line(389), ToolButton -> Button  -  LINE """ ToolButton/colors/font_color_pressed = Color( 0.745098, 0.745098, 0.745098, 1 ) """
+		Line(390), ToolButton -> Button  -  LINE """ ToolButton/constants/hseparation = 3 """
+		Line(391), ToolButton -> Button  -  LINE """ ToolButton/fonts/font = null """
+		Line(392), ToolButton -> Button  -  LINE """ ToolButton/styles/disabled = null """
+		Line(393), ToolButton -> Button  -  LINE """ ToolButton/styles/focus = null """
+		Line(394), ToolButton -> Button  -  LINE """ ToolButton/styles/hover = null """
+		Line(395), ToolButton -> Button  -  LINE """ ToolButton/styles/normal = null """
+		Line(396), ToolButton -> Button  -  LINE """ ToolButton/styles/pressed = null """
+		Line(417), WindowDialog -> Window  -  LINE """ WindowDialog/colors/title_color = Color( 1, 1, 1, 1 ) """
+		Line(418), WindowDialog -> Window  -  LINE """ WindowDialog/constants/close_h_ofs = 15 """
+		Line(419), WindowDialog -> Window  -  LINE """ WindowDialog/constants/close_v_ofs = 15 """
+		Line(420), WindowDialog -> Window  -  LINE """ WindowDialog/constants/scaleborder_size = 4 """
+		Line(421), WindowDialog -> Window  -  LINE """ WindowDialog/constants/title_height = 20 """
+		Line(422), WindowDialog -> Window  -  LINE """ WindowDialog/fonts/title_font = null """
+		Line(423), WindowDialog -> Window  -  LINE """ WindowDialog/icons/close = ExtResource( 23 ) """
+		Line(424), WindowDialog -> Window  -  LINE """ WindowDialog/icons/close_highlight = ExtResource( 23 ) """
+		Line(425), WindowDialog -> Window  -  LINE """ WindowDialog/styles/panel = SubResource( 30 ) """
+Checking for conversion - 135/141 file - "Assets/Theme/ClassicThemeV2/img/AnimatedButtonPanelFocus.tres" with size - 1 KB
+    Checking file took      0.000 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ButtonPanelFocus2.png" type="Texture" id=1] """
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ButtonPanelFocus3.png" type="Texture" id=2] """
+		Line(5), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ButtonPanelFocus1.png" type="Texture" id=3] """
+		Line(6), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ButtonPanelFocus4.png" type="Texture" id=4] """
+		Line(7), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Theme/ClassicThemeV2/img/ButtonPanelFocus5.png" type="Texture" id=5] """
+Checking for conversion - 136/141 file - "Assets/Image/Enemy/AnimatedWeakBullet.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/WeakBullet6.png" type="Texture" id=1] """
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/WeakBullet1.png" type="Texture" id=2] """
+		Line(5), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/WeakBullet3.png" type="Texture" id=3] """
+		Line(6), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/WeakBullet5.png" type="Texture" id=4] """
+		Line(7), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/WeakBullet2.png" type="Texture" id=5] """
+		Line(8), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Enemy/WeakBullet4.png" type="Texture" id=6] """
+Checking for conversion - 137/141 file - "Assets/Image/Collectibles/AnimatedCredits.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(3), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Collectibles/Credits1.png" type="Texture" id=1] """
+		Line(4), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Collectibles/Credits2.png" type="Texture" id=2] """
+		Line(5), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Collectibles/Credits3.png" type="Texture" id=3] """
+		Line(6), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Collectibles/Credits4.png" type="Texture" id=4] """
+		Line(7), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Collectibles/Credits5.png" type="Texture" id=5] """
+		Line(8), Texture -> Texture2D  -  LINE """ [ext_resource path="res://Assets/Image/Collectibles/Credits6.png" type="Texture" id=6] """
+Checking for conversion - 138/141 file - "Assets/Fonts/Font.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(1), DynamicFont -> FontFile  -  LINE """ [gd_resource type="DynamicFont" load_steps=2 format=2] """
+		Line(3), DynamicFontData -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/RpgRoll.ttf" type="DynamicFontData" id=1] """
+Checking for conversion - 139/141 file - "Assets/Fonts/RpgDigit.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(1), DynamicFont -> FontFile  -  LINE """ [gd_resource type="DynamicFont" load_steps=2 format=2] """
+		Line(3), DynamicFontData -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/RpgDigit.ttf" type="DynamicFontData" id=1] """
+Checking for conversion - 140/141 file - "Assets/Fonts/SkyFly8Bit.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(1), DynamicFont -> FontFile  -  LINE """ [gd_resource type="DynamicFont" load_steps=2 format=2] """
+		Line(3), DynamicFontData -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/SkyFly8Bit.ttf" type="DynamicFontData" id=1] """
+Checking for conversion - 141/141 file - "Assets/Fonts/SkyFly8BitOutline.tres" with size - 0 KB
+    Checking file took      0.000 ms.
+		Line(1), DynamicFont -> FontFile  -  LINE """ [gd_resource type="DynamicFont" load_steps=2 format=2] """
+		Line(3), DynamicFontData -> FontFile  -  LINE """ [ext_resource path="res://Assets/Fonts/SkyFly8Bit.ttf" type="DynamicFontData" id=1] """
+Checking for valid conversion ended - all files(141), files which would be converted(90), files which would not be converted(51).
+Conversion of all files took      0.633 seconds.

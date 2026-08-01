@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="StagePropDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/stage_prop_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"prop.frontier_debris_screen"
+display_name = "Frontier Debris Screen"
+visual_asset_path = "res://assets_runtime/hazards/hazard_asteroids_sheet.png"
+local_position = Vector2(130, 280)
+visual_scale = Vector2(2.4, 2.4)
+rotation_degrees = -16.0
+z_order = -2
+depth = "near"
+collision_recommendation = "hazard"
+presentation_tags = Array[StringName]([&"frontier", &"debris", &"hazard"])

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="MeleeDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/melee_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"melee.energy_blade"
+display_name = "Energy Blade"
+damage = 55.0
+arc_degrees = 120.0
+range_pixels = 92.0
+cooldown_seconds = 0.45
+parry_window_seconds = 0.16
+hit_stop_seconds = 0.045
+close_range_bonus = 0.35
+

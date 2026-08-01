@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.stage1_briefing"
+display_name = "First Contact Briefing"
+context = "briefing"
+pause_gameplay = true
+lines = Array[Dictionary]([{"speaker": "Command", "text": "Raider signatures crossed the frontier convoy lane. Break their screen, recover any escape pods, and identify the command ship."}, {"speaker": "Command", "text": "Focus through dense fire. Your midpoint and final-approach beacons can restore the sortie if the hull is lost."}, {"speaker": "Nova", "text": "Copy. Rescue the convoy, read the formations, bring back the command core."}])

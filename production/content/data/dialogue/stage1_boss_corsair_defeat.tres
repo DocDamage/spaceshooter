@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.boss_corsair_defeat"
+display_name = "Corsair Dreadnought Defeated"
+context = "post_boss"
+priority = 10
+lines = Array[Dictionary]([{"speaker": "Corsair", "text": "You saw only the first signal…"}, {"speaker": "Command", "text": "Hull breaking. Recover its navigation core and clear the blast radius."}])

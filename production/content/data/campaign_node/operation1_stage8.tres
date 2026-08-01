@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CampaignNodeDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/campaign_node_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"campaign_node.operation1_stage8"
+display_name = "1-8 Ghost Relay"
+operation_index = 1
+stage_index = 8
+mission_id = &"mission.operation1_stage8"
+prerequisite_node_ids = Array[StringName]([&"campaign_node.operation1_stage7"])
+practice_boss_ids = Array[StringName]([&"boss.relay_specter"])
+reward_preview = {"credits": 1125, "xp": 840, "equipment_id": &"equipment.vector_thrusters"}
+map_position = Vector2(100, 455)

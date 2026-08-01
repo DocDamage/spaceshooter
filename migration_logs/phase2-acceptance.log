@@ -1,0 +1,44 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+PASS: content directories scan and index the foundation definitions plus later-phase content
+PASS: ship resolves by stable content ID and type
+PASS: weapon resolves by stable content ID and type
+PASS: enemy resolves by stable content ID and type
+PASS: content version metadata is recorded
+PASS: duplicate content IDs fail validation
+PASS: duplicate validation reports the stable ID
+PASS: missing content dependencies fail validation
+PASS: global services initialize
+PASS: service initialization order is explicit
+PASS: settings service has an integration-tested initialization boundary
+PASS: platform service has an integration-tested initialization boundary
+PASS: localization service has an integration-tested initialization boundary
+PASS: input service has an integration-tested initialization boundary
+PASS: audio service has an integration-tested initialization boundary
+PASS: saves service has an integration-tested initialization boundary
+PASS: profiles service has an integration-tested initialization boundary
+PASS: story service has an integration-tested initialization boundary
+PASS: achievements service has an integration-tested initialization boundary
+PASS: scene_router service has an integration-tested initialization boundary
+PASS: game_flow service has an integration-tested initialization boundary
+PASS: diagnostics service has an integration-tested initialization boundary
+PASS: settings service reads and writes through its API
+PASS: platform service reports supported capabilities
+PASS: localization service owns locale changes
+PASS: input service exposes player movement
+PASS: audio service owns volume state
+PASS: profile service exposes selected profiles
+PASS: save service exposes status before session save
+PASS: achievement service owns unlock state
+PASS: scene routing remains behind a service boundary
+PASS: game-flow service owns state transitions
+PASS: diagnostics service exposes runtime telemetry
+PASS: typed event exposes a stable event type
+PASS: typed event carries stable source and target IDs
+PASS: GameSession receives complete configuration before activation
+PASS: test mission launches from MissionDefinition
+PASS: a second player registers without registry code changes
+PASS: enemy actors register in the scoped registry
+PASS: diagnostics report active runtime counts and seed
+PASS: completion produces result, checkpoint, rewards, and save status
+PHASE 2 ACCEPTANCE: all 41 checks passed

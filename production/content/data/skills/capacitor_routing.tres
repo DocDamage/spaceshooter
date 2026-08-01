@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SkillNodeDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/skill_node_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"skill.systems.capacitor_routing"
+display_name = "Capacitor Routing"
+content_version = "1.0.0"
+tree = &"systems"
+description = "Strengthens shield capacity."
+effects = {&"shield": 15.0}
+maximum_rank = 3

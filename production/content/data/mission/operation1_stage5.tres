@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/mission_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/mission_recipe/operation1_stage5.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"mission.operation1_stage5"
+display_name = "Shattered Belt"
+dependency_ids = Array[StringName]([&"ship.vanguard", &"recipe.operation1_stage5", &"boss.debris_warden"])
+content_version = "1.0.0"
+player_ship_id = &"ship.vanguard"
+enemy_ids = Array[StringName]([&"enemy.dart", &"enemy.wasp", &"enemy.bomber", &"enemy.reaver"])
+default_seed = 150501
+segment_count = 10
+stage_number = 5
+environment_tags = Array[StringName]([&"asteroid", &"debris"])
+enemy_factions = Array[StringName]([&"faction.raiders", &"faction.alien_vanguard"])
+recipe = ExtResource("2")
+miniboss_id = &"boss.debris_warden"
+mission_rewards = {"credits": 800, "xp": 600, "equipment_id": &"equipment.reactor_matrix"}
+dialogue_hooks = {"briefing": &"dialogue.operation1_campaign_briefing", "results": &"dialogue.operation1_campaign_results"}

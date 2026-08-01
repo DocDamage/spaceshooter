@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/mission_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/mission_recipe/operation1_stage9.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"mission.operation1_stage9"
+display_name = "Point of No Return"
+dependency_ids = Array[StringName]([&"ship.vanguard", &"recipe.operation1_stage9", &"boss.siege_lancer"])
+content_version = "1.0.0"
+player_ship_id = &"ship.vanguard"
+enemy_ids = Array[StringName]([&"enemy.reaver", &"enemy.lancer", &"enemy.guardian", &"enemy.bomber", &"enemy.commander"])
+default_seed = 150901
+segment_count = 10
+stage_number = 9
+environment_tags = Array[StringName]([&"space", &"invasion_front"])
+enemy_factions = Array[StringName]([&"faction.alien_vanguard"])
+recipe = ExtResource("2")
+miniboss_id = &"boss.siege_lancer"
+mission_rewards = {"credits": 1250, "xp": 940, "equipment_id": &"equipment.reactor_matrix"}
+dialogue_hooks = {"briefing": &"dialogue.operation1_campaign_briefing", "results": &"dialogue.operation1_campaign_results"}

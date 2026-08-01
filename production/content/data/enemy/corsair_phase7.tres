@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/enemy_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/movement/straight.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/attack_deck/scout_deck.tres" id="3"]
+[ext_resource type="Resource" path="res://production/content/data/drop_table/scout_drops.tres" id="4"]
+[ext_resource type="Texture2D" path="res://assets_runtime/enemies/ship_pirate_boss.png" id="5"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"enemy.corsair"
+display_name = "Corsair"
+content_version = "1.0.0"
+visual_asset_path = "res://assets_runtime/enemies/enemy_raider_interceptor_final.png"
+visual_scale = 1.18
+visual_tint = Color(0.60, 0.73, 0.90, 1)
+collision_radius = 22.0
+max_health = 107
+move_speed = 111.0
+armor = 1.5
+shield_capacity = 0.0
+reward_credits = 17
+reward_score = 305
+reward_experience = 8
+movement_pattern = ExtResource("2")
+attack_deck = ExtResource("3")
+drop_table = ExtResource("4")

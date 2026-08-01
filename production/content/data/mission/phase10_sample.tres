@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MissionDefinition" load_steps=3 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/mission_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/mission_recipe/phase10_sample.tres" id="2"]
+[resource]
+script = ExtResource("1")
+stable_id = &"mission.phase10_sample"
+display_name = "Phase 10 Generated Sortie"
+dependency_ids = Array[StringName]([&"ship.vanguard", &"recipe.phase10_sample"])
+content_version = "1.0.0"
+player_ship_id = &"ship.vanguard"
+default_seed = 101001
+segment_count = 9
+campaign_id = &"campaign.main"
+stage_number = 1
+environment_tags = Array[StringName]([&"space", &"asteroid_belt"])
+enemy_factions = Array[StringName]([&"faction.raiders"])
+recipe = ExtResource("2")
+boss_id = &"boss.corsair_dreadnought"
+mission_rewards = {"credits": 1000, "xp": 750}

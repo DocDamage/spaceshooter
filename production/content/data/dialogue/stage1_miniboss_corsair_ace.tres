@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.miniboss_corsair_ace"
+display_name = "Corsair Ace Intercept"
+context = "pre_miniboss"
+priority = 8
+lines = Array[Dictionary]([{"speaker": "Corsair Ace", "text": "Your rescue ends here, patrol."}, {"speaker": "Command", "text": "Ace profile. Read the telegraph, then answer with heavy fire."}])

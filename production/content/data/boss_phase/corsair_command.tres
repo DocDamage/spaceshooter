@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="BossPhaseDefinition" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/boss_phase_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/attack_deck/scout_deck.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/movement/formation_follow.tres" id="3"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"boss_phase.corsair_command"
+display_name = "Command Screen"
+health_threshold = 1.0
+movement_patterns = Array[ExtResource("3")]([ExtResource("3")])
+attack_decks = Array[ExtResource("2")]([ExtResource("2")])
+summon_enemy_ids = Array[StringName]([&"enemy.scout"])
+summon_interval = 6.0
+maximum_active_summons = 3
+active_part_ids = Array[StringName]([&"boss_part.corsair_turret"])
+music_state = &"boss_opening"
+dialogue_id = &"dialogue.boss_corsair_intro"
+enrage_after = 35.0

@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SpellDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/spell_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"spell.aegis"
+display_name = "Aegis"
+school = 1
+element_role = 2
+power = 40.0

@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "profiles": {
+    "pixel_art": {"filter": false, "mipmaps": false, "repeat": "disabled", "compression": "lossless"},
+    "high_resolution": {"filter": true, "mipmaps": true, "repeat": "disabled", "compression": "vram_or_lossless"},
+    "ui": {"filter": true, "mipmaps": false, "repeat": "disabled", "compression": "lossless"},
+    "background": {"filter": true, "mipmaps": true, "repeat": "enabled", "compression": "vram_or_lossless"},
+    "normal_map": {"filter": true, "mipmaps": true, "repeat": "enabled", "compression": "normal_map"},
+    "particle_texture": {"filter": true, "mipmaps": false, "repeat": "disabled", "compression": "lossless"},
+    "portrait": {"filter": true, "mipmaps": false, "repeat": "disabled", "compression": "lossless"},
+    "music": {"loop": true, "trim": false, "bar_beats": 4},
+    "short_sfx": {"loop": false, "trim": true, "normalize": false}
+  },
+  "rule": "The catalog import_profile is authoritative. Verify Godot's generated .import settings against this file during approval; generated .import files are engine artifacts, not source metadata."
+}

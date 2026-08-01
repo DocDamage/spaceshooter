@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="DialogueDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/dialogue_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"dialogue.stage1_results"
+display_name = "First Contact Debrief"
+context = "results"
+lines = Array[Dictionary]([{"speaker": "Command", "text": "The frontier holds and the escape-pod beacons are accounted for. The dreadnought core confirms this was reconnaissance, not a raid."}, {"speaker": "Nova", "text": "Then next time they bring a fleet. We'll be ready before they are."}])

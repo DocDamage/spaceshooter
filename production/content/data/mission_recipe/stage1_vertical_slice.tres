@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="MissionRecipeDefinition" load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/mission_recipe_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/segment/opening.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/segment/standard_combat.tres" id="3"]
+[ext_resource type="Resource" path="res://production/content/data/segment/formation_combat.tres" id="4"]
+[ext_resource type="Resource" path="res://production/content/data/segment/branch.tres" id="5"]
+[ext_resource type="Resource" path="res://production/content/data/segment/rescue.tres" id="6"]
+[ext_resource type="Resource" path="res://production/content/data/segment/checkpoint.tres" id="7"]
+[ext_resource type="Resource" path="res://production/content/data/segment/miniboss.tres" id="8"]
+[ext_resource type="Resource" path="res://production/content/data/segment/elite_encounter.tres" id="9"]
+[ext_resource type="Resource" path="res://production/content/data/segment/hazard_field.tres" id="10"]
+[ext_resource type="Resource" path="res://production/content/data/segment/pre_boss.tres" id="11"]
+[ext_resource type="Resource" path="res://production/content/data/segment/boss.tres" id="12"]
+[ext_resource type="Resource" path="res://production/content/data/segment/exit.tres" id="13"]
+[ext_resource type="Resource" path="res://production/content/data/segment/secret.tres" id="14"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"recipe.stage1_vertical_slice"
+display_name = "Operation 1: First Contact"
+required_sequence = Array[ExtResource("2")]([ExtResource("2"), ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7"), ExtResource("8"), ExtResource("9"), ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("13")])
+branch_pool = Array[ExtResource("2")]([ExtResource("14")])
+branch_count = 1
+minimum_segment_count = 12
+maximum_segment_count = 12
+repetition_limit = 1
+required_checkpoint_order = Array[StringName]([&"midpoint", &"pre_boss"])
+allowed_factions = Array[StringName]([&"faction.raiders"])
+required_objective_types = Array[StringName]([&"survive"])
+allow_secrets = true

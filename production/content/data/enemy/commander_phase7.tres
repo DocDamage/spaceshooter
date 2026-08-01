@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="EnemyDefinition" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/enemy_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/movement/sine.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/attack_deck/scout_deck.tres" id="3"]
+[ext_resource type="Resource" path="res://production/content/data/drop_table/scout_drops.tres" id="4"]
+[ext_resource type="Texture2D" path="res://assets_runtime/enemies/ship_pirate_boss.png" id="5"]
+[ext_resource type="Resource" path="res://production/content/data/elite/veteran.tres" id="6"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"enemy.commander"
+display_name = "Commander"
+content_version = "1.0.0"
+visual_asset_path = "res://assets_runtime/enemies/ship_pirate_boss.png"
+visual_scale = 0.74
+visual_tint = Color(0.90, 0.91, 0.90, 1)
+collision_radius = 22.0
+max_health = 187
+move_speed = 87.0
+armor = 4.5
+shield_capacity = 8.0
+reward_credits = 27
+reward_score = 555
+reward_experience = 13
+movement_pattern = ExtResource("2")
+attack_deck = ExtResource("3")
+drop_table = ExtResource("4")
+elite_profile = ExtResource("6")

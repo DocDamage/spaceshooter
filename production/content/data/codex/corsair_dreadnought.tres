@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="CodexEntryDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/codex_entry_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"codex.boss.corsair_dreadnought"
+display_name = "Corsair Dreadnought"
+category = "bosses"
+body = "A captured command hull rebuilt around layered shields, exposed weapon parts, and a breach-phase assault deck. Its silhouette is tall and armored; its greatest weakness is the dependence of later attacks on intact external systems."
+unlock_rule = {"event": &"boss_defeated", "boss_id": &"boss.corsair_dreadnought"}

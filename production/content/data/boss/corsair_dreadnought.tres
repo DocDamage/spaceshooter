@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="BossDefinition" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://production/content/definitions/boss_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://production/content/data/boss_phase/corsair_command.tres" id="2"]
+[ext_resource type="Resource" path="res://production/content/data/boss_phase/corsair_breach.tres" id="3"]
+[ext_resource type="Resource" path="res://production/content/data/boss_part/corsair_turret.tres" id="4"]
+[ext_resource type="Resource" path="res://production/content/data/boss_challenge/corsair_parts.tres" id="5"]
+[ext_resource type="Resource" path="res://production/content/data/boss_challenge/corsair_no_damage.tres" id="6"]
+[ext_resource type="Resource" path="res://production/content/data/boss_variant/corsair_ng_plus.tres" id="7"]
+
+[resource]
+script = ExtResource("1")
+stable_id = &"boss.corsair_dreadnought"
+display_name = "Corsair Dreadnought"
+maximum_health = 2400.0
+armor = 6.0
+shield_capacity = 500.0
+phases = Array[ExtResource("2")]([ExtResource("2"), ExtResource("3")])
+parts = Array[ExtResource("4")]([ExtResource("4")])
+challenges = Array[ExtResource("5")]([ExtResource("5"), ExtResource("6")])
+variants = Array[ExtResource("7")]([ExtResource("7")])
+guaranteed_rewards = {"credits": 600, "xp": 350, "equipment_id": &"equipment.reactor_matrix"}
+arena_profile = {"bounds": Rect2(20, 120, 500, 800), "safe_entry": Vector2(270, 860), "scroll_mode": &"controlled"}
+intro_dialogue_id = &"dialogue.boss_corsair_intro"
+defeat_dialogue_id = &"dialogue.boss_corsair_defeat"
+visual_asset_path = "res://assets_runtime/enemies/boss_raider_command_final.png"
+visual_scale = 0.92

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="EnemyVisualFamilyDefinition" load_steps=2 format=3]
+[ext_resource type="Script" path="res://production/content/definitions/enemy_visual_family_definition.gd" id="1"]
+[resource]
+script = ExtResource("1")
+stable_id = &"visual.raider_scout"
+display_name = "Raider Scout Family"
+visual_asset_path = "res://assets_runtime/enemies/enemy_raider_scout_final.png"
+visual_scale = 0.8
