@@ -3,8 +3,10 @@ extends Node
 
 signal status_applied(status_id: StringName, stacks: int)
 signal status_removed(status_id: StringName)
+signal periodic_damage_requested(source_actor_id: StringName, amount: float)
 
 const VALID_STATUSES := [&"burn", &"freeze", &"slow", &"shock", &"emp", &"corrosion", &"marked", &"vulnerable", &"fortified", &"haste", &"regeneration", &"invulnerable"]
+const DAMAGE_TICK_SECONDS := 1.0
 
 var status_resistances: Dictionary = {}
 var _active: Dictionary = {}
@@ -31,19 +33,31 @@ func apply(application: StatusApplication) -> bool:
 		stacks = mini(application.max_stacks, int(existing.stacks) + application.stacks)
 	_active[application.status_id] = {
 		"source": application.source_actor_id, "duration": duration, "stacks": stacks,
-		"strength": application.strength, "persists_at_checkpoint": application.persists_at_checkpoint
+		"strength": application.strength, "persists_at_checkpoint": application.persists_at_checkpoint,
+		"damage_remainder": 0.0
 	}
 	status_applied.emit(application.status_id, stacks)
 	return true
 
 func tick(delta: float) -> void:
 	var expired: Array[StringName] = []
-	for status_id in _active:
-		_active[status_id].duration = maxf(0.0, float(_active[status_id].duration) - delta)
-		if _active[status_id].duration <= 0.0:
+	var burn_ticks: Array[Dictionary] = []
+	for status_id in _active.keys():
+		var data: Dictionary = _active[status_id]
+		var active_delta := minf(maxf(0.0, delta), float(data.duration))
+		if status_id == &"burn":
+			data.damage_remainder = float(data.get("damage_remainder", 0.0)) + active_delta
+			while float(data.damage_remainder) >= DAMAGE_TICK_SECONDS:
+				burn_ticks.append({"source": data.source, "amount": float(data.strength) * int(data.stacks)})
+				data.damage_remainder = float(data.damage_remainder) - DAMAGE_TICK_SECONDS
+		data.duration = maxf(0.0, float(data.duration) - maxf(0.0, delta))
+		_active[status_id] = data
+		if float(data.duration) <= 0.0:
 			expired.append(status_id)
 	for status_id in expired:
 		remove(status_id)
+	for burn_tick in burn_ticks:
+		periodic_damage_requested.emit(StringName(burn_tick.source), float(burn_tick.amount))
 
 func remove(status_id: StringName) -> void:
 	if _active.erase(status_id):

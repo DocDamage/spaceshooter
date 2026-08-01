@@ -10,9 +10,9 @@ static func defaults() -> Dictionary:
 		&"ui_up": [key(KEY_UP), joy_button(JOY_BUTTON_DPAD_UP), joy_axis(JOY_AXIS_LEFT_Y, -1.0)], &"ui_down": [key(KEY_DOWN), joy_button(JOY_BUTTON_DPAD_DOWN), joy_axis(JOY_AXIS_LEFT_Y, 1.0)], &"ui_left": [key(KEY_LEFT), joy_button(JOY_BUTTON_DPAD_LEFT), joy_axis(JOY_AXIS_LEFT_X, -1.0)], &"ui_right": [key(KEY_RIGHT), joy_button(JOY_BUTTON_DPAD_RIGHT), joy_axis(JOY_AXIS_LEFT_X, 1.0)],
 		&"ui_confirm": [key(KEY_ENTER), key(KEY_SPACE), joy_button(JOY_BUTTON_A)], &"ui_cancel": [key(KEY_ESCAPE), joy_button(JOY_BUTTON_B)], &"ui_tab_previous": [key(KEY_Q), joy_button(JOY_BUTTON_LEFT_SHOULDER)], &"ui_tab_next": [key(KEY_E), joy_button(JOY_BUTTON_RIGHT_SHOULDER)], &"ui_page_previous": [key(KEY_PAGEUP)], &"ui_page_next": [key(KEY_PAGEDOWN)], &"pause": [key(KEY_ESCAPE), joy_button(JOY_BUTTON_START)],
 		&"move_left": [key(KEY_A), joy_button(JOY_BUTTON_DPAD_LEFT), joy_axis(JOY_AXIS_LEFT_X, -1.0)], &"move_right": [key(KEY_D), joy_button(JOY_BUTTON_DPAD_RIGHT), joy_axis(JOY_AXIS_LEFT_X, 1.0)], &"move_up": [key(KEY_W), joy_button(JOY_BUTTON_DPAD_UP), joy_axis(JOY_AXIS_LEFT_Y, -1.0)], &"move_down": [key(KEY_S), joy_button(JOY_BUTTON_DPAD_DOWN), joy_axis(JOY_AXIS_LEFT_Y, 1.0)],
-		&"rapid_shot": [key(KEY_Z), joy_button(JOY_BUTTON_A)], &"focus_beam": [key(KEY_X), joy_button(JOY_BUTTON_X)], &"element": [key(KEY_C), joy_button(JOY_BUTTON_Y)], &"overdrive": [key(KEY_V), joy_button(JOY_BUTTON_B)], &"bomb": [key(KEY_SHIFT), joy_button(JOY_BUTTON_RIGHT_SHOULDER)], &"focus": [key(KEY_X), joy_button(JOY_BUTTON_X)],
+		&"rapid_shot": [key(KEY_Z), mouse_button(MOUSE_BUTTON_LEFT), joy_button(JOY_BUTTON_A)], &"focus_beam": [key(KEY_X), mouse_button(MOUSE_BUTTON_RIGHT), joy_button(JOY_BUTTON_X)], &"element": [key(KEY_C), joy_button(JOY_BUTTON_Y)], &"overdrive": [key(KEY_V), joy_button(JOY_BUTTON_B)], &"bomb": [key(KEY_SHIFT), joy_button(JOY_BUTTON_RIGHT_SHOULDER)], &"focus": [key(KEY_X), mouse_button(MOUSE_BUTTON_RIGHT), joy_button(JOY_BUTTON_X)],
 		&"aim_left": [joy_axis(JOY_AXIS_RIGHT_X, -1.0)], &"aim_right": [joy_axis(JOY_AXIS_RIGHT_X, 1.0)], &"aim_up": [joy_axis(JOY_AXIS_RIGHT_Y, -1.0)], &"aim_down": [joy_axis(JOY_AXIS_RIGHT_Y, 1.0)], &"lock_on": [key(KEY_L), joy_button(JOY_BUTTON_RIGHT_STICK)],
-		&"primary_fire": [key(KEY_Z), joy_button(JOY_BUTTON_A)], &"secondary_fire": [key(KEY_J), joy_button(JOY_BUTTON_X)], &"heavy_weapon": [key(KEY_K), joy_button(JOY_BUTTON_Y)], &"spell": [key(KEY_C), joy_button(JOY_BUTTON_Y)], &"melee": [key(KEY_V)], &"shield": [key(KEY_C), joy_button(JOY_BUTTON_LEFT_SHOULDER)], &"parry": [key(KEY_R)], &"dash": [key(KEY_ALT), joy_axis(JOY_AXIS_TRIGGER_RIGHT, 1.0)], &"barrel_roll": [key(KEY_B)], &"boost": [key(KEY_CTRL)], &"teleport": [key(KEY_T)], &"super_mode": [key(KEY_V), joy_button(JOY_BUTTON_B)], &"next_weapon": [key(KEY_BRACKETRIGHT)], &"previous_weapon": [key(KEY_BRACKETLEFT)], &"wingman_command": [key(KEY_X)], &"wingman_command_wheel": [key(KEY_Z)],
+		&"primary_fire": [key(KEY_Z), mouse_button(MOUSE_BUTTON_LEFT), joy_button(JOY_BUTTON_A)], &"secondary_fire": [key(KEY_J), mouse_button(MOUSE_BUTTON_RIGHT), joy_button(JOY_BUTTON_X)], &"heavy_weapon": [key(KEY_K), joy_button(JOY_BUTTON_Y)], &"spell": [key(KEY_C), joy_button(JOY_BUTTON_Y)], &"melee": [key(KEY_V)], &"shield": [key(KEY_C), joy_button(JOY_BUTTON_LEFT_SHOULDER)], &"parry": [key(KEY_R)], &"dash": [key(KEY_ALT), joy_axis(JOY_AXIS_TRIGGER_RIGHT, 1.0)], &"barrel_roll": [key(KEY_B)], &"boost": [key(KEY_CTRL)], &"teleport": [key(KEY_T)], &"super_mode": [key(KEY_V), joy_button(JOY_BUTTON_B)], &"next_weapon": [key(KEY_BRACKETRIGHT)], &"previous_weapon": [key(KEY_BRACKETLEFT)], &"wingman_command": [key(KEY_X)], &"wingman_command_wheel": [key(KEY_Z)],
 	}
 
 static func key(code: Key) -> InputEventKey:
@@ -20,6 +20,9 @@ static func key(code: Key) -> InputEventKey:
 
 static func joy_button(button: JoyButton) -> InputEventJoypadButton:
 	var event := InputEventJoypadButton.new(); event.button_index = button; return event
+
+static func mouse_button(button: MouseButton) -> InputEventMouseButton:
+	var event := InputEventMouseButton.new(); event.button_index = button; return event
 
 static func joy_axis(axis: JoyAxis, value: float) -> InputEventJoypadMotion:
 	var event := InputEventJoypadMotion.new(); event.axis = axis; event.axis_value = value; return event

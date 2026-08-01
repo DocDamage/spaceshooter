@@ -79,6 +79,11 @@ func _test_invulnerability_and_statuses() -> void:
 	packet.status_applications.append(burn)
 	var result := actor.receive_damage(packet)
 	_assert(&"burn" in result.applied_statuses and actor.status_component.has(&"burn"), "typed status applications are applied after HP damage")
+	actor.shield_component.current = 0.0
+	var source_ids := PackedStringArray()
+	actor.damage_resolved.connect(func(periodic_packet, _periodic_result): source_ids.append(String(periodic_packet.source_ability_id)))
+	actor.status_component.tick(1.0)
+	_assert(actor.health_component.current < 100.0 and "status.burn" in source_ids, "burn deals attributed periodic fire damage")
 	actor.status_component.status_resistances[&"freeze"] = 1.0
 	_assert(not actor.status_component.apply(StatusApplication.new(&"freeze", &"player.test", 2.0)), "status resistance can fully reject a status")
 

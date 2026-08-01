@@ -562,7 +562,7 @@ func _settings_page() -> Control:
 	var glyph_picker := UIComponentLibrary.drop_down(glyphs, maxi(0, glyph_index))
 	glyph_picker.item_selected.connect(func(index): services.settings.set_setting(&"glyph_family", glyphs[index].to_lower()))
 	_add_labeled_control(box, "Prompt glyphs", glyph_picker)
-	for category in ["damage", "weapon", "impact", "ui"]:
+	for category in ["primary_weapon", "heavy_weapon", "player_damage", "shield_break", "melee", "spell", "boss_impact", "environmental_hazard"]:
 		_add_vibration_category(box, category)
 	var restore := UIComponentLibrary.secondary_button("Restore Defaults")
 	restore.pressed.connect(func(): services.settings.restore_defaults(); services.input.restore_default_bindings(); show_page(&"settings", false))
@@ -716,7 +716,7 @@ func _add_toggle_setting(box: VBoxContainer, text: String, key: StringName) -> v
 
 func _add_vibration_category(box: VBoxContainer, category: String) -> void:
 	var categories: Dictionary = services.settings.get_setting(&"vibration_categories", {})
-	var control := UIComponentLibrary.check_box("Vibration: %s" % category.capitalize(), bool(categories.get(category, true)))
+	var control := UIComponentLibrary.check_box("Vibration: %s" % category.replace("_", " ").capitalize(), bool(categories.get(category, true)))
 	control.toggled.connect(func(value):
 		var changed: Dictionary = services.settings.get_setting(&"vibration_categories", {}).duplicate(true)
 		changed[category] = value

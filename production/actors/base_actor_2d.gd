@@ -34,6 +34,7 @@ func _init() -> void:
 	add_child(armor_component)
 	status_component = StatusComponent.new()
 	status_component.name = "StatusComponent"
+	status_component.periodic_damage_requested.connect(_on_periodic_damage_requested)
 	add_child(status_component)
 	hitbox_component = HitboxComponent.new()
 	hitbox_component.name = "HitboxComponent"
@@ -112,6 +113,13 @@ func is_invulnerable() -> bool:
 
 func grant_invulnerability(seconds: float) -> void:
 	invulnerability_time = maxf(invulnerability_time, maxf(0.0, seconds))
+
+func _on_periodic_damage_requested(source_actor_id: StringName, amount: float) -> void:
+	if active and amount > 0.0:
+		var packet := DamagePacket.new(amount, source_actor_id)
+		packet.source_ability_id = &"status.burn"
+		packet.damage_type = DamagePacket.DamageType.FIRE
+		receive_damage(packet)
 
 func on_damage_resolved(packet: DamagePacket, result: DamageResult) -> void:
 	damage_resolved.emit(packet, result)

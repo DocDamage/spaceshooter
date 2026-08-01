@@ -19,6 +19,8 @@ Phase 5 replaces actor-specific health subtraction with a shared, deterministic 
 
 `DamagePacket` carries stable source, player, ability, chain, score, and future network-sequence attribution. No scene-tree lookup is needed during resolution.
 
+Burn now ticks once per active second through the same resolver as direct damage, preserving source and `status.burn` ability attribution; regeneration continues to heal through the actor lifecycle.
+
 ## Validation
 
 Run the acceptance suite from the project directory:

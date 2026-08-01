@@ -51,6 +51,7 @@ func _test_action_map_and_devices() -> void:
 	var input: GameInputService = pair[1]
 	_assert(GameInputService.ACTION_NAMES.size() == 42, "complete navigation, movement, legacy compatibility, and arcade action catalog exists")
 	_assert(GameInputService.ACTION_NAMES.all(func(action): return InputMap.has_action(action) and not InputMap.action_get_events(action).is_empty()), "every Phase 4 action has a default binding")
+	_assert(InputMap.action_get_events(&"primary_fire").any(func(event): return event is InputEventMouseButton), "mouse primary fire has a default binding")
 	_assert(input.assign_device(0, GameInputService.DEVICE_KEYBOARD_MOUSE), "keyboard and mouse can be assigned to player one")
 	_assert(not input.assign_device(1, GameInputService.DEVICE_KEYBOARD_MOUSE), "a device cannot control multiple players by default")
 	input.allow_shared_devices = true
@@ -84,6 +85,7 @@ func _test_persistence() -> void:
 	loaded.initialize()
 	_assert(is_equal_approx(float(loaded.get_setting(&"aim_assistance")), 0.65), "settings survive a service restart")
 	_assert(loaded.get_setting(&"colorblind_filter") == "tritanopia", "accessibility settings persist")
+	_assert(not FileAccess.file_exists(test_settings_path + ".tmp"), "settings use temporary-file replacement without stale writes")
 	settings.free()
 	loaded.free()
 	var file := FileAccess.open(test_settings_path, FileAccess.WRITE)

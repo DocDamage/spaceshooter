@@ -128,11 +128,24 @@ func restore_defaults(persist := true) -> void:
 		save_settings()
 
 func save_settings() -> Error:
-	var file := FileAccess.open(storage_path, FileAccess.WRITE)
+	var temporary_path := storage_path + ".tmp"
+	var file := FileAccess.open(temporary_path, FileAccess.WRITE)
 	if file == null:
-		report_error("Could not open settings file for writing")
+		report_error("Could not open temporary settings file for writing")
 		return FileAccess.get_open_error()
 	file.store_string(JSON.stringify({"schema_version": SCHEMA_VERSION, "values": _values, "bindings": _bindings}, "  "))
+	file.flush()
+	var write_error := file.get_error()
+	file.close()
+	if write_error != OK:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary_path))
+		report_error("Could not write settings file")
+		return write_error
+	var move_error := DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary_path), ProjectSettings.globalize_path(storage_path))
+	if move_error != OK:
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary_path))
+		report_error("Could not atomically replace settings file")
+		return move_error
 	settings_saved.emit()
 	return OK
 
