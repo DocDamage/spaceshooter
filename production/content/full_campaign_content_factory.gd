@@ -1,7 +1,6 @@
 class_name FullCampaignContentFactory
 extends RefCounted
 
-const AUTHORED_CONTENT_PATH := "res://production/content/data/campaign/full_campaign_authored_content.json"
 const OPERATION_BACKGROUNDS := {
 	2: "res://assets_runtime/backgrounds/background_space_blue_01_sheet.png",
 	3: "res://assets_runtime/backgrounds/background_nebula_violet_sheet.png",
@@ -17,9 +16,6 @@ const SPECIALIST_SHIP_VISUALS := {
 	5: "res://assets_runtime/players/ship_arsenal_talon.png",
 	6: "res://assets_runtime/players/ship_convergence_star.png"
 }
-
-static var _authored_content_loaded := false
-static var _authored_content: Dictionary = {}
 
 const OPERATION_NAMES := {
 	2: "Spearhead Doctrine", 3: "The Shattered Veil", 4: "War of Three Banners",
@@ -84,13 +80,13 @@ static func build() -> Array[ContentDefinition]:
 
 			var miniboss := miniboss_template.duplicate(true) as BossDefinition
 			miniboss.stable_id = _miniboss_id(operation_index, local_stage)
-			miniboss.display_name = "%s %s" % [_stage_title(operation_index, local_stage), "Warden"]
+			miniboss.display_name = "%s %s" % [FullCampaignNarrativeFactory.stage_title(operation_index, local_stage, MECHANICS[operation_index][local_stage - 1]), "Warden"]
 			miniboss.content_version = "18.1"
 			miniboss.maximum_health = 900.0 + global_stage * 55.0
 			miniboss.armor = 3.0 + operation_index
 			miniboss.shield_capacity = 100.0 + global_stage * 18.0
 			miniboss.arena_profile = {"attack_identity": MECHANICS[operation_index][local_stage - 1], "operation": operation_index, "stage": local_stage, "safe_entry": Vector2(270, 860)}
-			miniboss.visual_tint = _operation_color(operation_index).lightened(float(local_stage % 3) * 0.08)
+			miniboss.visual_tint = FullCampaignNarrativeFactory.operation_color(operation_index).lightened(float(local_stage % 3) * 0.08)
 			miniboss.visual_scale = 1.0 + operation_index * 0.04
 			miniboss.collision_radius = 34.0 + operation_index * 2.0
 			miniboss.phases.assign(_boss_phases(operation_index, local_stage, false))
@@ -106,7 +102,7 @@ static func build() -> Array[ContentDefinition]:
 				finale_boss.armor = 10.0 + operation_index * 2.0
 				finale_boss.shield_capacity = 1400.0 + operation_index * 500.0
 				finale_boss.arena_profile = {"attack_identity": MECHANICS[operation_index][9], "operation": operation_index, "major_sequence": operation_index == 6, "safe_entry": Vector2(270, 860)}
-				finale_boss.visual_tint = _operation_color(operation_index)
+				finale_boss.visual_tint = FullCampaignNarrativeFactory.operation_color(operation_index)
 				finale_boss.visual_scale = 1.2 + operation_index * 0.06
 				finale_boss.collision_radius = 72.0 + operation_index * 4.0
 				finale_boss.phases.assign(_boss_phases(operation_index, local_stage, true))
@@ -132,8 +128,8 @@ static func build() -> Array[ContentDefinition]:
 			mission.mission_rewards = {"xp": 600 + global_stage * 55, "credits": 700 + global_stage * 85, "tier": operation_index, "unlock": _unlock_id(operation_index, local_stage)}
 			if local_stage in [2, 6, 9]: mission.mission_rewards.equipment_id = _equipment_id(operation_index, local_stage)
 			mission.dialogue_hooks = {"briefing": _dialogue_id(operation_index, local_stage, &"briefing"), "results": _dialogue_id(operation_index, local_stage, &"results")}
-			result.append(_dialogue_definition(operation_index, local_stage, &"briefing"))
-			result.append(_dialogue_definition(operation_index, local_stage, &"results"))
+			result.append(FullCampaignNarrativeFactory.dialogue_definition(operation_index, local_stage, &"briefing", MECHANICS[operation_index][local_stage - 1], _dialogue_id(operation_index, local_stage, &"briefing")))
+			result.append(FullCampaignNarrativeFactory.dialogue_definition(operation_index, local_stage, &"results", MECHANICS[operation_index][local_stage - 1], _dialogue_id(operation_index, local_stage, &"results")))
 			result.append(mission)
 
 			var node := CampaignNodeDefinition.new()
@@ -193,7 +189,7 @@ static func _boss_phases(operation_index: int, local_stage: int, finale: bool) -
 	for phase_index in range(phase_count):
 		var pattern := AttackPatternDefinition.new()
 		pattern.stable_id = StringName("attack.operation%d_stage%d_phase%d" % [operation_index, local_stage, phase_index + 1])
-		pattern.display_name = "%s Pattern %d" % [_stage_title(operation_index, local_stage), phase_index + 1]
+		pattern.display_name = "%s Pattern %d" % [FullCampaignNarrativeFactory.stage_title(operation_index, local_stage, MECHANICS[operation_index][local_stage - 1]), phase_index + 1]
 		pattern.content_version = "18.2"
 		pattern.pattern = (operation_index * 7 + local_stage * 3 + phase_index * 5) % (AttackPatternDefinition.Pattern.WALL_WITH_GAPS + 1)
 		pattern.projectile_count = 3 + operation_index + phase_index * 2
@@ -207,13 +203,13 @@ static func _boss_phases(operation_index: int, local_stage: int, finale: bool) -
 		pattern.telegraph_seconds = maxf(0.2, 0.55 - operation_index * 0.04)
 		var deck := AttackDeckDefinition.new()
 		deck.stable_id = StringName("attack_deck.operation%d_stage%d_phase%d" % [operation_index, local_stage, phase_index + 1])
-		deck.display_name = "%s Deck %d" % [_stage_title(operation_index, local_stage), phase_index + 1]
+		deck.display_name = "%s Deck %d" % [FullCampaignNarrativeFactory.stage_title(operation_index, local_stage, MECHANICS[operation_index][local_stage - 1]), phase_index + 1]
 		deck.content_version = "18.2"
 		deck.attack_patterns.append(pattern)
 		deck.selection_mode = &"distance" if phase_index == 1 else (&"random" if phase_index == 2 else &"sequential")
 		var phase := BossPhaseDefinition.new()
 		phase.stable_id = StringName("boss_phase.operation%d_stage%d_phase%d" % [operation_index, local_stage, phase_index + 1])
-		phase.display_name = "%s Phase %d" % [_stage_title(operation_index, local_stage), phase_index + 1]
+		phase.display_name = "%s Phase %d" % [FullCampaignNarrativeFactory.stage_title(operation_index, local_stage, MECHANICS[operation_index][local_stage - 1]), phase_index + 1]
 		phase.content_version = "18.2"
 		phase.health_threshold = [1.0, 0.66, 0.33][phase_index]
 		phase.attack_decks.append(deck)
@@ -232,7 +228,7 @@ static func _segment_library() -> Dictionary:
 static func _stage_recipe(operation_index: int, local_stage: int, segments: Dictionary) -> MissionRecipeDefinition:
 	var recipe := MissionRecipeDefinition.new()
 	recipe.stable_id = _recipe_id(operation_index, local_stage)
-	recipe.display_name = "%d-%d %s" % [operation_index, local_stage, _stage_title(operation_index, local_stage)]
+	recipe.display_name = "%d-%d %s" % [operation_index, local_stage, FullCampaignNarrativeFactory.stage_title(operation_index, local_stage, MECHANICS[operation_index][local_stage - 1])]
 	recipe.content_version = "18.2"
 	var cycle: Array = OPERATION_SEGMENTS[operation_index]
 	var identity: Array[StageSegmentDefinition] = []
@@ -270,7 +266,7 @@ static func _operation(index: int) -> OperationDefinition:
 		operation.campaign_node_ids.append(_node_id(index, stage))
 		operation.miniboss_ids.append(_miniboss_id(index, stage))
 		operation.stage_mechanics[stage] = MECHANICS[index][stage - 1]
-		operation.story_beats[stage] = _story_beat(index, stage)
+		operation.story_beats[stage] = FullCampaignNarrativeFactory.story_beat(index, stage, MECHANICS[index][stage - 1])
 		var unlocks: Array[StringName] = [_unlock_id(index, stage)]
 		if stage in [2, 6, 9]: unlocks.append(_equipment_id(index, stage))
 		if stage == 4: unlocks.append(_spell_id(index))
@@ -287,72 +283,8 @@ static func _operation(index: int) -> OperationDefinition:
 	operation.next_operation_node_id = _node_id(index + 1, 1) if index < 6 else &"campaign.postgame"
 	return operation
 
-static func authored_stage_content(operation: int, stage: int) -> Dictionary:
-	_load_authored_content()
-	return _authored_content.get("%d-%d" % [operation, stage], {}).duplicate(true)
-
-static func authored_stage_count() -> int:
-	_load_authored_content()
-	return _authored_content.size()
-
-static func _load_authored_content() -> void:
-	if _authored_content_loaded: return
-	_authored_content_loaded = true
-	var file := FileAccess.open(AUTHORED_CONTENT_PATH, FileAccess.READ)
-	if file == null:
-		push_error("Authored campaign content is missing: %s" % AUTHORED_CONTENT_PATH)
-		return
-	var parsed = JSON.parse_string(file.get_as_text())
-	if parsed is Dictionary and parsed.get("stages") is Dictionary:
-		_authored_content = parsed.stages.duplicate(true)
-	else:
-		push_error("Authored campaign content is invalid: %s" % AUTHORED_CONTENT_PATH)
-
-static func _story_beat(operation: int, stage: int) -> String:
-	var authored := authored_stage_content(operation, stage)
-	if not authored.is_empty(): return str(authored.get("setup", ""))
-	return "%s — %s" % [_stage_title(operation, stage), String(MECHANICS[operation][stage - 1]).replace("_", " ")]
-
-static func _dialogue_definition(operation: int, stage: int, kind: StringName) -> DialogueDefinition:
-	var dialogue := DialogueDefinition.new()
-	dialogue.stable_id = _dialogue_id(operation, stage, kind)
-	dialogue.display_name = "Operation %d Stage %d %s" % [operation, stage, String(kind).capitalize()]
-	dialogue.content_version = "21.0"
-	dialogue.context = "stage_entry" if kind == &"briefing" else "results"
-	dialogue.priority = operation * 10 + stage
-	var authored := authored_stage_content(operation, stage)
-	if kind == &"briefing":
-		dialogue.lines = [
-			{"speaker": "Command", "text": str(authored.get("setup", _story_beat(operation, stage)))},
-			{"speaker": "Wing", "text": str(authored.get("wing", "Mission focus: %s." % String(MECHANICS[operation][stage - 1]).replace("_", " ")))}
-		]
-		var echo: Dictionary = authored.get("decision_echo", {})
-		if not echo.is_empty():
-			dialogue.lines.append({"speaker": "Wing", "text": "Prior decision acknowledged.", "decision_id": StringName(echo.get("decision_id", "")), "variants": echo.get("variants", {}).duplicate(true)})
-	else:
-		dialogue.lines = [
-			{"speaker": "Nova", "text": str(authored.get("result", "%s is secure." % _stage_title(operation, stage)))},
-			{"speaker": "Command", "text": str(authored.get("consequence", "Operation %d progress: %d of 10 stages resolved." % [operation, stage]))}
-		]
-		var decision := _decision_for(operation, stage)
-		if not decision.is_empty(): dialogue.lines.append(decision)
-	return dialogue
-
-static func _decision_for(operation: int, stage: int) -> Dictionary:
-	if operation == 2 and stage == 10: return {"speaker": "Command", "text": "Which doctrine leads the specialist wings?", "choices": [{"text": "Independent specialists", "decision_id": &"specialist_doctrine", "value": &"independent"}, {"text": "Unified formation", "decision_id": &"specialist_doctrine", "value": &"unified"}]}
-	if operation == 3 and stage == 8: return {"speaker": "Kael", "text": "What do we do with the recovered alien archive?", "choices": [{"text": "Share the archive", "decision_id": &"alien_archive", "value": &"shared"}, {"text": "Seal the archive", "decision_id": &"alien_archive", "value": &"sealed"}]}
-	if operation == 4 and stage == 5: return {"speaker": "Reyes", "text": "Which faction receives our protection corridor?", "choices": [{"text": "Defend the civilians", "decision_id": &"faction_alliance", "value": &"civilians"}, {"text": "Support the defense fleet", "decision_id": &"faction_alliance", "value": &"fleet"}]}
-	if operation == 5 and stage == 10: return {"speaker": "Rook", "text": "The Last Arsenal can be dismantled or turned against the invasion.", "choices": [{"text": "Dismantle it", "decision_id": &"arsenal_fate", "value": &"dismantled"}, {"text": "Use it", "decision_id": &"arsenal_fate", "value": &"deployed"}]}
-	if operation == 6 and stage == 10: return {"speaker": "Command", "text": "The invasion is over. Choose what the united fleet builds from the victory.", "choices": [{"text": "Rebuild the frontier", "decision_id": &"final_resolution", "value": &"rebuild"}, {"text": "Guard the convergence", "decision_id": &"final_resolution", "value": &"guard"}]}
-	return {}
-
-static func _stage_title(operation: int, stage: int) -> String:
-	var authored := authored_stage_content(operation, stage)
-	if not authored.is_empty(): return str(authored.get("title", ""))
-	return String(MECHANICS[operation][stage - 1]).replace("_", " ").capitalize()
-
-static func _operation_color(operation: int) -> Color:
-	return [Color("65b9ff"), Color("bb78ff"), Color("ff9a52"), Color("ff526f"), Color("f5e663")][operation - 2]
+static func authored_stage_content(operation: int, stage: int) -> Dictionary: return FullCampaignNarrativeFactory.authored_stage_content(operation, stage)
+static func authored_stage_count() -> int: return FullCampaignNarrativeFactory.authored_stage_count()
 
 static func _mission_id(operation: int, stage: int) -> StringName: return StringName("mission.operation%d_stage%d" % [operation, stage])
 static func _recipe_id(operation: int, stage: int) -> StringName: return StringName("recipe.operation%d_stage%d" % [operation, stage])

@@ -454,6 +454,10 @@ Every stage must include:
 **Target effort:** 25–40 weeks  
 **Outcome:** The structural 60-stage campaign becomes a genuinely authored game.
 
+### Current implementation evidence (verified 2026-08-01)
+
+Operations 2–6 are implemented as fifty authored narrative records, mission recipes, campaign nodes, minibosses, five distinct three-phase finale bosses, specialist ships, equipment sets, spell-unlock beats, decision echoes, and operation-specific rosters and environments. `phase18_acceptance.gd` passes all 37 checks, including the full 60-stage fresh-profile progression, deterministic seed batches, local co-op clearance, save reload, mode reuse, and New Game Plus preview. The factory's narrative responsibilities are isolated in `FullCampaignNarrativeFactory`, keeping each campaign-content implementation file below 300 lines. Human gameplay, art, audio, balance, accessibility, and fun sign-off remain external release gates.
+
 ### Content strategy
 
 - Produce one operation at a time in three gates: three-stage proof batch, stages 4–7 mid batch, stages 8–10 finale batch.
@@ -495,6 +499,10 @@ Every stage must include:
 
 **Target effort:** 10–16 weeks  
 **Outcome:** The network lab becomes a secure, observable, usable two-machine feature.
+
+### Current implementation evidence (verified 2026-08-01)
+
+The host-authoritative protocol, compatibility handshake, lobby state, direct-IP transport, prediction/reconciliation, event-based projectile replication, checkpoint-safe reconnect, duplicate-reward protection, diagnostics, and rollout policy are implemented. `phase19_acceptance.gd` passes all 19 checks, and Phase 6/7 combat and enemy foundations also pass their 12- and 15-check suites. Public online remains intentionally disabled under [ADR 0003](decisions/0003-multiplayer-release-scope.md) until the plan's two-machine/two-network, invite-provider, latency/loss, soak, and full-campaign external test matrix is completed; this preserves the stated no-unverified-online release policy.
 
 Do this phase only after local co-op and campaign content are stable. If its release gates cannot be met, move online co-op out of 1.0 rather than weakening the offline game.
 
