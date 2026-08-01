@@ -21,6 +21,8 @@ Phase 5 replaces actor-specific health subtraction with a shared, deterministic 
 
 Burn now ticks once per active second through the same resolver as direct damage, preserving source and `status.burn` ability attribution; regeneration continues to heal through the actor lifecycle.
 
+Damage packets can additionally apply named subsystem conditions through the resolver. Engine, controls, weapons, reactor, shield generator, and wingman-command conditions affect the relevant runtime behavior, honor per-subsystem accessibility toggles, and are surfaced through the mission feedback bridge. EMP blocks dash, roll, and teleport while active.
+
 ## Validation
 
 Run the acceptance suite from the project directory:

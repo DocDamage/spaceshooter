@@ -163,9 +163,8 @@ func _physics_process(delta: float) -> void:
 		weapon_runtime.tick(delta)
 		spell_runtime.tick(delta)
 		if melee_runtime != null: melee_runtime.tick(delta)
-		if super_runtime != null:
-			super_runtime.tick(delta)
-			weapon_runtime.global_damage_multiplier = _base_weapon_damage_multiplier * super_runtime.damage_multiplier()
+		if super_runtime != null: super_runtime.tick(delta)
+		weapon_runtime.global_damage_multiplier = _base_weapon_damage_multiplier * lerpf(0.45, 1.0, armor_component.get_condition(&"weapons")) * lerpf(0.6, 1.0, armor_component.get_condition(&"reactor")) * (super_runtime.damage_multiplier() if super_runtime != null else 1.0)
 		ship_visual.update_state(move_input, shield_component.current / maxf(shield_component.capacity, 1.0), health_component.current / maxf(health_component.maximum, 1.0), not fire_mode.is_empty(), super_runtime != null and super_runtime.active, focus_active, bool(input_service.get_gameplay_setting(&"always_show_hitbox", false)), delta)
 		var fire_direction := Vector2.UP if aim.length_squared() == 0.0 else aim
 		if input_service.is_action_just_pressed_for_player(&"element", player_index) and not equipped_spells.is_empty():
@@ -270,6 +269,7 @@ func _hostile_projectiles() -> Array[ProductionProjectile]:
 			if object is ProductionProjectile and object.team != faction: result.append(object)
 	return result
 func _issue_wingman_command(use_special: bool) -> void:
+	if armor_component.get_condition(&"wingman_command") < 0.5: return
 	if registry == null: return
 	var modes := [&"attack", &"defend", &"focus", &"intercept"]
 	for actor in registry.get_actors(&"wingman"):

@@ -6,7 +6,7 @@ Phase 4 supplies the shared interaction layer for later production screens.
 
 Run the project to open the controller-first command menu. It includes profile/device assignment, persistent settings, live accessibility preview, safe control rebinding, and an input test. Launching the architecture test mission exposes the pause shell with the same navigation conventions.
 
-Keyboard emergency navigation always retains Enter/Space for confirm and Escape for cancel. A disconnected controller is unassigned and menu input falls back to keyboard and mouse; mouse primary and secondary fire defaults are also present. Devices cannot be assigned to more than one local player unless shared-device mode is explicitly enabled.
+Keyboard emergency navigation always retains Enter/Space for confirm and Escape for cancel. A disconnected controller is unassigned and menu input falls back to keyboard and mouse; its prior player assignments are restored when the same device returns. Mouse primary and secondary fire defaults are also present. Devices cannot be assigned to more than one local player unless shared-device mode is explicitly enabled.
 
 Settings and bindings are stored through a temporary-file replacement as schema-versioned JSON at `user://settings_v1.json`. Vibration controls map one-for-one to the supported feedback categories. Accessibility assists are recorded in run metadata and never block campaign progression.
 

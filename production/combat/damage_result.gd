@@ -12,6 +12,7 @@ var reflected_damage := 0.0
 var absorbed_damage := 0.0
 var target_destroyed := false
 var applied_statuses: Array[StringName] = []
+var damaged_subsystems: Array[StringName] = []
 
 func snapshot() -> Dictionary:
 	return {
@@ -19,5 +20,5 @@ func snapshot() -> Dictionary:
 		"shield_damage": shield_damage, "armor_reduction": armor_reduction,
 		"resistance_multiplier": resistance_multiplier, "health_damage": health_damage,
 		"reflected_damage": reflected_damage, "absorbed_damage": absorbed_damage,
-		"target_destroyed": target_destroyed, "applied_statuses": applied_statuses.duplicate()
+		"target_destroyed": target_destroyed, "applied_statuses": applied_statuses.duplicate(), "damaged_subsystems": damaged_subsystems.duplicate()
 	}

@@ -16,6 +16,7 @@ var shield_interaction: ShieldInteraction
 var shield_penetration: float
 var is_collision_damage: bool
 var status_applications: Array[StatusApplication]
+var subsystem_damage: Dictionary
 var chain_attribution: StringName
 var score_attribution: StringName
 var network_sequence_id: int
@@ -33,6 +34,7 @@ func _init(damage := 0.0, source_id: StringName = &"") -> void:
 	shield_penetration = 0.0
 	is_collision_damage = false
 	status_applications = []
+	subsystem_damage = {}
 	chain_attribution = &""
 	score_attribution = &""
 	network_sequence_id = 0
@@ -49,6 +51,7 @@ func duplicate_packet() -> DamagePacket:
 	copy.shield_penetration = shield_penetration
 	copy.is_collision_damage = is_collision_damage
 	copy.status_applications.assign(status_applications)
+	copy.subsystem_damage = subsystem_damage.duplicate(true)
 	copy.chain_attribution = chain_attribution
 	copy.score_attribution = score_attribution
 	copy.network_sequence_id = network_sequence_id

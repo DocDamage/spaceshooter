@@ -28,6 +28,9 @@ static func resolve(target: BaseActor2D, packet: DamagePacket) -> DamageResult:
 	for application in packet.status_applications:
 		if target.status_component.apply(application):
 			result.applied_statuses.append(application.status_id)
+	for subsystem_id in packet.subsystem_damage:
+		if target.armor_component.damage_subsystem(StringName(subsystem_id), float(packet.subsystem_damage[subsystem_id])):
+			result.damaged_subsystems.append(StringName(subsystem_id))
 	target.on_damage_resolved(packet, result)
 	if target.health_component.is_depleted():
 		result.target_destroyed = true

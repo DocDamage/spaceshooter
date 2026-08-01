@@ -20,6 +20,7 @@ var difficulty_definition: DifficultyProfileDefinition
 var camera_rig: PresentationCameraRig
 var effects_pool: EffectsPoolManager
 var screen_effects: ScreenEffectsController
+var combat_feedback: MissionCombatFeedback
 var player_actors: Array[Node2D] = []
 var wingman_actors: Array[WingmanRuntime] = []
 var active_boss: BossActor
@@ -112,6 +113,9 @@ func _ready() -> void:
 	elif not entry_id.is_empty():
 		session.services.story.start_dialogue(entry_id, {"stage": session.config.mission_definition.stage_number})
 	camera_rig = PresentationCameraRig.new(); camera_rig.name = "PresentationCameraRig"; camera_rig.configure(session.services.settings); camera_rig.set_targets(player_actors); camera_rig.enabled = true; add_child(camera_rig)
+	combat_feedback = MissionCombatFeedback.new(); combat_feedback.name = "MissionCombatFeedback"; combat_feedback.configure(session.services.settings, session.services.input, camera_rig, screen_effects); add_child(combat_feedback)
+	for player in player_actors:
+		if player is BaseActor2D: combat_feedback.attach(player)
 	var plan := StageGraphGenerator.new().generate(session.config.mission_definition, session.stage_seed, int(session.config.mode_rules.get("difficulty_rating", difficulty_definition.rating if difficulty_definition != null else 50)))
 	if plan != null: plan = ModeStagePlanAdapter.adapt(plan, StringName(session.config.mode_rules.get("mode_id", "")))
 	stage_runtime = StageRuntime.new()
@@ -276,6 +280,7 @@ func _spawn_enemy(enemy_id: StringName, spawn_position: Vector2, formation: Form
 		session.services.diagnostics.add_warning("Enemy pool exhausted while spawning %s" % enemy_id)
 		_notify_enemy_finished(actor_id)
 		return
+	if combat_feedback != null: combat_feedback.attach(enemy)
 	if formation != null:
 		formation.player_count = maxi(1, player_actors.size())
 		formation.add_member(enemy, slot)
@@ -441,6 +446,7 @@ func _spawn_boss(boss_id: StringName, category: StringName) -> void:
 	if session.local_coop != null: active_boss.health_component.maximum *= float(session.local_coop.difficulty_profile().boss_health_multiplier); active_boss.health_component.current = active_boss.health_component.maximum
 	elif session.online_coop != null: active_boss.health_component.maximum *= float(CoopDifficultyScaler.profile(2).boss_health_multiplier); active_boss.health_component.current = active_boss.health_component.maximum
 	active_boss.position = Vector2(270, 220); active_boss.configure_combat_context(_target_player(), projectile_pool, difficulty_definition)
+	if combat_feedback != null: combat_feedback.attach(active_boss)
 	active_boss.damage_resolved.connect(func(_packet: DamagePacket, result: DamageResult):
 		if result.health_damage + result.shield_damage > 0.0: session.services.audio.play(SFX_HIT, &"Enemies", 2, 0.03, active_boss.global_position))
 	active_boss.destroyed.connect(func(_actor_id: StringName, _source_id: StringName):

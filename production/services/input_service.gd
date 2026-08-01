@@ -10,8 +10,7 @@ const DEVICE_KEYBOARD_MOUSE := -1
 const UNASSIGNED_DEVICE := -2
 const REQUIRED_ESCAPE_ACTIONS := [&"ui_confirm", &"ui_cancel"]
 const ACTION_NAMES := InputBindingCatalog.ACTION_NAMES
-const LEGACY_ACTION_MIGRATIONS := InputBindingCatalog.LEGACY_ACTION_MIGRATIONS
-const BUFFERED_ACTIONS := InputBindingCatalog.BUFFERED_ACTIONS
+const LEGACY_ACTION_MIGRATIONS := InputBindingCatalog.LEGACY_ACTION_MIGRATIONS; const BUFFERED_ACTIONS := InputBindingCatalog.BUFFERED_ACTIONS; const DeviceReconnectMemoryScript = preload("res://production/services/device_reconnect_memory.gd")
 
 var last_device_kind: StringName = &"keyboard_mouse"
 var last_device_id := DEVICE_KEYBOARD_MOUSE
@@ -20,7 +19,7 @@ var allow_shared_devices := false
 var _settings: SettingsService
 var _default_events: Dictionary = {}
 var _buffered_actions: Dictionary = {}
-
+var _reconnect_memory = DeviceReconnectMemoryScript.new()
 func get_settings_service() -> SettingsService:
 	return _settings
 func _init() -> void:
@@ -290,10 +289,10 @@ func _is_bindable_event(event: InputEvent) -> bool:
 
 func _on_joy_connection_changed(device_id: int, connected: bool) -> void:
 	if not connected:
-		for player_index in player_devices:
-			if player_devices[player_index] == device_id:
-				unassign_device(player_index)
+		_reconnect_memory.remember(self, device_id)
 		# Keyboard remains an emergency menu device regardless of player assignment.
 		last_device_kind = &"keyboard_mouse"
 		last_device_id = DEVICE_KEYBOARD_MOUSE
+	else:
+		_reconnect_memory.restore(self, device_id)
 	controller_connection_changed.emit(device_id, connected)

@@ -125,6 +125,10 @@ func _test_movement_state_machine() -> void:
 	controller.state_machine.resume()
 	controller.simulate(Vector2.RIGHT, 0.1)
 	_assert(actor.position.x > before.x, "movement resumes without becoming stuck")
+	controller.state_machine.cooldowns[MovementStateMachine.DASH] = 0.0
+	actor.status_component.apply(StatusApplication.new(&"emp", &"enemy.test", 1.0))
+	_assert(not controller.dash(Vector2.RIGHT), "EMP blocks active movement abilities")
+	actor.status_component.clear()
 	controller.state_machine.request(MovementStateMachine.DESTROYED)
 	_assert(not controller.state_machine.request(MovementStateMachine.DASH), "destroyed state cancels and rejects abilities")
 
@@ -136,6 +140,11 @@ func _test_system_damage_switches() -> void:
 	_assert(armor.damage_subsystem(&"weapons", 0.5) and armor.get_condition(&"weapons") == 0.5, "other subsystem damage remains enabled")
 	armor.system_damage_enabled = false
 	_assert(not armor.damage_subsystem(&"reactor", 0.5), "master system-damage setting disables all subsystem damage")
+	var actor := _actor(&"player")
+	var packet := DamagePacket.new(0.0, &"enemy.test")
+	packet.subsystem_damage = {&"engine": 0.4, &"weapons": 0.6}
+	var result := actor.receive_damage(packet)
+	_assert(result.damaged_subsystems == [&"engine", &"weapons"] and is_equal_approx(actor.armor_component.get_condition(&"engine"), 0.6) and is_equal_approx(actor.armor_component.get_condition(&"weapons"), 0.4), "damage packets apply named subsystem damage through the resolver")
 
 func _test_actor_lifecycle_and_coexistence() -> void:
 	var player_one := _actor(&"player")

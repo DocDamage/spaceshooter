@@ -56,6 +56,9 @@ func _test_action_map_and_devices() -> void:
 	_assert(not input.assign_device(1, GameInputService.DEVICE_KEYBOARD_MOUSE), "a device cannot control multiple players by default")
 	input.allow_shared_devices = true
 	_assert(input.assign_device(1, GameInputService.DEVICE_KEYBOARD_MOUSE), "explicit shared-device configuration is supported")
+	input._on_joy_connection_changed(GameInputService.DEVICE_KEYBOARD_MOUSE, false)
+	input._on_joy_connection_changed(GameInputService.DEVICE_KEYBOARD_MOUSE, true)
+	_assert(input.player_devices[0] == GameInputService.DEVICE_KEYBOARD_MOUSE and input.player_devices[1] == GameInputService.DEVICE_KEYBOARD_MOUSE, "device assignments recover when a disconnected device returns")
 	_assert(input.get_glyph_family(GameInputService.DEVICE_KEYBOARD_MOUSE) == &"keyboard_mouse", "keyboard prompts select keyboard glyph family")
 	_free_services(pair)
 

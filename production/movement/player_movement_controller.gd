@@ -19,10 +19,12 @@ func simulate(input_vector: Vector2, delta: float) -> void:
 		velocity = Vector2.ZERO
 		return
 	state_machine.tick(delta)
-	var direction := input_vector.limit_length()
+	var control_multiplier := lerpf(0.4, 1.0, actor.armor_component.get_condition(&"controls"))
+	var direction := input_vector.limit_length() * control_multiplier
 	if direction != Vector2.ZERO:
 		last_direction = direction.normalized()
-	var target := direction * state_machine.speed_for(profile) * actor.status_component.movement_multiplier()
+	var engine_multiplier := lerpf(0.45, 1.0, actor.armor_component.get_condition(&"engine"))
+	var target := direction * state_machine.speed_for(profile) * engine_multiplier * actor.status_component.movement_multiplier()
 	if profile.regulation_direct:
 		velocity = target
 		actor.position += velocity * delta
@@ -34,6 +36,7 @@ func simulate(input_vector: Vector2, delta: float) -> void:
 	_apply_boundary()
 
 func dash(direction: Vector2) -> bool:
+	if actor == null or profile == null or actor.status_component.abilities_blocked(): return false
 	var dash_direction := direction.normalized() if direction != Vector2.ZERO else last_direction
 	if not state_machine.request(MovementStateMachine.DASH, profile.dash_time, profile.dash_cooldown):
 		return false
@@ -43,12 +46,14 @@ func dash(direction: Vector2) -> bool:
 	return true
 
 func roll() -> bool:
+	if actor == null or profile == null or actor.status_component.abilities_blocked(): return false
 	if not state_machine.request(MovementStateMachine.ROLL, profile.roll_time, profile.roll_cooldown):
 		return false
 	actor.grant_invulnerability(profile.roll_invulnerability)
 	return true
 
 func teleport(direction: Vector2) -> bool:
+	if actor == null or profile == null or actor.status_component.abilities_blocked(): return false
 	var teleport_direction := direction.normalized() if direction != Vector2.ZERO else last_direction
 	if not state_machine.request(MovementStateMachine.TELEPORT, 0.01, profile.teleport_cooldown):
 		return false
